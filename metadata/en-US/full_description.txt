@@ -1,0 +1,7 @@
+Features:
+
+Trim
+Grayscale
+Resolution
+Scale
+Rotate
