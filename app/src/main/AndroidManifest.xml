@@ -22,7 +22,7 @@
         </activity>
         <activity
             android:name=".settings.SettingsActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".videoeditor.VideoEditorActivity"
             android:exported="true">
