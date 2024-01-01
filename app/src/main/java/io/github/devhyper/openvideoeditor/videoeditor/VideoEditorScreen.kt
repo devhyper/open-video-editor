@@ -18,6 +18,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -108,6 +109,7 @@ import io.github.devhyper.openvideoeditor.misc.DropdownSetting
 import io.github.devhyper.openvideoeditor.misc.TextfieldSetting
 import io.github.devhyper.openvideoeditor.misc.formatMinSec
 import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
+import io.github.devhyper.openvideoeditor.misc.repeatingClickable
 import io.github.devhyper.openvideoeditor.settings.SettingsActivity
 import io.github.devhyper.openvideoeditor.ui.theme.OpenVideoEditorTheme
 import kotlinx.collections.immutable.PersistentList
@@ -598,9 +600,16 @@ private fun BottomControls(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(modifier = Modifier.weight(1f, false), onClick = {
-                    onSeekChanged((videoTime.toFloat() - (1F / videoFpm)) + 1F)
-                }) {
+                IconButton(
+                    modifier = Modifier
+                        .weight(1f, false)
+                        .repeatingClickable(remember { MutableInteractionSource() },
+                            true,
+                            onClick = {
+                                onSeekChanged((videoTime.toFloat() - (1F / videoFpm)) + 1F)
+                            }), onClick = {
+                        onSeekChanged((videoTime.toFloat() - (1F / videoFpm)) + 1F)
+                    }) {
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowLeft,
                         contentDescription = stringResource(R.string.decrement_frame)
@@ -611,9 +620,16 @@ private fun BottomControls(
                     text = "$videoTimeFrames/$durationFrames",
                     textAlign = TextAlign.Center
                 )
-                IconButton(modifier = Modifier.weight(1f, false), onClick = {
-                    onSeekChanged((videoTime.toFloat() + (1F / videoFpm)) + 1F)
-                }) {
+                IconButton(
+                    modifier = Modifier
+                        .weight(1f, false)
+                        .repeatingClickable(remember { MutableInteractionSource() },
+                            true,
+                            onClick = {
+                                onSeekChanged((videoTime.toFloat() + (1F / videoFpm)) + 1F)
+                            }), onClick = {
+                        onSeekChanged((videoTime.toFloat() + (1F / videoFpm)) + 1F)
+                    }) {
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowRight,
                         contentDescription = stringResource(R.string.increment_frame)
