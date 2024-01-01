@@ -3,6 +3,7 @@
 
 ## Install
 [<img src="./assets/get-it-on-github.png" alt='Get it on GitHub' height="80">](https://github.com/devhyper/open-video-editor/releases/latest)
+[<img src="./assets/IzzyOnDroid.png" alt='Get it on IzzyOnDroid' height="80">](https://apt.izzysoft.de/fdroid/index/apk/io.github.devhyper.openvideoeditor)
 
 ## Features
 - Trim
