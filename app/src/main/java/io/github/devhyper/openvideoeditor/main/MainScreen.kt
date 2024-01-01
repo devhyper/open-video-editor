@@ -29,7 +29,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import io.github.devhyper.openvideoeditor.R
 import io.github.devhyper.openvideoeditor.settings.SettingsActivity
 import io.github.devhyper.openvideoeditor.ui.theme.OpenVideoEditorTheme
@@ -73,7 +72,10 @@ fun MainScreen(pickMedia: ActivityResultLauncher<PickVisualMediaRequest>) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     )
                     {
-                        Text(stringResource(R.string.select_a_video_to_edit), fontSize = 8.em)
+                        Text(
+                            stringResource(R.string.select_a_video_to_edit),
+                            style = MaterialTheme.typography.headlineLarge
+                        )
                         Spacer(Modifier.height(64.dp))
                         Button(onClick = {
                             pickMedia.launch(

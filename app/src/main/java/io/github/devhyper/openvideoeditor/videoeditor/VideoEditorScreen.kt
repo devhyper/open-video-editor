@@ -344,7 +344,7 @@ private fun PlayerControls(
             ) {
                 TopControls(
                     modifier = Modifier
-                        .align(Alignment.TopStart)
+                        .align(Alignment.TopCenter)
                         .fillMaxWidth(),
                     title = title,
                     transformManager = transformManager,
@@ -537,7 +537,11 @@ private fun BottomControls(
     val prevFilterDurationEditorSliderPosition by viewModel.prevFilterDurationEditorSliderPosition.collectAsState()
     val filterDurationEditorSliderPosition by viewModel.filterDurationEditorSliderPosition.collectAsState()
 
-    Column(modifier = modifier.padding(bottom = 16.dp)) {
+    Column(
+        modifier = modifier
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 16.dp)
+    ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             if (filterDurationEditorEnabled) {
                 RangeSlider(
@@ -568,8 +572,7 @@ private fun BottomControls(
             } else {
                 Slider(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
+                        .fillMaxWidth(),
                     value = videoTime.toFloat(),
                     onValueChange = onSeekChanged,
                     colors = SliderDefaults.colors(
@@ -582,19 +585,20 @@ private fun BottomControls(
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
+                modifier = Modifier.weight(2f, false),
                 text = videoTime.formatMinSec() + "/" + duration.formatMinSec(),
             )
             Row(
+                modifier = Modifier.weight(2f, false),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {
+                IconButton(modifier = Modifier.weight(1f, false), onClick = {
                     onSeekChanged((videoTime.toFloat() - (1F / videoFpm)) + 1F)
                 }) {
                     Icon(
@@ -603,10 +607,11 @@ private fun BottomControls(
                     )
                 }
                 Text(
+                    modifier = Modifier.weight(1f, false),
                     text = "$videoTimeFrames/$durationFrames",
                     textAlign = TextAlign.Center
                 )
-                IconButton(onClick = {
+                IconButton(modifier = Modifier.weight(1f, false), onClick = {
                     onSeekChanged((videoTime.toFloat() + (1F / videoFpm)) + 1F)
                 }) {
                     Icon(
@@ -616,9 +621,11 @@ private fun BottomControls(
                 }
             }
 
-            Row {
+            Row(
+                modifier = Modifier.weight(1f),
+            ) {
                 if (filterDurationEditorEnabled) {
-                    IconButton(onClick = {
+                    IconButton(modifier = Modifier.weight(1f), onClick = {
                         viewModel.setFilterDurationEditorEnabled(false)
                         filterDurationCallback(
                             LongRange(
@@ -633,7 +640,7 @@ private fun BottomControls(
                             contentDescription = stringResource(R.string.accept_filter)
                         )
                     }
-                    IconButton(onClick = {
+                    IconButton(modifier = Modifier.weight(1f), onClick = {
                         viewModel.setFilterDurationEditorEnabled(false)
                     }
                     ) {
@@ -643,7 +650,7 @@ private fun BottomControls(
                         )
                     }
                 } else {
-                    IconButton(onClick = {
+                    IconButton(modifier = Modifier.weight(1f), onClick = {
                         showLayerBottomSheet = true
                     }
                     ) {
@@ -652,7 +659,7 @@ private fun BottomControls(
                             contentDescription = stringResource(R.string.open_layer_drawer)
                         )
                     }
-                    IconButton(onClick = {
+                    IconButton(modifier = Modifier.weight(1f), onClick = {
                         showFilterBottomSheet = true
                     }
                     ) {
@@ -764,8 +771,7 @@ private fun LayerDrawerItem(
             Icon(imageVector = icon, contentDescription = stringResource(R.string.layer_icon))
             Column(
                 modifier = Modifier
-                    .padding(start = 20.dp)
-                    .weight(1f, false),
+                    .padding(start = 16.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = name)
@@ -798,7 +804,7 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
             modifier = Modifier
                 .fillMaxSize()
                 .padding(32.dp),
-            columns = GridCells.Fixed(4)
+            columns = GridCells.Adaptive(100.dp)
         ) {
             item {
                 FilterDrawerItem(stringResource(R.string.trim), Icons.Filled.ContentCut, onClick = {
@@ -872,6 +878,7 @@ private fun FilterDrawerItem(name: String, icon: ImageVector, onClick: () -> Uni
         }
         Text(
             textAlign = TextAlign.Center,
+            softWrap = false,
             text = name
         )
     }
@@ -904,7 +911,7 @@ private fun FilterDialog(
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.padding(16.dp)
                 )
-                Column(
+                LazyColumn(
                     verticalArrangement = Arrangement.SpaceAround,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
@@ -912,20 +919,27 @@ private fun FilterDialog(
                         val textfield = arg.textfieldValidation
                         val dropdown = arg.dropdownOptions
                         if (textfield != null) {
-                            TextfieldSetting(name = arg.name, onValueChanged = {
-                                val error = textfield(it)
-                                if (error.isEmpty()) {
-                                    arg.selection = it
-                                } else {
-                                    arg.selection = ""
-                                }
-                                viewModel.setFilterDialogArgs(args)
-                                error
-                            })
+                            item {
+                                TextfieldSetting(name = arg.name, onValueChanged = {
+                                    val error = textfield(it)
+                                    if (error.isEmpty()) {
+                                        arg.selection = it
+                                    } else {
+                                        arg.selection = ""
+                                    }
+                                    viewModel.setFilterDialogArgs(args)
+                                    error
+                                })
+                            }
                         } else if (dropdown != null) {
-                            DropdownSetting(name = arg.name, options = dropdown.toImmutableList()) {
-                                arg.selection = it
-                                viewModel.setFilterDialogArgs(args)
+                            item {
+                                DropdownSetting(
+                                    name = arg.name,
+                                    options = dropdown.toImmutableList()
+                                ) {
+                                    arg.selection = it
+                                    viewModel.setFilterDialogArgs(args)
+                                }
                             }
                         }
                     }
@@ -1026,33 +1040,41 @@ private fun ExportDialog(
                         style = MaterialTheme.typography.headlineLarge,
                         modifier = Modifier.padding(16.dp)
                     )
-                    Column(
+                    LazyColumn(
                         verticalArrangement = Arrangement.SpaceAround,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        DropdownSetting(
-                            name = stringResource(R.string.media_to_export),
-                            options = getMediaToExportStrings()
-                        ) {
-                            exportSettings.setMediaToExportString(it)
+                        item {
+                            DropdownSetting(
+                                name = stringResource(R.string.media_to_export),
+                                options = getMediaToExportStrings()
+                            ) {
+                                exportSettings.setMediaToExportString(it)
+                            }
                         }
-                        DropdownSetting(
-                            name = stringResource(R.string.hdr_mode),
-                            options = getHdrModesStrings()
-                        ) {
-                            exportSettings.setHdrModeString(it)
+                        item {
+                            DropdownSetting(
+                                name = stringResource(R.string.hdr_mode),
+                                options = getHdrModesStrings()
+                            ) {
+                                exportSettings.setHdrModeString(it)
+                            }
                         }
-                        DropdownSetting(
-                            name = stringResource(R.string.audio_type),
-                            options = getAudioMimeTypesStrings()
-                        ) {
-                            exportSettings.setAudioMimeTypeString(it)
+                        item {
+                            DropdownSetting(
+                                name = stringResource(R.string.audio_type),
+                                options = getAudioMimeTypesStrings()
+                            ) {
+                                exportSettings.setAudioMimeTypeString(it)
+                            }
                         }
-                        DropdownSetting(
-                            name = stringResource(R.string.video_type),
-                            options = getVideoMimeTypesStrings()
-                        ) {
-                            exportSettings.setVideoMimeTypeString(it)
+                        item {
+                            DropdownSetting(
+                                name = stringResource(R.string.video_type),
+                                options = getVideoMimeTypesStrings()
+                            ) {
+                                exportSettings.setVideoMimeTypeString(it)
+                            }
                         }
                     }
                     Row(
