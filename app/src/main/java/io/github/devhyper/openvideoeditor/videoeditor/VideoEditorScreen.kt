@@ -607,9 +607,7 @@ private fun BottomControls(
                             true,
                             onClick = {
                                 onSeekChanged((videoTime.toFloat() - (1F / videoFpm)) + 1F)
-                            }), onClick = {
-                        onSeekChanged((videoTime.toFloat() - (1F / videoFpm)) + 1F)
-                    }) {
+                            }), onClick = {}) {
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowLeft,
                         contentDescription = stringResource(R.string.decrement_frame)
@@ -627,9 +625,7 @@ private fun BottomControls(
                             true,
                             onClick = {
                                 onSeekChanged((videoTime.toFloat() + (1F / videoFpm)) + 1F)
-                            }), onClick = {
-                        onSeekChanged((videoTime.toFloat() + (1F / videoFpm)) + 1F)
-                    }) {
+                            }), onClick = {}) {
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowRight,
                         contentDescription = stringResource(R.string.increment_frame)
