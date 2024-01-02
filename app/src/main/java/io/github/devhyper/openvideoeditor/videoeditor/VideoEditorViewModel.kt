@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class VideoEditorViewModel : ViewModel() {
+    val transformManager = TransformManager()
+
     private val _outputPath = MutableStateFlow("")
     val outputPath: StateFlow<String> = _outputPath.asStateFlow()
 

@@ -95,7 +95,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.Effect
-import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Player.COMMAND_GET_CURRENT_MEDIA_ITEM
 import androidx.media3.common.Player.Commands
@@ -136,14 +135,9 @@ fun VideoEditorScreen(
                 setSeekForwardIncrementMs(PLAYER_SEEK_FORWARD_INCREMENT)
             }
             .build()
-            .apply {
-                setMediaItem(MediaItem.fromUri(uri))
-                setVideoEffects(emptyList()) // Needed to setup effects processor, so effects can be enabled at runtime
-                prepare()
-            }
     }
 
-    val transformManager = remember { TransformManager(player, uri) }
+    val transformManager = remember { viewModel.transformManager.apply { init(player, uri) } }
 
     var listenerRepeating by remember { mutableStateOf(false) }
 

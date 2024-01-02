@@ -146,17 +146,40 @@ class DialogUserEffect(
 class UserEffect(val name: String, val icon: ImageVector, val effect: Effect)
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-class TransformManager(val player: ExoPlayer, uri: String) {
+class TransformManager {
+    lateinit var player: ExoPlayer
+
+    private var hasInitialized = false
+
     private var transformer: Transformer? = null
 
     val videoEffects = mutableListOf<UserEffect>()
     val audioProcessors = mutableListOf<AudioProcessor>()
     val mediaTrims = mutableListOf<Trim>()
 
-    private val originalMedia: MediaItem = MediaItem.fromUri(uri)
-    private var trimmedMedia: MediaItem = MediaItem.fromUri(uri)
+    private lateinit var originalMedia: MediaItem
+    private lateinit var trimmedMedia: MediaItem
 
     private var originalMediaLength: Long = -1
+
+    fun init(exoPlayer: ExoPlayer, uri: String) {
+        if (hasInitialized) {
+            if (exoPlayer != player) {
+                player.release()
+                player = exoPlayer
+            }
+        } else {
+            player = exoPlayer
+            originalMedia = MediaItem.fromUri(uri)
+            trimmedMedia = MediaItem.fromUri(uri)
+            hasInitialized = true
+        }
+        player.apply {
+            setMediaItem(trimmedMedia)
+            setVideoEffects(getEffectArray())
+            prepare()
+        }
+    }
 
     private fun getEffectArray(): MutableList<Effect> {
         val effectArray = mutableListOf<Effect>()
