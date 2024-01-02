@@ -50,3 +50,21 @@ fun validateFloatAndNonzero(string: String): String {
     }
     return ""
 }
+
+fun validateUFloat(string: String): String {
+    val float = string.toFloatOrNull()
+    if (float == null || float < 0) {
+        return "Input must be a valid unsigned float"
+    }
+    return ""
+}
+
+fun validateUFloatAndNonzero(string: String): String {
+    val float = string.toFloatOrNull()
+    if (float == null || float < 0) {
+        return "Input must be a valid unsigned float"
+    } else if (float == 0F) {
+        return "Input must be nonzero"
+    }
+    return ""
+}
