@@ -20,9 +20,15 @@ import androidx.compose.ui.Modifier
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun CheckboxSetting(name: String, startChecked: Boolean, onCheckChanged: (Boolean) -> Unit) {
+fun CheckboxSetting(
+    modifier: Modifier = Modifier,
+    name: String,
+    startChecked: Boolean,
+    onCheckChanged: (Boolean) -> Unit
+) {
     var checked by remember { mutableStateOf(startChecked) }
     Row(
+        modifier = modifier,
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {

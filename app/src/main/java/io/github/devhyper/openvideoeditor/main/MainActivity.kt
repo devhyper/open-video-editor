@@ -7,9 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import io.github.devhyper.openvideoeditor.misc.setImmersiveMode
 import io.github.devhyper.openvideoeditor.misc.setupSystemUi
+import io.github.devhyper.openvideoeditor.settings.SettingsDataStore
 import io.github.devhyper.openvideoeditor.videoeditor.VideoEditorActivity
 
 class MainActivity : ComponentActivity() {
@@ -19,11 +19,13 @@ class MainActivity : ComponentActivity() {
 
         setupSystemUi()
 
-        pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            if (uri != null) {
-                launchVideoEditor(uri)
+        val dataStore = SettingsDataStore(this)
+        pickMedia =
+            registerForActivityResult(CustomPickVisualMedia { dataStore.getLegacyFilePickerBlocking() }) { uri ->
+                if (uri != null) {
+                    launchVideoEditor(uri)
+                }
             }
-        }
 
         setContent {
             setImmersiveMode(false)

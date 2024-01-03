@@ -3,6 +3,7 @@ package io.github.devhyper.openvideoeditor.settings
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -16,6 +17,7 @@ class SettingsDataStore(private val context: Context) {
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("settings")
         val THEME = stringPreferencesKey("theme")
+        val LEGACY_FILE_PICKER = booleanPreferencesKey("legacy_file_picker")
     }
 
     fun getThemeBlocking(): String {
@@ -35,6 +37,19 @@ class SettingsDataStore(private val context: Context) {
     suspend fun setTheme(value: String) {
         context.dataStore.edit { preferences ->
             preferences[THEME] = value
+        }
+    }
+
+    fun getLegacyFilePickerBlocking(): Boolean {
+        return runBlocking {
+            val preferences = context.dataStore.data.first()
+            preferences[LEGACY_FILE_PICKER] ?: false
+        }
+    }
+
+    suspend fun setLegacyFilePicker(value: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[LEGACY_FILE_PICKER] = value
         }
     }
 }

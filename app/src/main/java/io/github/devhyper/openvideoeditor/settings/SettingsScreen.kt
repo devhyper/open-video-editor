@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import io.github.devhyper.openvideoeditor.misc.CheckboxSetting
 import io.github.devhyper.openvideoeditor.misc.DropdownSetting
 import io.github.devhyper.openvideoeditor.misc.move
 import io.github.devhyper.openvideoeditor.ui.theme.OpenVideoEditorTheme
@@ -71,14 +72,9 @@ fun SettingsScreen() {
                             val theme = dataStore.getThemeBlocking()
                             val options = mutableListOf("System", "Light", "Dark")
                             options.move(theme, 0)
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 32.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                            SettingRow(
+                                "Theme"
                             ) {
-                                Text("Theme")
                                 DropdownSetting(
                                     name = "Theme",
                                     options = options.toImmutableList(),
@@ -90,11 +86,39 @@ fun SettingsScreen() {
                                         }
                                     })
                             }
-
+                        }
+                        item {
+                            val useLegacyFilePicker = dataStore.getLegacyFilePickerBlocking()
+                            CheckboxSetting(
+                                modifier = Modifier
+                                    .padding(horizontal = 32.dp),
+                                name = "Use legacy file picker",
+                                startChecked = useLegacyFilePicker,
+                                onCheckChanged = {
+                                    if (it != useLegacyFilePicker) {
+                                        scope.launch {
+                                            dataStore.setLegacyFilePicker(it)
+                                        }
+                                    }
+                                })
                         }
                     }
                 }
             )
         }
+    }
+}
+
+@Composable
+fun SettingRow(name: String, value: @Composable () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(name)
+        value()
     }
 }
