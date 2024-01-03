@@ -1097,7 +1097,9 @@ private fun ExportDialog(
                         }
                         TextButton(
                             onClick = {
-                                createDocument.launch(title)
+                                val dotIndex: Int = title.lastIndexOf('.')
+                                val fileName: String = title.substring(0, dotIndex)
+                                createDocument.launch(fileName)
                             }
                         ) {
                             Text(stringResource(R.string.export))
