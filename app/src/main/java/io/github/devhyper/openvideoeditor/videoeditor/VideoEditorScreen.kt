@@ -919,6 +919,7 @@ private fun FilterDialog(
                     modifier = Modifier.padding(16.dp)
                 )
                 LazyColumn(
+                    modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.SpaceAround,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
@@ -1048,6 +1049,7 @@ private fun ExportDialog(
                         modifier = Modifier.padding(16.dp)
                     )
                     LazyColumn(
+                        modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.SpaceAround,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
