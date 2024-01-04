@@ -23,9 +23,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.github.devhyper.openvideoeditor.misc.CheckboxSetting
 import io.github.devhyper.openvideoeditor.misc.DropdownSetting
+import io.github.devhyper.openvideoeditor.misc.SwitchSetting
 import io.github.devhyper.openvideoeditor.misc.move
 import io.github.devhyper.openvideoeditor.ui.theme.OpenVideoEditorTheme
 import kotlinx.collections.immutable.toImmutableList
@@ -65,7 +66,9 @@ fun SettingsScreen() {
                     LazyColumn(
                         modifier = Modifier
                             .padding(innerPadding)
-                            .fillMaxSize()
+                            .padding(horizontal = 32.dp)
+                            .fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     )
                     {
                         item {
@@ -89,9 +92,7 @@ fun SettingsScreen() {
                         }
                         item {
                             val useLegacyFilePicker = dataStore.getLegacyFilePickerBlocking()
-                            CheckboxSetting(
-                                modifier = Modifier
-                                    .padding(horizontal = 32.dp),
+                            SwitchSetting(
                                 name = "Use legacy file picker",
                                 startChecked = useLegacyFilePicker,
                                 onCheckChanged = {
@@ -112,13 +113,11 @@ fun SettingsScreen() {
 @Composable
 fun SettingRow(name: String, value: @Composable () -> Unit) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(name)
+        Text(modifier = Modifier.padding(end = 16.dp), text = name, textAlign = TextAlign.Center)
         value()
     }
 }

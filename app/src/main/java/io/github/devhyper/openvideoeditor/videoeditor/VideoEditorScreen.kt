@@ -810,7 +810,8 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
             modifier = Modifier
                 .fillMaxSize()
                 .padding(32.dp),
-            columns = GridCells.Adaptive(100.dp)
+            columns = GridCells.Adaptive(120.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
                 FilterDrawerItem(stringResource(R.string.trim), Icons.Filled.ContentCut, onClick = {
