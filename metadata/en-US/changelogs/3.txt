@@ -1,0 +1,7 @@
+Touch and hold frame next/previous to repeat
+Fix switching screen rotation loses edits
+Fix unable to select a video
+Remove file extension when selecting export location
+Add the app as a shortcut in the Share menu
+Fix UI elements not responsive/adaptive
+Fix hidden dialog buttons on certain screen sizes
