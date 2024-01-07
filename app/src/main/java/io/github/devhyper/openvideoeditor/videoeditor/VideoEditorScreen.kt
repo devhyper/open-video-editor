@@ -105,6 +105,7 @@ import androidx.media3.transformer.ExportResult
 import androidx.media3.transformer.Transformer.Listener
 import io.github.devhyper.openvideoeditor.R
 import io.github.devhyper.openvideoeditor.misc.DropdownSetting
+import io.github.devhyper.openvideoeditor.misc.ListDialog
 import io.github.devhyper.openvideoeditor.misc.TextfieldSetting
 import io.github.devhyper.openvideoeditor.misc.formatMinSec
 import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
@@ -901,89 +902,53 @@ private fun FilterDialog(
 ) {
     val viewModel = viewModel { VideoEditorViewModel() }
     val args by viewModel.filterDialogArgs.collectAsState()
-    Dialog(onDismissRequest = { onDismissRequest() }) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Column(
-                modifier = Modifier.padding(32.dp),
-                verticalArrangement = Arrangement.SpaceAround,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(16.dp)
-                )
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.SpaceAround,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    for (arg in args) {
-                        val textfield = arg.textfieldValidation
-                        val dropdown = arg.dropdownOptions
-                        if (textfield != null) {
-                            item {
-                                TextfieldSetting(name = arg.name, onValueChanged = {
-                                    val error = textfield(it)
-                                    if (error.isEmpty()) {
-                                        arg.selection = it
-                                    } else {
-                                        arg.selection = ""
-                                    }
-                                    viewModel.setFilterDialogArgs(args)
-                                    error
-                                })
-                            }
-                        } else if (dropdown != null) {
-                            item {
-                                DropdownSetting(
-                                    name = arg.name,
-                                    options = dropdown.toImmutableList()
-                                ) {
-                                    arg.selection = it
-                                    viewModel.setFilterDialogArgs(args)
-                                }
-                            }
-                        }
-                    }
+    ListDialog(
+        title = name,
+        dismissText = stringResource(R.string.cancel),
+        acceptText = stringResource(R.string.add),
+        onDismissRequest = onDismissRequest,
+        onAcceptRequest = {
+            var error = false
+            val callbackArgsMap = mutableMapOf<String, String>()
+            for (arg in args) {
+                val string = arg.selection
+                if (string.isEmpty()) {
+                    error = true
+                    break
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.End)
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    TextButton(
-                        onClick = { onDismissRequest() },
-                    ) {
-                        Text(stringResource(R.string.cancel))
-                    }
-                    TextButton(
-                        onClick = {
-                            var error = false
-                            val callbackArgsMap = mutableMapOf<String, String>()
-                            for (arg in args) {
-                                val string = arg.selection
-                                if (string.isEmpty()) {
-                                    error = true
-                                    break
-                                }
-                                callbackArgsMap[arg.name] = string
-                            }
-                            if (!error) {
-                                val userEffect = callback(callbackArgsMap.toMap())
-                                transformManager.addVideoEffect(userEffect)
-                                onDismissRequest()
-                            }
+                callbackArgsMap[arg.name] = string
+            }
+            if (!error) {
+                val userEffect = callback(callbackArgsMap.toMap())
+                transformManager.addVideoEffect(userEffect)
+                onDismissRequest()
+            }
+        },
+    ) {
+        for (arg in args) {
+            val textfield = arg.textfieldValidation
+            val dropdown = arg.dropdownOptions
+            if (textfield != null) {
+                item {
+                    TextfieldSetting(name = arg.name, onValueChanged = {
+                        val error = textfield(it)
+                        if (error.isEmpty()) {
+                            arg.selection = it
+                        } else {
+                            arg.selection = ""
                         }
+                        viewModel.setFilterDialogArgs(args)
+                        error
+                    })
+                }
+            } else if (dropdown != null) {
+                item {
+                    DropdownSetting(
+                        name = arg.name,
+                        options = dropdown.toImmutableList()
                     ) {
-                        Text(stringResource(R.string.add))
+                        arg.selection = it
+                        viewModel.setFilterDialogArgs(args)
                     }
                 }
             }
@@ -1029,85 +994,47 @@ private fun ExportDialog(
             ExportProgressDialog(transformManager) { onDismissRequest(); viewModel.setOutputPath("") }
         }
     } else {
-        Dialog(onDismissRequest = { onDismissRequest() }) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(450.dp)
-                    .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceAround,
-                    horizontalAlignment = Alignment.CenterHorizontally,
+        ListDialog(
+            title = stringResource(R.string.export),
+            dismissText = stringResource(R.string.cancel),
+            acceptText = stringResource(R.string.export),
+            onDismissRequest = onDismissRequest,
+            onAcceptRequest = {
+                val dotIndex: Int = title.lastIndexOf('.')
+                val fileName: String = title.substring(0, dotIndex)
+                createDocument.launch(fileName)
+            },
+        ) {
+            item {
+                DropdownSetting(
+                    name = stringResource(R.string.media_to_export),
+                    options = getMediaToExportStrings()
                 ) {
-                    Text(
-                        text = stringResource(R.string.export),
-                        style = MaterialTheme.typography.headlineLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    LazyColumn(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.SpaceAround,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        item {
-                            DropdownSetting(
-                                name = stringResource(R.string.media_to_export),
-                                options = getMediaToExportStrings()
-                            ) {
-                                exportSettings.setMediaToExportString(it)
-                            }
-                        }
-                        item {
-                            DropdownSetting(
-                                name = stringResource(R.string.hdr_mode),
-                                options = getHdrModesStrings()
-                            ) {
-                                exportSettings.setHdrModeString(it)
-                            }
-                        }
-                        item {
-                            DropdownSetting(
-                                name = stringResource(R.string.audio_type),
-                                options = getAudioMimeTypesStrings()
-                            ) {
-                                exportSettings.setAudioMimeTypeString(it)
-                            }
-                        }
-                        item {
-                            DropdownSetting(
-                                name = stringResource(R.string.video_type),
-                                options = getVideoMimeTypesStrings()
-                            ) {
-                                exportSettings.setVideoMimeTypeString(it)
-                            }
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.End)
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.End,
-                    ) {
-                        TextButton(
-                            onClick = { onDismissRequest() },
-                        ) {
-                            Text(stringResource(R.string.cancel))
-                        }
-                        TextButton(
-                            onClick = {
-                                val dotIndex: Int = title.lastIndexOf('.')
-                                val fileName: String = title.substring(0, dotIndex)
-                                createDocument.launch(fileName)
-                            }
-                        ) {
-                            Text(stringResource(R.string.export))
-                        }
-                    }
+                    exportSettings.setMediaToExportString(it)
+                }
+            }
+            item {
+                DropdownSetting(
+                    name = stringResource(R.string.hdr_mode),
+                    options = getHdrModesStrings()
+                ) {
+                    exportSettings.setHdrModeString(it)
+                }
+            }
+            item {
+                DropdownSetting(
+                    name = stringResource(R.string.audio_type),
+                    options = getAudioMimeTypesStrings()
+                ) {
+                    exportSettings.setAudioMimeTypeString(it)
+                }
+            }
+            item {
+                DropdownSetting(
+                    name = stringResource(R.string.video_type),
+                    options = getVideoMimeTypesStrings()
+                ) {
+                    exportSettings.setVideoMimeTypeString(it)
                 }
             }
         }
