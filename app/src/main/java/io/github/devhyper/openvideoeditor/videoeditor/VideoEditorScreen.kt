@@ -110,6 +110,7 @@ import io.github.devhyper.openvideoeditor.misc.TextfieldSetting
 import io.github.devhyper.openvideoeditor.misc.formatMinSec
 import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
 import io.github.devhyper.openvideoeditor.misc.repeatingClickable
+import io.github.devhyper.openvideoeditor.misc.validateUFloatAndNonzero
 import io.github.devhyper.openvideoeditor.settings.SettingsActivity
 import io.github.devhyper.openvideoeditor.ui.theme.OpenVideoEditorTheme
 import kotlinx.collections.immutable.PersistentList
@@ -1035,6 +1036,40 @@ private fun ExportDialog(
                     options = getVideoMimeTypesStrings()
                 ) {
                     exportSettings.setVideoMimeTypeString(it)
+                }
+            }
+            item {
+                TextfieldSetting(
+                    name = stringResource(R.string.speed),
+                ) {
+                    val errorMsg = validateUFloatAndNonzero(it)
+                    if (errorMsg.isEmpty()) {
+                        exportSettings.speed = it.toFloat()
+                    } else {
+                        exportSettings.speed = 0F
+                    }
+                    errorMsg
+                }
+            }
+            item {
+                TextfieldSetting(
+                    name = stringResource(R.string.framerate),
+                ) {
+                    var errorMsg = validateUFloatAndNonzero(it)
+                    if (errorMsg.isEmpty()) {
+                        val framerate = it.toFloat()
+                        val originalFramerate =
+                            transformManager.player.videoFormat?.frameRate
+                        if (originalFramerate != null && framerate >= originalFramerate) {
+                            errorMsg =
+                                "Framerate must be lower than the framerate of the original video ($originalFramerate)."
+                        } else {
+                            exportSettings.framerate = framerate
+                        }
+                    } else {
+                        exportSettings.framerate = 0F
+                    }
+                    errorMsg
                 }
             }
         }

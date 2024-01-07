@@ -31,4 +31,6 @@
     <string name="play_pause">Play/Pause</string>
     <string name="replay_5_seconds">Replay 5 seconds</string>
     <string name="more_vertical_options">More vertical options</string>
+    <string name="framerate">Framerate</string>
+    <string name="speed">Speed</string>
 </resources>

@@ -10,6 +10,8 @@ import androidx.media3.common.MediaItem.ClippingConfiguration
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.effect.FrameDropEffect
+import androidx.media3.effect.SpeedChangeEffect
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.transformer.Composition.HDR_MODE_EXPERIMENTAL_FORCE_INTERPRET_HDR_AS_SDR
 import androidx.media3.transformer.Composition.HDR_MODE_KEEP_HDR
@@ -43,6 +45,8 @@ class ExportSettings {
     var hdrMode: Int = HDR_MODE_KEEP_HDR
     var audioMimeType: String? = null
     var videoMimeType: String? = null
+    var framerate: Float = 0F
+    var speed: Float = 0F
     var outputPath: String = ""
 
     /*
@@ -274,8 +278,17 @@ class TransformManager {
                 outputPath.toUri(),
                 "rw"
             )?.fileDescriptor
+        val effectArray = getEffectArray()
+        effectArray.apply {
+            if (exportSettings.speed > 0) {
+                add(SpeedChangeEffect(exportSettings.speed))
+            }
+            if (exportSettings.framerate > 0) {
+                add(FrameDropEffect.createDefaultFrameDropEffect(exportSettings.framerate))
+            }
+        }
         val editedMediaItem = EditedMediaItem.Builder(trimmedMedia)
-            .setEffects(Effects(audioProcessors, getEffectArray()))
+            .setEffects(Effects(audioProcessors, effectArray))
             .setRemoveAudio(!exportSettings.exportAudio)
             .setRemoveVideo(!exportSettings.exportVideo)
             .build()
