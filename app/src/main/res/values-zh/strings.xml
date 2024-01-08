@@ -1,0 +1,37 @@
+<resources>
+    <string name="back">返回</string>
+    <string name="export">导出</string>
+    <string name="settings">设置</string>
+    <string name="decrement_frame">上一帧</string>
+    <string name="increment_frame">下一帧</string>
+    <string name="accept_filter">应用过滤器</string>
+    <string name="decline_filter">减少过滤器</string>
+    <string name="open_layer_drawer">打开图层面板</string>
+    <string name="open_filter_drawer">打开过滤器面板</string>
+    <string name="layer_icon">图层图标</string>
+    <string name="remove_filter">删除过滤器</string>
+    <string name="video_filters">视频过滤器</string>
+    <string name="trim">剪辑</string>
+    <string name="cancel">取消</string>
+    <string name="add">添加</string>
+    <string name="media_to_export">导出内容</string>
+    <string name="hdr_mode">HDR模式</string>
+    <string name="audio_type">音频类型</string>
+    <string name="video_type">视频类型</string>
+    <string name="exported">已导出</string>
+    <string name="exporting">导出中</string>
+    <string name="dismiss">关闭</string>
+    <string name="error">错误</string>
+    <string name="select_a_video_to_edit">选择一个视频以开始编辑</string>
+    <string name="select">选择</string>
+    <string name="export_progress_animation">导出进度动画</string>
+    <string name="video_layers">视频图层</string>
+    <string name="forward_10_seconds">向前10秒</string>
+    <string name="play_pause">播放/暂停</string>
+    <string name="replay_5_seconds">回放5秒</string>
+    <string name="more_vertical_options">更多垂直选项</string>
+    <string name="framerate">帧率</string>
+    <string name="speed">速度</string>
+    <string name="theme">主题</string>
+    <string name="use_legacy_file_picker">使用旧版文件选择器</string>
+</resources>
