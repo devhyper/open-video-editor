@@ -23,8 +23,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.github.devhyper.openvideoeditor.R
 import io.github.devhyper.openvideoeditor.misc.DropdownSetting
 import io.github.devhyper.openvideoeditor.misc.SwitchSetting
 import io.github.devhyper.openvideoeditor.misc.move
@@ -50,14 +52,14 @@ fun SettingsScreen() {
                     TopAppBar(
                         title = {
                             Text(
-                                "Settings",
+                                text = stringResource(R.string.settings),
                             )
                         },
                         navigationIcon = {
                             IconButton(onClick = { activity.finish() }) {
                                 Icon(
                                     imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = "Back"
+                                    contentDescription = stringResource(R.string.back)
                                 )
                             }
                         }
@@ -76,10 +78,10 @@ fun SettingsScreen() {
                             val options = mutableListOf("System", "Light", "Dark")
                             options.move(theme, 0)
                             SettingRow(
-                                "Theme"
+                                name = stringResource(R.string.theme)
                             ) {
                                 DropdownSetting(
-                                    name = "Theme",
+                                    name = stringResource(R.string.theme),
                                     options = options.toImmutableList(),
                                     onSelectionChanged = {
                                         if (it != theme) {
@@ -93,7 +95,7 @@ fun SettingsScreen() {
                         item {
                             val useLegacyFilePicker = dataStore.getLegacyFilePickerBlocking()
                             SwitchSetting(
-                                name = "Use legacy file picker",
+                                name = stringResource(R.string.use_legacy_file_picker),
                                 startChecked = useLegacyFilePicker,
                                 onCheckChanged = {
                                     if (it != useLegacyFilePicker) {

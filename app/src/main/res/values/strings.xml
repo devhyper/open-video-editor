@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Open Video Editor</string>
+    <string name="app_name" translatable="false">Open Video Editor</string>
     <string name="back">Back</string>
     <string name="export">Export</string>
     <string name="settings">Settings</string>
@@ -33,4 +33,6 @@
     <string name="more_vertical_options">More vertical options</string>
     <string name="framerate">Framerate</string>
     <string name="speed">Speed</string>
+    <string name="theme">Theme</string>
+    <string name="use_legacy_file_picker">Use legacy file picker</string>
 </resources>
