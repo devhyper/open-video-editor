@@ -103,7 +103,7 @@ fun TextEditor(effectFlow: MutableStateFlow<Effect?>) {
                     spanString.run {
                         setFullLengthSpan(ForegroundColorSpan(textForegroundColor.toArgb()))
                         setFullLengthSpan(BackgroundColorSpan(textBackgroundColor.toArgb()))
-                        setFullLengthSpan(AbsoluteSizeSpan(spToPx(textSize.toFloat())))
+                        setFullLengthSpan(AbsoluteSizeSpan(spToPx(textSize.sp.value)))
                     }
                     TextOverlay.createStaticTextOverlay(
                         spanString,
