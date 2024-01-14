@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -38,8 +39,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Audiotrack
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Filter
@@ -104,6 +103,7 @@ import androidx.media3.transformer.ExportException
 import androidx.media3.transformer.ExportResult
 import androidx.media3.transformer.Transformer.Listener
 import io.github.devhyper.openvideoeditor.R
+import io.github.devhyper.openvideoeditor.misc.AcceptDeclineRow
 import io.github.devhyper.openvideoeditor.misc.DropdownSetting
 import io.github.devhyper.openvideoeditor.misc.ListDialog
 import io.github.devhyper.openvideoeditor.misc.TextfieldSetting
@@ -158,6 +158,8 @@ fun VideoEditorScreen(
     var playbackState by remember { mutableIntStateOf(player.playbackState) }
 
     val filterDurationEditorSliderPosition by viewModel.filterDurationEditorSliderPosition.collectAsState()
+
+    val currentEditingEffect by viewModel.currentEditingEffect.collectAsState()
 
     OpenVideoEditorTheme(forceDarkTheme = true, forceBlackStatusBar = true) {
         Surface(
@@ -256,6 +258,18 @@ fun VideoEditorScreen(
                         }
                     }
                 )
+
+                val videoFormat = player.videoFormat
+                if (videoFormat != null) {
+                    Box(
+                        modifier = Modifier
+                            .width(videoFormat.width.dp)
+                            .height(videoFormat.height.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        currentEditingEffect?.Editor()
+                    }
+                }
 
                 PlayerControls(
                     modifier = Modifier
@@ -530,6 +544,9 @@ private fun BottomControls(
     val videoTimeFrames = remember(currentTimeFrames()) { currentTimeFrames() }
 
     val viewModel = viewModel { VideoEditorViewModel() }
+
+    val currentEditingEffect by viewModel.currentEditingEffect.collectAsState()
+
     val filterDurationEditorEnabled by viewModel.filterDurationEditorEnabled.collectAsState()
     val filterDurationCallback by viewModel.filterDurationCallback.collectAsState()
     val prevFilterDurationEditorSliderPosition by viewModel.prevFilterDurationEditorSliderPosition.collectAsState()
@@ -629,35 +646,35 @@ private fun BottomControls(
                 }
             }
 
-            Row(
-                modifier = Modifier.weight(1f),
-            ) {
-                if (filterDurationEditorEnabled) {
-                    IconButton(modifier = Modifier.weight(1f), onClick = {
-                        viewModel.setFilterDurationEditorEnabled(false)
-                        filterDurationCallback(
-                            LongRange(
-                                filterDurationEditorSliderPosition.start.toLong(),
-                                filterDurationEditorSliderPosition.endInclusive.toLong()
+            if (filterDurationEditorEnabled || currentEditingEffect != null) {
+                AcceptDeclineRow(
+                    modifier = Modifier.weight(1f),
+                    acceptDescription = stringResource(R.string.accept_filter),
+                    acceptOnClick = {
+                        val currentEditingEffectLocal = currentEditingEffect
+                        if (currentEditingEffectLocal != null) {
+                            currentEditingEffectLocal.runCallback()
+                            viewModel.setCurrentEditingEffect(null)
+                        } else {
+                            viewModel.setFilterDurationEditorEnabled(false)
+                            filterDurationCallback(
+                                LongRange(
+                                    filterDurationEditorSliderPosition.start.toLong(),
+                                    filterDurationEditorSliderPosition.endInclusive.toLong()
+                                )
                             )
-                        )
-                    }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = stringResource(R.string.accept_filter)
-                        )
-                    }
-                    IconButton(modifier = Modifier.weight(1f), onClick = {
+                        }
+                    },
+                    declineDescription = stringResource(R.string.decline_filter),
+                    declineOnClick = {
+                        viewModel.setCurrentEditingEffect(null)
                         viewModel.setFilterDurationEditorEnabled(false)
                     }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = stringResource(R.string.decline_filter)
-                        )
-                    }
-                } else {
+                )
+            } else {
+                Row(
+                    modifier = Modifier.weight(1f),
+                ) {
                     IconButton(modifier = Modifier.weight(1f), onClick = {
                         showLayerBottomSheet = true
                     }
@@ -827,14 +844,29 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
                 })
             }
             items(userEffectsArray) { userEffect ->
-                FilterDrawerItem(
-                    userEffect,
-                    transformManager
-                )
+                userEffect.run {
+                    FilterDrawerItem(
+                        name,
+                        icon,
+                        onClick = { transformManager.addVideoEffect(this) }
+                    )
+                }
             }
             items(dialogUserEffectsArray) { dialogUserEffect ->
                 dialogUserEffect.run {
-                    FilterDrawerItem(name, icon, args, transformManager, callback)
+                    DialogFilterDrawerItem(name, icon, args, transformManager, callback)
+                }
+            }
+            items(onVideoUserEffectsArray) { onVideoUserEffect ->
+                onVideoUserEffect.run {
+                    FilterDrawerItem(name, icon) {
+                        callback = {
+                            transformManager.addVideoEffect(UserEffect(name, icon, it))
+                        }
+                        viewModel.setCurrentEditingEffect(this)
+                        onDismissRequest()
+                        viewModel.setControlsVisible(false)
+                    }
                 }
             }
         }
@@ -842,7 +874,7 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
 }
 
 @Composable
-private fun FilterDrawerItem(
+private fun DialogFilterDrawerItem(
     name: String,
     icon: ImageVector,
     args: PersistentList<EffectDialogSetting>,
@@ -863,17 +895,6 @@ private fun FilterDrawerItem(
             showFilterDialog = false
         }
     }
-}
-
-@Composable
-private fun FilterDrawerItem(
-    userEffect: UserEffect,
-    transformManager: TransformManager
-) {
-    FilterDrawerItem(
-        userEffect.name,
-        userEffect.icon,
-        onClick = { transformManager.addVideoEffect(userEffect) })
 }
 
 @Composable

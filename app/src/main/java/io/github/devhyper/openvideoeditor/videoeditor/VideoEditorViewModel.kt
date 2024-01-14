@@ -38,6 +38,10 @@ class VideoEditorViewModel : ViewModel() {
     val filterDialogArgs: StateFlow<PersistentList<EffectDialogSetting>> =
         _filterDialogArgs.asStateFlow()
 
+    private val _currentEditingEffect = MutableStateFlow<OnVideoUserEffect?>(null)
+    val currentEditingEffect: StateFlow<OnVideoUserEffect?> =
+        _currentEditingEffect.asStateFlow()
+
     fun setOutputPath(path: String) {
         _outputPath.update { path }
     }
@@ -64,5 +68,9 @@ class VideoEditorViewModel : ViewModel() {
 
     fun setFilterDialogArgs(value: PersistentList<EffectDialogSetting>) {
         _filterDialogArgs.update { value }
+    }
+
+    fun setCurrentEditingEffect(value: OnVideoUserEffect?) {
+        _currentEditingEffect.update { value }
     }
 }

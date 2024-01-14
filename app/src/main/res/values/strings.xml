@@ -35,4 +35,11 @@
     <string name="speed">Speed</string>
     <string name="theme">Theme</string>
     <string name="use_legacy_file_picker">Use legacy file picker</string>
+    <string name="background_color">Background Color</string>
+    <string name="foreground_color">Foreground Color</string>
+    <string name="text">Text</string>
+    <string name="set">Set</string>
+    <string name="size">Size</string>
+    <string name="color_picker">Color Picker</string>
+    <string name="accept">Accept</string>
 </resources>

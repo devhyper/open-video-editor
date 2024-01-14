@@ -2,6 +2,7 @@ package io.github.devhyper.openvideoeditor.videoeditor
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.core.net.toUri
 import androidx.media3.common.Effect
@@ -27,8 +28,10 @@ import androidx.media3.transformer.Transformer.PROGRESS_STATE_UNAVAILABLE
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.MutableStateFlow
 
 typealias Trim = LongRange
+typealias Editor = @Composable (MutableStateFlow<Effect?>) -> Unit
 
 class EffectDialogSetting(
     val name: String,
@@ -146,6 +149,25 @@ class DialogUserEffect(
     val args: PersistentList<EffectDialogSetting>,
     val callback: (Map<String, String>) -> Effect
 )
+
+class OnVideoUserEffect(
+    val name: String,
+    val icon: ImageVector,
+    val editor: Editor,
+) {
+    var callback: (Effect) -> Unit = {}
+
+    private val effect = MutableStateFlow<Effect?>(null)
+
+    fun runCallback() {
+        effect.value?.let { callback(it) }
+    }
+
+    @Composable
+    fun Editor() {
+        editor(effect)
+    }
+}
 
 class UserEffect(val name: String, val icon: ImageVector, val effect: Effect)
 

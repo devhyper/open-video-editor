@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.icons.filled.FormatSize
 import androidx.compose.material.icons.filled.RotateRight
+import androidx.compose.material.icons.filled.TextFormat
 import androidx.compose.material.icons.filled.Tv
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.effect.Presentation
@@ -87,4 +88,12 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
         val degrees = args["Degrees"]!!.toFloat()
         ScaleAndRotateTransformation.Builder().setRotationDegrees(degrees).build()
     }
+)
+
+@UnstableApi
+val onVideoUserEffectsArray: ImmutableList<OnVideoUserEffect> = persistentListOf(
+    OnVideoUserEffect(
+        "Text",
+        Icons.Filled.TextFormat
+    ) { TextEditor(it) }
 )

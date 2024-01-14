@@ -1,10 +1,15 @@
 package io.github.devhyper.openvideoeditor.misc
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.text.Spannable
+import android.text.SpannableString
+import android.util.TypedValue
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.OptIn
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -17,10 +22,15 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.effect.OverlayEffect
+import androidx.media3.effect.TextureOverlay
+import com.google.common.collect.ImmutableList
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+
 
 fun getFileNameFromUri(context: Context, uri: Uri): String {
     val fileName: String?
@@ -81,7 +91,7 @@ fun Modifier.repeatingClickable(
     minDelayMillis: Long = 5,
     delayDecayFactor: Float = .40f,
     onClick: () -> Unit
-): Modifier = composed {
+): Modifier = this.composed {
 
     val currentClickListener by rememberUpdatedState(onClick)
 
@@ -104,4 +114,27 @@ fun Modifier.repeatingClickable(
             }
         }
     }
+}
+
+@OptIn(UnstableApi::class)
+fun TextureOverlay.toOverlayEffect(): OverlayEffect {
+    val overlaysBuilder = ImmutableList.Builder<TextureOverlay>()
+    overlaysBuilder.add(this)
+    return OverlayEffect(overlaysBuilder.build())
+}
+
+fun SpannableString.setFullLengthSpan(what: Any) {
+    setSpan(what, 0, length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+}
+
+fun screenToNdc(screen: Float, screenSize: Float): Float {
+    return (((screen / screenSize) * 2f) - 1f).coerceIn(-1f..1f)
+}
+
+fun spToPx(sp: Float): Int {
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_SP,
+        sp,
+        Resources.getSystem().displayMetrics
+    ).toInt()
 }
