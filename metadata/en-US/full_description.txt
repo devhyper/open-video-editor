@@ -1,7 +1,1 @@
-Features:
-
-Trim
-Grayscale
-Resolution
-Scale
-Rotate
+<p><i>Open Video Editor</i> lets you edit your videos. It supports HDR and allows to apply filters. With this app you also can trim, scale, and rotate your videos or even grayscale them. It is also possible to use this app to extract audio from a video, to convert a HDR video to SDR, or to convert it to a different format.</p>
