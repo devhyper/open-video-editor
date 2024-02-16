@@ -13,6 +13,9 @@
 - Scale
 - Rotate
 
+## Roadmap
+https://github.com/devhyper/open-video-editor/milestones
+
 ## Screenshots
 <p float="left">
     <img src="./metadata/en-US/images/phoneScreenshots/1.png" alt="Phone screenshot 1" width="150">
