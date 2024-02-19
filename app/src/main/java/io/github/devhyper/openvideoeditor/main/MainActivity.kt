@@ -14,6 +14,7 @@ import io.github.devhyper.openvideoeditor.videoeditor.VideoEditorActivity
 
 class MainActivity : ComponentActivity() {
     private lateinit var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>
+    private lateinit var pickProject: ActivityResultLauncher<Array<String>>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -26,10 +27,17 @@ class MainActivity : ComponentActivity() {
                     launchVideoEditor(uri)
                 }
             }
+        pickProject = registerForActivityResult(
+            CustomOpenDocument()
+        ) { uri ->
+            if (uri != null) {
+                launchVideoEditor(uri)
+            }
+        }
 
         setContent {
             setImmersiveMode(false)
-            MainScreen(pickMedia)
+            MainScreen(pickMedia, pickProject)
         }
     }
 

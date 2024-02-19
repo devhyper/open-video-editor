@@ -11,12 +11,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.esotericsoftware.kryo.Kryo
+import com.esotericsoftware.kryo.util.DefaultInstantiatorStrategy
+import io.github.devhyper.openvideoeditor.misc.PROJECT_MIME_TYPE
 import io.github.devhyper.openvideoeditor.misc.setImmersiveMode
 import io.github.devhyper.openvideoeditor.misc.setupSystemUi
+import org.objenesis.strategy.StdInstantiatorStrategy
+
 
 class VideoEditorActivity : ComponentActivity() {
     private lateinit var createDocument: ActivityResultLauncher<String?>
+    private lateinit var createProject: ActivityResultLauncher<String?>
     private lateinit var viewModel: VideoEditorViewModel
+    private lateinit var kryo: Kryo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,6 +44,19 @@ class VideoEditorActivity : ComponentActivity() {
                 viewModel.setOutputPath(uri.toString())
             }
         }
+        createProject = registerForActivityResult(
+            ActivityResultContracts.CreateDocument(
+                PROJECT_MIME_TYPE
+            )
+        ) { uri ->
+            if (uri != null) {
+                viewModel.setProjectOutputPath(uri.toString())
+            }
+        }
+
+        kryo = Kryo()
+        kryo.instantiatorStrategy = DefaultInstantiatorStrategy(StdInstantiatorStrategy())
+        kryo.isRegistrationRequired = false
 
         var uri: String? = null
         if (intent.action == Intent.ACTION_EDIT) {
@@ -61,7 +81,7 @@ class VideoEditorActivity : ComponentActivity() {
                 viewModel = viewModel { viewModel }
                 val controlsVisible by viewModel.controlsVisible.collectAsState()
                 setImmersiveMode(!controlsVisible)
-                VideoEditorScreen(it, createDocument)
+                VideoEditorScreen(it, createDocument, createProject, kryo)
             }
         } ?: finish()
     }

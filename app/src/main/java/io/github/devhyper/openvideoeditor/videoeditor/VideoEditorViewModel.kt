@@ -14,6 +14,9 @@ class VideoEditorViewModel : ViewModel() {
     private val _outputPath = MutableStateFlow("")
     val outputPath: StateFlow<String> = _outputPath.asStateFlow()
 
+    private val _projectOutputPath = MutableStateFlow("")
+    val projectOutputPath: StateFlow<String> = _projectOutputPath.asStateFlow()
+
     private val _controlsVisible = MutableStateFlow(true)
     val controlsVisible: StateFlow<Boolean> = _controlsVisible.asStateFlow()
 
@@ -44,6 +47,10 @@ class VideoEditorViewModel : ViewModel() {
 
     fun setOutputPath(path: String) {
         _outputPath.update { path }
+    }
+
+    fun setProjectOutputPath(path: String) {
+        _projectOutputPath.update { path }
     }
 
     fun setControlsVisible(value: Boolean) {

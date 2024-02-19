@@ -2,6 +2,7 @@ package io.github.devhyper.openvideoeditor.videoeditor
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.core.net.toUri
@@ -26,10 +27,16 @@ import androidx.media3.transformer.TransformationRequest
 import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.Transformer.PROGRESS_STATE_NOT_STARTED
 import androidx.media3.transformer.Transformer.PROGRESS_STATE_UNAVAILABLE
+import com.esotericsoftware.kryo.Kryo
+import com.esotericsoftware.kryo.io.Input
+import com.esotericsoftware.kryo.io.Output
+import io.github.devhyper.openvideoeditor.misc.PROJECT_FILE_EXT
+import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
+
 
 typealias Trim = LongRange
 typealias Editor = @Composable (MutableStateFlow<Effect?>) -> Unit
@@ -172,6 +179,34 @@ class OnVideoUserEffect(
 
 class UserEffect(val name: String, val icon: ImageVector, val effect: Effect)
 
+data class ProjectData(
+    val uri: String,
+
+    val videoEffects: MutableList<UserEffect> = mutableListOf(),
+    val audioProcessors: MutableList<AudioProcessor> = mutableListOf(),
+    val mediaTrims: MutableList<Trim> = mutableListOf(),
+) {
+    companion object {
+        fun read(uri: String, context: Context, kryo: Kryo): ProjectData? {
+            var projectData: ProjectData? = null
+            context.contentResolver.openInputStream(uri.toUri())?.let {
+                val input = Input(it)
+                projectData = kryo.readObject(input, ProjectData::class.java)
+                input.close()
+            }
+            return projectData
+        }
+    }
+
+    fun write(uri: String, context: Context, kryo: Kryo) {
+        context.contentResolver.openOutputStream(uri.toUri())?.let {
+            val output = Output(it)
+            kryo.writeObject(output, this)
+            output.close()
+        }
+    }
+}
+
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class TransformManager {
     lateinit var player: ExoPlayer
@@ -180,16 +215,17 @@ class TransformManager {
 
     private var transformer: Transformer? = null
 
-    val videoEffects = mutableListOf<UserEffect>()
-    val audioProcessors = mutableListOf<AudioProcessor>()
-    val mediaTrims = mutableListOf<Trim>()
-
     private lateinit var originalMedia: MediaItem
+
     private lateinit var trimmedMedia: MediaItem
+
+    lateinit var projectData: ProjectData
 
     private var originalMediaLength: Long = -1
 
-    fun init(exoPlayer: ExoPlayer, uri: String) {
+    fun init(
+        exoPlayer: ExoPlayer, uri: String, context: Context, kryo: Kryo
+    ) {
         if (hasInitialized) {
             if (exoPlayer != player) {
                 if (player.isCommandAvailable(Player.COMMAND_RELEASE)) {
@@ -199,11 +235,26 @@ class TransformManager {
             }
         } else {
             player = exoPlayer
-            originalMedia = MediaItem.fromUri(uri)
-            trimmedMedia = MediaItem.fromUri(uri)
+            projectData = if (getFileNameFromUri(context, uri.toUri()).substringAfterLast(
+                    '.',
+                    ""
+                ).substringBeforeLast(' ') == PROJECT_FILE_EXT
+            ) {
+                ProjectData.read(uri, context, kryo) ?: ProjectData(uri)
+            } else {
+                ProjectData(uri)
+            }
+            context.contentResolver.takePersistableUriPermission(
+                uri.toUri(),
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
             hasInitialized = true
         }
+        originalMedia = MediaItem.fromUri(projectData.uri)
+        trimmedMedia = MediaItem.fromUri(projectData.uri)
+        rebuildMediaTrims()
         player.apply {
+            stop()
             setMediaItem(trimmedMedia)
             setVideoEffects(getEffectArray())
             prepare()
@@ -212,7 +263,7 @@ class TransformManager {
 
     private fun getEffectArray(): MutableList<Effect> {
         val effectArray = mutableListOf<Effect>()
-        for (userEffect in videoEffects) {
+        for (userEffect in projectData.videoEffects) {
             effectArray.add(userEffect.effect)
         }
         return effectArray
@@ -225,39 +276,39 @@ class TransformManager {
     }
 
     fun addVideoEffect(effect: UserEffect) {
-        videoEffects.add(effect)
+        projectData.videoEffects.add(effect)
         updateVideoEffects()
     }
 
     fun addAudioProcessor(processor: AudioProcessor) {
-        audioProcessors.add(processor)
+        projectData.audioProcessors.add(processor)
         updateAudioProcessors()
     }
 
     fun addMediaTrim(trim: Trim) {
-        if (mediaTrims.isEmpty()) {
+        if (projectData.mediaTrims.isEmpty()) {
             if (trim == 0L..originalMediaLength) {
                 return
             }
-        } else if (trim == mediaTrims.last()) {
+        } else if (trim == projectData.mediaTrims.last()) {
             return
         }
-        mediaTrims.add(trim)
+        projectData.mediaTrims.add(trim)
         updateMediaTrims()
     }
 
     fun removeVideoEffect(effect: UserEffect) {
-        videoEffects.remove(effect)
+        projectData.videoEffects.remove(effect)
         updateVideoEffects()
     }
 
     fun removeAudioProcessor(processor: AudioProcessor) {
-        audioProcessors.remove(processor)
+        projectData.audioProcessors.remove(processor)
         updateAudioProcessors()
     }
 
     fun removeMediaTrim(trim: Trim) {
-        mediaTrims.remove(trim)
+        projectData.mediaTrims.remove(trim)
         updateMediaTrims()
     }
 
@@ -273,13 +324,18 @@ class TransformManager {
         // TODO
     }
 
-    private fun updateMediaTrims() {
+    private fun rebuildMediaTrims() {
         trimmedMedia = originalMedia
-        for (trim in mediaTrims) {
+        for (trim in projectData.mediaTrims) {
             val clipConfig = ClippingConfiguration.Builder().setStartPositionMs(trim.first)
                 .setEndPositionMs(trim.last).build()
-            trimmedMedia = trimmedMedia.buildUpon().setClippingConfiguration(clipConfig).build()
+            trimmedMedia =
+                trimmedMedia.buildUpon().setClippingConfiguration(clipConfig).build()
         }
+    }
+
+    private fun updateMediaTrims() {
+        rebuildMediaTrims()
 
         player.apply {
             stop()
@@ -313,7 +369,7 @@ class TransformManager {
             }
         }
         val editedMediaItem = EditedMediaItem.Builder(trimmedMedia)
-            .setEffects(Effects(audioProcessors, effectArray))
+            .setEffects(Effects(projectData.audioProcessors, effectArray))
             .setRemoveAudio(!exportSettings.exportAudio)
             .setRemoveVideo(!exportSettings.exportVideo)
             .build()

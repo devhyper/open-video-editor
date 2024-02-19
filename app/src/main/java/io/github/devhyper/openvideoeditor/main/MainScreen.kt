@@ -31,12 +31,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.devhyper.openvideoeditor.R
+import io.github.devhyper.openvideoeditor.misc.PROJECT_MIME_TYPE
 import io.github.devhyper.openvideoeditor.settings.SettingsActivity
 import io.github.devhyper.openvideoeditor.ui.theme.OpenVideoEditorTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(pickMedia: ActivityResultLauncher<PickVisualMediaRequest>) {
+fun MainScreen(
+    pickMedia: ActivityResultLauncher<PickVisualMediaRequest>,
+    pickProject: ActivityResultLauncher<Array<String>>
+) {
     val activity = LocalContext.current as Activity
     OpenVideoEditorTheme {
         Surface(
@@ -87,6 +91,16 @@ fun MainScreen(pickMedia: ActivityResultLauncher<PickVisualMediaRequest>) {
                             )
                         }, modifier = Modifier.scale(2.0F)) {
                             Text(stringResource(R.string.select))
+                        }
+                        Spacer(Modifier.height(64.dp))
+                        Button(onClick = {
+                            pickProject.launch(
+                                arrayOf(
+                                    PROJECT_MIME_TYPE
+                                )
+                            )
+                        }, modifier = Modifier.scale(2.0F)) {
+                            Text(stringResource(R.string.project))
                         }
                     }
                 }

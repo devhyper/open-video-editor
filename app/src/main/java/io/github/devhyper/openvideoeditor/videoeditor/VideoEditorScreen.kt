@@ -2,7 +2,6 @@ package io.github.devhyper.openvideoeditor.videoeditor
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper.getMainLooper
 import android.view.SurfaceView
@@ -93,6 +92,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.Effect
 import androidx.media3.common.Player
@@ -103,10 +103,15 @@ import androidx.media3.transformer.Composition
 import androidx.media3.transformer.ExportException
 import androidx.media3.transformer.ExportResult
 import androidx.media3.transformer.Transformer.Listener
+import com.esotericsoftware.kryo.Kryo
 import io.github.devhyper.openvideoeditor.R
 import io.github.devhyper.openvideoeditor.misc.AcceptDeclineRow
 import io.github.devhyper.openvideoeditor.misc.DropdownSetting
 import io.github.devhyper.openvideoeditor.misc.ListDialog
+import io.github.devhyper.openvideoeditor.misc.PLAYER_SEEK_BACK_INCREMENT
+import io.github.devhyper.openvideoeditor.misc.PLAYER_SEEK_FORWARD_INCREMENT
+import io.github.devhyper.openvideoeditor.misc.PROJECT_FILE_EXT
+import io.github.devhyper.openvideoeditor.misc.REFRESH_RATE
 import io.github.devhyper.openvideoeditor.misc.TextfieldSetting
 import io.github.devhyper.openvideoeditor.misc.formatMinSec
 import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
@@ -122,7 +127,9 @@ import kotlinx.coroutines.launch
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 fun VideoEditorScreen(
     uri: String,
-    createDocument: ActivityResultLauncher<String?>
+    createDocument: ActivityResultLauncher<String?>,
+    createProject: ActivityResultLauncher<String?>,
+    kryo: Kryo
 ) {
 
     val viewModel = viewModel { VideoEditorViewModel() }
@@ -144,7 +151,7 @@ fun VideoEditorScreen(
 
     val transformManager = remember {
         viewModel.transformManager.apply {
-            init(player, uri)
+            init(player, uri, context, kryo)
             player.seekTo(currentTime)
         }
     }
@@ -282,9 +289,11 @@ fun VideoEditorScreen(
                         .fillMaxSize(),
                     isVisible = { controlsVisible },
                     isPlaying = { isPlaying },
-                    title = { getFileNameFromUri(context, Uri.parse(uri)) },
+                    title = { getFileNameFromUri(context, uri.toUri()) },
                     transformManager = transformManager,
                     createDocument = createDocument,
+                    createProject = createProject,
+                    kryo = kryo,
                     playbackState = { playbackState },
                     onReplayClick = { player.seekBack() },
                     onForwardClick = { player.seekForward() },
@@ -328,6 +337,8 @@ private fun PlayerControls(
     title: () -> String,
     transformManager: TransformManager,
     createDocument: ActivityResultLauncher<String?>,
+    createProject: ActivityResultLauncher<String?>,
+    kryo: Kryo,
     onReplayClick: () -> Unit,
     onForwardClick: () -> Unit,
     onPauseToggle: () -> Unit,
@@ -366,7 +377,9 @@ private fun PlayerControls(
                         .fillMaxWidth(),
                     title = title,
                     transformManager = transformManager,
-                    createDocument = createDocument
+                    createDocument = createDocument,
+                    createProject = createProject,
+                    kryo = kryo
                 )
 
                 CenterControls(
@@ -417,9 +430,13 @@ private fun TopControls(
     modifier: Modifier = Modifier,
     title: () -> String,
     transformManager: TransformManager,
-    createDocument: ActivityResultLauncher<String?>
+    createDocument: ActivityResultLauncher<String?>,
+    createProject: ActivityResultLauncher<String?>,
+    kryo: Kryo
 ) {
     val activity = LocalContext.current as Activity
+    val viewModel = viewModel { VideoEditorViewModel() }
+    val projectOutputPath by viewModel.projectOutputPath.collectAsState()
     val videoTitle = remember(title()) { title() }
     var showThreeDotMenu by remember { mutableStateOf(false) }
     var showExportDialog by remember { mutableStateOf(false) }
@@ -443,6 +460,11 @@ private fun TopControls(
             modifier = Modifier.weight(1f, false)
         )
 
+        if (projectOutputPath.isNotEmpty()) {
+            transformManager.projectData.write(projectOutputPath, activity, kryo)
+            viewModel.setProjectOutputPath("")
+        }
+
         IconButton(onClick = { showThreeDotMenu = !showThreeDotMenu }) {
             Icon(
                 imageVector = Icons.Filled.MoreVert,
@@ -462,6 +484,15 @@ private fun TopControls(
                     DropdownMenuItem(
                         text = { Text(stringResource(R.string.export)) },
                         onClick = { showThreeDotMenu = false; showExportDialog = true })
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.save_project)) },
+                        onClick = {
+                            showThreeDotMenu = false
+                            val dotIndex: Int = videoTitle.lastIndexOf('.')
+                            val projectName: String =
+                                videoTitle.substring(0, dotIndex) + "." + PROJECT_FILE_EXT
+                            createProject.launch(projectName)
+                        })
                 })
         }
     }
@@ -748,7 +779,7 @@ private fun LayerDrawer(transformManager: TransformManager) {
                 .fillMaxSize()
                 .padding(32.dp)
         ) {
-            items(transformManager.videoEffects)
+            items(transformManager.projectData.videoEffects)
             { effect ->
                 LayerDrawerItem(
                     name = effect.name,
@@ -759,7 +790,7 @@ private fun LayerDrawer(transformManager: TransformManager) {
                     }
                 )
             }
-            items(transformManager.audioProcessors)
+            items(transformManager.projectData.audioProcessors)
             { processor ->
                 LayerDrawerItem(
                     name = processor.toString(),
@@ -770,7 +801,7 @@ private fun LayerDrawer(transformManager: TransformManager) {
                     }
                 )
             }
-            items(transformManager.mediaTrims)
+            items(transformManager.projectData.mediaTrims)
             { trim ->
                 LayerDrawerItem(
                     name = stringResource(R.string.trim),
@@ -1211,7 +1242,3 @@ fun ExportFailedAlertDialog(exception: ExportException?, onDismissRequest: () ->
         }
     )
 }
-
-private const val PLAYER_SEEK_BACK_INCREMENT = 5 * 1000L // 5 seconds
-private const val PLAYER_SEEK_FORWARD_INCREMENT = 10 * 1000L // 10 seconds
-private const val REFRESH_RATE = 100L // 100 milliseconds

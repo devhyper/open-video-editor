@@ -77,6 +77,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
     implementation("com.godaddy.android.colorpicker:compose-color-picker:0.7.0")
     implementation("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
+    implementation("com.esotericsoftware:kryo:5.6.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
