@@ -1,9 +1,9 @@
 package io.github.devhyper.openvideoeditor.videoeditor
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.icons.filled.FormatSize
-import androidx.compose.material.icons.filled.RotateRight
 import androidx.compose.material.icons.filled.TextFormat
 import androidx.compose.material.icons.filled.Tv
 import androidx.media3.common.util.UnstableApi
@@ -77,7 +77,7 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
     },
     DialogUserEffect(
         "Rotate",
-        Icons.Filled.RotateRight,
+        Icons.AutoMirrored.Filled.RotateRight,
         persistentListOf(
             EffectDialogSetting(name = "Degrees", textfieldValidation = {
                 validateFloat(it)

@@ -37,14 +37,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Audiotrack
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.icons.filled.Forward10
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Pause
@@ -425,7 +425,7 @@ private fun TopControls(
     ) {
         IconButton(onClick = { activity.finish() }) {
             Icon(
-                imageVector = Icons.Filled.ArrowBack,
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = stringResource(R.string.back)
             )
         }
@@ -622,7 +622,7 @@ private fun BottomControls(
                                 onSeekChanged((videoTime.toFloat() - (1F / videoFpm)) + 1F)
                             }), onClick = {}) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = stringResource(R.string.decrement_frame)
                     )
                 }
@@ -640,7 +640,7 @@ private fun BottomControls(
                                 onSeekChanged((videoTime.toFloat() + (1F / videoFpm)) + 1F)
                             }), onClick = {}) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowRight,
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = stringResource(R.string.increment_frame)
                     )
                 }
@@ -1147,9 +1147,9 @@ fun ExportProgressDialog(
                 )
                 Column(verticalArrangement = Arrangement.SpaceBetween) {
                     LinearProgressIndicator(
+                        progress = { animatedProgress },
                         modifier = Modifier.padding(vertical = 4.dp),
-                        progress = animatedProgress,
-                        trackColor = MaterialTheme.colorScheme.inversePrimary
+                        trackColor = MaterialTheme.colorScheme.inversePrimary,
                     )
                     Text(
                         modifier = Modifier.padding(vertical = 4.dp),
