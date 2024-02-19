@@ -16,12 +16,13 @@ import io.github.devhyper.openvideoeditor.misc.setupSystemUi
 
 class VideoEditorActivity : ComponentActivity() {
     private lateinit var createDocument: ActivityResultLauncher<String?>
+    private lateinit var viewModel: VideoEditorViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setupSystemUi()
 
-        val viewModel = VideoEditorViewModel()
+        viewModel = VideoEditorViewModel()
 
         window.decorView.setOnSystemUiVisibilityChangeListener {
             viewModel.setControlsVisible(it == 0)
@@ -57,8 +58,8 @@ class VideoEditorActivity : ComponentActivity() {
 
         uri?.let {
             setContent {
-                val vm = viewModel { viewModel }
-                val controlsVisible by vm.controlsVisible.collectAsState()
+                viewModel = viewModel { viewModel }
+                val controlsVisible by viewModel.controlsVisible.collectAsState()
                 setImmersiveMode(!controlsVisible)
                 VideoEditorScreen(it, createDocument)
             }
