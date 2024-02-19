@@ -463,6 +463,7 @@ private fun TopControls(
         if (projectOutputPath.isNotEmpty()) {
             transformManager.projectData.write(projectOutputPath, activity, kryo)
             viewModel.setProjectOutputPath("")
+            activity.recreate()
         }
 
         IconButton(onClick = { showThreeDotMenu = !showThreeDotMenu }) {
