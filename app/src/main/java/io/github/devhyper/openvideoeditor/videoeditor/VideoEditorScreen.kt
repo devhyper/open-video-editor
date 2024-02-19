@@ -79,6 +79,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -139,7 +140,14 @@ fun VideoEditorScreen(
             .build()
     }
 
-    val transformManager = remember { viewModel.transformManager.apply { init(player, uri) } }
+    var currentTime by rememberSaveable { mutableLongStateOf(0L) }
+
+    val transformManager = remember {
+        viewModel.transformManager.apply {
+            init(player, uri)
+            player.seekTo(currentTime)
+        }
+    }
 
     var listenerRepeating by remember { mutableStateOf(false) }
 
@@ -150,8 +158,6 @@ fun VideoEditorScreen(
     var totalDuration by remember { mutableLongStateOf(0L) }
 
     var totalDurationFrames by remember { mutableLongStateOf(0L) }
-
-    var currentTime by remember { mutableLongStateOf(0L) }
 
     var currentTimeFrames by remember { mutableLongStateOf(0L) }
 
