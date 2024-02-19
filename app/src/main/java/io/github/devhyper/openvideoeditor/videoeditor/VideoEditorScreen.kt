@@ -461,7 +461,9 @@ private fun TopControls(
     }
 
     if (showExportDialog) {
-        ExportDialog(transformManager, createDocument, videoTitle) { showExportDialog = false }
+        ExportDialog(transformManager, createDocument, videoTitle, activity) {
+            showExportDialog = false
+        }
     }
 }
 
@@ -984,6 +986,7 @@ private fun ExportDialog(
     transformManager: TransformManager,
     createDocument: ActivityResultLauncher<String?>,
     title: String,
+    activity: Activity,
     onDismissRequest: () -> Unit
 ) {
     val exportSettings: ExportSettings by remember { mutableStateOf(ExportSettings()) }
@@ -991,10 +994,15 @@ private fun ExportDialog(
     val outputPath by viewModel.outputPath.collectAsState()
     var exportException: ExportException? by remember { mutableStateOf(null) }
     if (outputPath.isNotEmpty()) {
+        val exportDismissRequest = {
+            onDismissRequest()
+            viewModel.setOutputPath("")
+            activity.recreate()
+        }
         exportSettings.outputPath = outputPath
         if (exportException != null) {
             ExportFailedAlertDialog(exportException) {
-                onDismissRequest(); exportException = null; viewModel.setOutputPath("")
+                exportException = null; exportDismissRequest()
             }
         } else {
             val transformerListener: Listener =
@@ -1013,7 +1021,7 @@ private fun ExportDialog(
                     }
                 }
             transformManager.export(LocalContext.current, exportSettings, transformerListener)
-            ExportProgressDialog(transformManager) { onDismissRequest(); viewModel.setOutputPath("") }
+            ExportProgressDialog(transformManager) { exportDismissRequest() }
         }
     } else {
         ListDialog(

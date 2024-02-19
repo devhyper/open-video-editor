@@ -9,6 +9,7 @@ import androidx.media3.common.Effect
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaItem.ClippingConfiguration
 import androidx.media3.common.MimeTypes
+import androidx.media3.common.Player
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.effect.FrameDropEffect
@@ -191,7 +192,9 @@ class TransformManager {
     fun init(exoPlayer: ExoPlayer, uri: String) {
         if (hasInitialized) {
             if (exoPlayer != player) {
-                player.release()
+                if (player.isCommandAvailable(Player.COMMAND_RELEASE)) {
+                    player.release()
+                }
                 player = exoPlayer
             }
         } else {
@@ -293,7 +296,7 @@ class TransformManager {
         transformerListener: Transformer.Listener,
     ) {
         // exportSettings.log()
-        player.stop()
+        player.release()
         val outputPath = exportSettings.outputPath
         val fd =
             context.contentResolver.openFileDescriptor(
@@ -346,9 +349,6 @@ class TransformManager {
     }
 
     fun onExportFinished() {
-        player.apply {
-            setVideoEffects(getEffectArray())
-            prepare()
-        }
+
     }
 }
