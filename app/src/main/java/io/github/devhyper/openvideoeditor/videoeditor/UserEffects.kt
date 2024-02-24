@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.icons.filled.FormatSize
+import androidx.compose.material.icons.filled.InvertColors
 import androidx.compose.material.icons.filled.TextFormat
 import androidx.compose.material.icons.filled.Tv
 import androidx.media3.common.util.UnstableApi
@@ -18,7 +19,8 @@ import kotlinx.collections.immutable.persistentListOf
 
 @UnstableApi
 val userEffectsArray: ImmutableList<UserEffect> = persistentListOf(
-    UserEffect("Grayscale", Icons.Filled.Filter, RgbFilter.createGrayscaleFilter())
+    UserEffect("Grayscale", Icons.Filled.Filter, RgbFilter.createGrayscaleFilter()),
+    UserEffect("Invert Colors", Icons.Filled.InvertColors, RgbFilter.createInvertedFilter())
 )
 
 @UnstableApi
