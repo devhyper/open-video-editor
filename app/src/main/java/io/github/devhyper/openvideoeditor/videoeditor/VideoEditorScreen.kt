@@ -119,6 +119,7 @@ import io.github.devhyper.openvideoeditor.misc.formatMinSec
 import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
 import io.github.devhyper.openvideoeditor.misc.repeatingClickable
 import io.github.devhyper.openvideoeditor.misc.validateUFloatAndNonzero
+import io.github.devhyper.openvideoeditor.misc.validateUInt
 import io.github.devhyper.openvideoeditor.settings.SettingsActivity
 import io.github.devhyper.openvideoeditor.settings.SettingsDataStore
 import io.github.devhyper.openvideoeditor.ui.theme.OpenVideoEditorTheme
@@ -593,6 +594,7 @@ private fun BottomControls(
     val layerSheetState = rememberModalBottomSheetState()
     var showFilterBottomSheet by remember { mutableStateOf(false) }
     var showLayerBottomSheet by remember { mutableStateOf(false) }
+    var showFrameDialog by remember { mutableStateOf(false) }
 
     val videoFpm = remember(fpm()) { fpm() }
     val duration = remember(totalDuration()) { totalDuration() }
@@ -662,8 +664,9 @@ private fun BottomControls(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.weight(2f, false),
-                text = videoTime.formatMinSec() + "/" + duration.formatMinSec(),
+                modifier = Modifier
+                    .weight(2f, false),
+                text = videoTime.formatMinSec() + "/" + duration.formatMinSec()
             )
             Row(
                 modifier = Modifier.weight(2f, false),
@@ -684,9 +687,13 @@ private fun BottomControls(
                     )
                 }
                 Text(
-                    modifier = Modifier.weight(1f, false),
+                    modifier = Modifier
+                        .weight(1f, false)
+                        .clickable { showFrameDialog = true },
                     text = "$videoTimeFrames/$durationFrames",
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
                 IconButton(
                     modifier = Modifier
@@ -780,6 +787,37 @@ private fun BottomControls(
         ) {
             LayerDrawer(transformManager)
         }
+    } else if (showFrameDialog) {
+        var newFrame by remember { mutableLongStateOf(-1L) }
+        ListDialog(
+            title = "Frames",
+            dismissText = "Dismiss",
+            acceptText = "Accept",
+            onDismissRequest = { showFrameDialog = false },
+            onAcceptRequest = {
+                if (newFrame >= 0L) {
+                    showFrameDialog = false; onSeekChanged((newFrame / videoFpm) + 1F)
+                }
+            },
+            listItems = {
+                item {
+                    Text("$videoTimeFrames/$durationFrames")
+                    TextfieldSetting(name = "New frame", onValueChanged = {
+                        val errorTxt = validateUInt(it)
+                        if (errorTxt.isEmpty()) {
+                            val newLongFrame = it.toLong()
+                            if (newLongFrame <= durationFrames) {
+                                newFrame = newLongFrame
+                            } else {
+                                newFrame = -1L
+                                return@TextfieldSetting "Input must be less than or equal to $durationFrames"
+                            }
+                        }
+                        errorTxt
+                    })
+                }
+            }
+        )
     }
 }
 
