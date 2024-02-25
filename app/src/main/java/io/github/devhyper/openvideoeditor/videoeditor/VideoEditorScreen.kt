@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper.getMainLooper
-import android.view.SurfaceView
+import android.view.TextureView
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.result.ActivityResultLauncher
@@ -272,14 +272,14 @@ fun VideoEditorScreen(
                 AndroidView(
                     modifier = androidViewModifier,
                     factory = {
-                        SurfaceView(context).apply {
+                        TextureView(context).apply {
                             layoutParams =
                                 FrameLayout.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.MATCH_PARENT
                                 )
 
-                            player.setVideoSurfaceView(this)
+                            player.setVideoTextureView(this)
                         }
                     }
                 )
@@ -475,7 +475,6 @@ private fun TopControls(
         if (projectOutputPath.isNotEmpty()) {
             transformManager.projectData.write(projectOutputPath, activity, kryo)
             viewModel.setProjectOutputPath("")
-            activity.recreate()
         }
 
         IconButton(onClick = { showThreeDotMenu = !showThreeDotMenu }) {
