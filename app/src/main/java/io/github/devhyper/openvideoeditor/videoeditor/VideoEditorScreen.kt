@@ -93,6 +93,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.Effect
 import androidx.media3.common.Player
@@ -148,6 +150,10 @@ fun VideoEditorScreen(
                 setSeekForwardIncrementMs(PLAYER_SEEK_FORWARD_INCREMENT)
             }
             .build()
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {
+        player.pause()
     }
 
     var currentTime by rememberSaveable { mutableLongStateOf(0L) }
