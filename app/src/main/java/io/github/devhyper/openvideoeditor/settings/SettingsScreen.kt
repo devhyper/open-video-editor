@@ -105,6 +105,19 @@ fun SettingsScreen() {
                                     }
                                 })
                         }
+                        item {
+                            val useUiCascadingEffect = dataStore.getUiCascadingEffectBlocking()
+                            SwitchSetting(
+                                name = stringResource(R.string.use_ui_cascading_effect),
+                                startChecked = useUiCascadingEffect,
+                                onCheckChanged = {
+                                    if (it != useUiCascadingEffect) {
+                                        scope.launch {
+                                            dataStore.setUiCascadingEffect(it)
+                                        }
+                                    }
+                                })
+                        }
                     }
                 }
             )

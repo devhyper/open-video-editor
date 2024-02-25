@@ -44,4 +44,5 @@
     <string name="color_picker">Color Picker</string>
     <string name="accept">Accept</string>
     <string name="save_project">Save project</string>
+    <string name="use_ui_cascading_effect">Use UI cascading effect</string>
 </resources>

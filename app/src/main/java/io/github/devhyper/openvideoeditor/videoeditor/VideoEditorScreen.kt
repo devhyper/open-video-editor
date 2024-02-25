@@ -118,6 +118,7 @@ import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
 import io.github.devhyper.openvideoeditor.misc.repeatingClickable
 import io.github.devhyper.openvideoeditor.misc.validateUFloatAndNonzero
 import io.github.devhyper.openvideoeditor.settings.SettingsActivity
+import io.github.devhyper.openvideoeditor.settings.SettingsDataStore
 import io.github.devhyper.openvideoeditor.ui.theme.OpenVideoEditorTheme
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toImmutableList
@@ -133,6 +134,8 @@ fun VideoEditorScreen(
 ) {
 
     val viewModel = viewModel { VideoEditorViewModel() }
+
+    val dataStore = SettingsDataStore(LocalContext.current)
 
     val controlsVisible by viewModel.controlsVisible.collectAsState()
 
@@ -173,6 +176,9 @@ fun VideoEditorScreen(
     val filterDurationEditorSliderPosition by viewModel.filterDurationEditorSliderPosition.collectAsState()
 
     val currentEditingEffect by viewModel.currentEditingEffect.collectAsState()
+
+    val useUiCascadingEffect by dataStore.getUiCascadingEffectAsync()
+        .collectAsState(dataStore.getUiCascadingEffectBlocking())
 
     OpenVideoEditorTheme(forceDarkTheme = true, forceBlackStatusBar = true) {
         Surface(
@@ -254,11 +260,17 @@ fun VideoEditorScreen(
                     }
                 }
 
+                val androidViewModifier = if (useUiCascadingEffect) {
+                    Modifier.clickable { viewModel.setControlsVisible(!controlsVisible) }
+                } else {
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { viewModel.setControlsVisible(!controlsVisible) }
+                }
+
                 AndroidView(
-                    modifier =
-                    Modifier.clickable {
-                        viewModel.setControlsVisible(!controlsVisible)
-                    },
+                    modifier = androidViewModifier,
                     factory = {
                         SurfaceView(context).apply {
                             layoutParams =
