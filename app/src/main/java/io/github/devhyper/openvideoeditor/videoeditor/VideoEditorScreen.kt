@@ -178,12 +178,16 @@ fun VideoEditorScreen(
 
     var playbackState by remember { mutableIntStateOf(player.playbackState) }
 
+    var playerViewSet by remember { mutableStateOf(false) }
+
     val filterDurationEditorSliderPosition by viewModel.filterDurationEditorSliderPosition.collectAsState()
 
     val currentEditingEffect by viewModel.currentEditingEffect.collectAsState()
 
     val useUiCascadingEffect by dataStore.getUiCascadingEffectAsync()
         .collectAsState(dataStore.getUiCascadingEffectBlocking())
+
+    var textureView: TextureView? = null
 
     OpenVideoEditorTheme(forceDarkTheme = true, forceBlackStatusBar = true) {
         Surface(
@@ -200,6 +204,11 @@ fun VideoEditorScreen(
                                 availableCommands: Commands
                             ) {
                                 super.onAvailableCommandsChanged(availableCommands)
+
+                                if (!playerViewSet && availableCommands.contains(Player.COMMAND_SET_VIDEO_SURFACE) && textureView != null) {
+                                    player.setVideoTextureView(textureView)
+                                    playerViewSet = true
+                                }
 
                                 if (availableCommands.contains(COMMAND_GET_CURRENT_MEDIA_ITEM)) {
                                     transformManager.onPlayerDurationReady()
@@ -277,15 +286,14 @@ fun VideoEditorScreen(
                 AndroidView(
                     modifier = androidViewModifier,
                     factory = {
-                        TextureView(context).apply {
+                        textureView = TextureView(context).apply {
                             layoutParams =
                                 FrameLayout.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.MATCH_PARENT
                                 )
-
-                            player.setVideoTextureView(this)
                         }
+                        textureView!!
                     }
                 )
 
