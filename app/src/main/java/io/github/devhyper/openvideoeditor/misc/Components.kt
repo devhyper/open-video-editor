@@ -1,15 +1,22 @@
 package io.github.devhyper.openvideoeditor.misc
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -30,23 +37,31 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.ClipOp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.godaddy.android.colorpicker.ClassicColorPicker
 import com.godaddy.android.colorpicker.HsvColor
 import io.github.devhyper.openvideoeditor.R
 import kotlinx.collections.immutable.ImmutableList
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -310,5 +325,137 @@ fun AcceptDeclineRow(
                 contentDescription = declineDescription
             )
         }
+    }
+}
+
+@Composable
+fun ResizableRectangle(
+    startingWidth: Float, startingHeight: Float, startingX: Float, startingY: Float, onResize: (
+        width: Float, height: Float, x: Float, y: Float
+    ) -> Unit
+) {
+    var width by remember { mutableFloatStateOf(startingWidth) }
+    var height by remember { mutableFloatStateOf(startingHeight) }
+    var x by remember { mutableFloatStateOf(startingX) }
+    var y by remember { mutableFloatStateOf(startingY) }
+
+    val colorScheme = MaterialTheme.colorScheme
+
+    val rectangleColor = colorScheme.inversePrimary
+    val rectangleStroke = 2F
+    val circleColor = colorScheme.primary
+    val circleSize = 16F
+    val croppedAlpha = 0.5F
+
+    val update = {
+        onResize(width, height, x, y)
+    }
+
+    Canvas(
+        modifier = Modifier.fillMaxSize(),
+        onDraw = {
+            val rectPath = Path().apply {
+                moveTo(x, y)
+                lineTo(x + width, y)
+                lineTo(x + width, y + height)
+                lineTo(x, y + height)
+                lineTo(x, y)
+                close()
+            }
+            clipPath(rectPath, clipOp = ClipOp.Difference) {
+                drawRect(colorScheme.scrim.copy(alpha = croppedAlpha))
+            }
+        }
+    )
+
+    Box(modifier = Modifier
+        .size(
+            width
+                .roundToInt()
+                .pxToDp(),
+            height
+                .roundToInt()
+                .pxToDp()
+        )
+        .absoluteOffset {
+            IntOffset(
+                x.roundToInt(),
+                y.roundToInt()
+            )
+        }
+        .border(rectangleStroke.dp, rectangleColor)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(circleSize.dp)
+                .align(Alignment.TopCenter)
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        val newY = y + dragAmount.y
+                        val newHeight = height - dragAmount.y
+                        if (newY > 0 && newY < startingY + startingHeight && newHeight > 0 && newHeight < startingY + startingHeight) {
+                            y = newY
+                            height = newHeight
+                        }
+                        update()
+                    }
+                }
+                .clip(CircleShape)
+                .background(circleColor)
+        )
+        Box(
+            modifier = Modifier
+                .size(circleSize.dp)
+                .align(Alignment.CenterStart)
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        val newX = x + dragAmount.x
+                        val newWidth = width - dragAmount.x
+                        if (newX > 0 && newX < startingX + startingWidth && newWidth > 0 && newWidth < startingX + startingWidth) {
+                            x = newX
+                            width = newWidth
+                        }
+                        update()
+                    }
+                }
+                .clip(CircleShape)
+                .background(circleColor)
+        )
+        Box(
+            modifier = Modifier
+                .size(circleSize.dp)
+                .align(Alignment.CenterEnd)
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        val newWidth = width + dragAmount.x
+                        if (newWidth > 0 && newWidth < startingX + startingWidth) {
+                            width = newWidth
+                        }
+                        update()
+                    }
+                }
+                .clip(CircleShape)
+                .background(circleColor)
+        )
+        Box(
+            modifier = Modifier
+                .size(circleSize.dp)
+                .align(Alignment.BottomCenter)
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        val newHeight = height + dragAmount.y
+                        if (newHeight > 0 && newHeight < startingY + startingHeight) {
+                            height = newHeight
+                        }
+                        update()
+                    }
+                }
+                .clip(CircleShape)
+                .background(circleColor)
+        )
     }
 }

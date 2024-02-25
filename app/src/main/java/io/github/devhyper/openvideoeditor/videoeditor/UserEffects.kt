@@ -2,6 +2,7 @@ package io.github.devhyper.openvideoeditor.videoeditor
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.RotateRight
+import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.icons.filled.FormatSize
 import androidx.compose.material.icons.filled.InvertColors
@@ -97,5 +98,9 @@ val onVideoUserEffectsArray: ImmutableList<OnVideoUserEffect> = persistentListOf
     OnVideoUserEffect(
         "Text",
         Icons.Filled.TextFormat
-    ) { TextEditor(it) }
+    ) { TextEditor(it) },
+    OnVideoUserEffect(
+        "Crop",
+        Icons.Filled.Crop
+    ) { CropEditor(it) }
 )

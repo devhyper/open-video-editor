@@ -7,8 +7,8 @@ import android.text.style.ForegroundColorSpan
 import androidx.annotation.OptIn
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,11 +27,13 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import androidx.media3.common.Effect
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.effect.Crop
 import androidx.media3.effect.OverlaySettings
 import androidx.media3.effect.TextOverlay
 import io.github.devhyper.openvideoeditor.R
 import io.github.devhyper.openvideoeditor.misc.ColorPickerSetting
 import io.github.devhyper.openvideoeditor.misc.ListDialog
+import io.github.devhyper.openvideoeditor.misc.ResizableRectangle
 import io.github.devhyper.openvideoeditor.misc.TextfieldSetting
 import io.github.devhyper.openvideoeditor.misc.screenToNdc
 import io.github.devhyper.openvideoeditor.misc.setFullLengthSpan
@@ -113,7 +115,7 @@ fun TextEditor(effectFlow: MutableStateFlow<Effect?>) {
             }
             update()
             BasicTextField(modifier = Modifier
-                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .absoluteOffset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
                         change.consume()
@@ -136,6 +138,28 @@ fun TextEditor(effectFlow: MutableStateFlow<Effect?>) {
                     textValue = it
                     update()
                 })
+        }
+    }
+}
+
+@OptIn(UnstableApi::class)
+@Composable
+fun CropEditor(effectFlow: MutableStateFlow<Effect?>) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val videoWidth = constraints.maxWidth.toFloat()
+        val videoHeight = constraints.maxHeight.toFloat()
+        ResizableRectangle(videoWidth, videoHeight, 0F, 0F) { width, height, x, y ->
+            val left = screenToNdc(x, videoWidth)
+            val right = screenToNdc(x + width, videoWidth)
+            val bottom = screenToNdc(videoHeight - y - height, videoHeight)
+            val top = screenToNdc(videoHeight - y, videoHeight)
+            if (right > left && top > bottom) {
+                effectFlow.update {
+                    Crop(
+                        left, right, bottom, top
+                    )
+                }
+            }
         }
     }
 }
