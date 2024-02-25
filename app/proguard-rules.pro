@@ -20,4 +20,8 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep public final class androidx.media3.effect.**,** { *; }
+# Kryo
+-keep class com.esotericsoftware.kryo.serializers.**,** { *; }
+-dontwarn java.beans.**
+-dontwarn sun.reflect.**
+-dontwarn sun.nio.ch.**
