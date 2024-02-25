@@ -19,9 +19,3 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
-
-# Kryo
--keep class com.esotericsoftware.kryo.serializers.**,** { *; }
--dontwarn java.beans.**
--dontwarn sun.reflect.**
--dontwarn sun.nio.ch.**

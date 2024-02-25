@@ -27,19 +27,19 @@ import androidx.media3.transformer.TransformationRequest
 import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.Transformer.PROGRESS_STATE_NOT_STARTED
 import androidx.media3.transformer.Transformer.PROGRESS_STATE_UNAVAILABLE
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.io.Input
-import com.esotericsoftware.kryo.io.Output
 import io.github.devhyper.openvideoeditor.misc.PROJECT_FILE_EXT
 import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 
-
-typealias Trim = LongRange
-typealias Editor = @Composable (MutableStateFlow<Effect?>) -> Unit
+typealias Trim = Pair<Long, Long>
+typealias ImageConstructor = () -> ImageVector
+typealias EffectConstructor = () -> Effect
+typealias Editor = @Composable (MutableStateFlow<EffectConstructor?>) -> Unit
 
 class EffectDialogSetting(
     val name: String,
@@ -153,19 +153,19 @@ fun getVideoMimeTypesStrings(): ImmutableList<String> {
 
 class DialogUserEffect(
     val name: String,
-    val icon: ImageVector,
+    val icon: ImageConstructor,
     val args: PersistentList<EffectDialogSetting>,
-    val callback: (Map<String, String>) -> Effect
+    val callback: (Map<String, String>) -> EffectConstructor
 )
 
 class OnVideoUserEffect(
     val name: String,
-    val icon: ImageVector,
+    val icon: ImageConstructor,
     val editor: Editor,
 ) {
-    var callback: (Effect) -> Unit = {}
+    var callback: (EffectConstructor) -> Unit = {}
 
-    private val effect = MutableStateFlow<Effect?>(null)
+    private val effect = MutableStateFlow<EffectConstructor?>(null)
 
     fun runCallback() {
         effect.value?.let { callback(it) }
@@ -177,7 +177,11 @@ class OnVideoUserEffect(
     }
 }
 
-class UserEffect(val name: String, val icon: ImageVector, val effect: Effect)
+class UserEffect(
+    val name: String,
+    val icon: ImageConstructor,
+    val effect: EffectConstructor
+) : java.io.Serializable
 
 data class ProjectData(
     val uri: String,
@@ -185,23 +189,23 @@ data class ProjectData(
     val videoEffects: MutableList<UserEffect> = mutableListOf(),
     val audioProcessors: MutableList<AudioProcessor> = mutableListOf(),
     val mediaTrims: MutableList<Trim> = mutableListOf(),
-) {
+) : java.io.Serializable {
     companion object {
-        fun read(uri: String, context: Context, kryo: Kryo): ProjectData? {
+        fun read(uri: String, context: Context): ProjectData? {
             var projectData: ProjectData? = null
             context.contentResolver.openInputStream(uri.toUri())?.let {
-                val input = Input(it)
-                projectData = kryo.readObject(input, ProjectData::class.java)
+                val input = ObjectInputStream(it)
+                projectData = input.readObject() as ProjectData?
                 input.close()
             }
             return projectData
         }
     }
 
-    fun write(uri: String, context: Context, kryo: Kryo) {
+    fun write(uri: String, context: Context) {
         context.contentResolver.openOutputStream(uri.toUri())?.let {
-            val output = Output(it)
-            kryo.writeObject(output, this)
+            val output = ObjectOutputStream(it)
+            output.writeObject(this)
             output.close()
         }
     }
@@ -224,7 +228,7 @@ class TransformManager {
     private var originalMediaLength: Long = -1
 
     fun init(
-        exoPlayer: ExoPlayer, uri: String, context: Context, kryo: Kryo
+        exoPlayer: ExoPlayer, uri: String, context: Context
     ) {
         if (hasInitialized) {
             if (exoPlayer != player) {
@@ -240,7 +244,7 @@ class TransformManager {
                     ""
                 ).substringBeforeLast(' ') == PROJECT_FILE_EXT
             ) {
-                ProjectData.read(uri, context, kryo) ?: ProjectData(uri)
+                ProjectData.read(uri, context) ?: ProjectData(uri)
             } else {
                 ProjectData(uri)
             }
@@ -264,7 +268,7 @@ class TransformManager {
     private fun getEffectArray(): MutableList<Effect> {
         val effectArray = mutableListOf<Effect>()
         for (userEffect in projectData.videoEffects) {
-            effectArray.add(userEffect.effect)
+            effectArray.add(userEffect.effect())
         }
         return effectArray
     }
@@ -287,7 +291,7 @@ class TransformManager {
 
     fun addMediaTrim(trim: Trim) {
         if (projectData.mediaTrims.isEmpty()) {
-            if (trim == 0L..originalMediaLength) {
+            if (trim == Pair(0L, originalMediaLength)) {
                 return
             }
         } else if (trim == projectData.mediaTrims.last()) {
@@ -328,7 +332,7 @@ class TransformManager {
         trimmedMedia = originalMedia
         for (trim in projectData.mediaTrims) {
             val clipConfig = ClippingConfiguration.Builder().setStartPositionMs(trim.first)
-                .setEndPositionMs(trim.last).build()
+                .setEndPositionMs(trim.second).build()
             trimmedMedia =
                 trimmedMedia.buildUpon().setClippingConfiguration(clipConfig).build()
         }

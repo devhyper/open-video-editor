@@ -20,15 +20,15 @@ import kotlinx.collections.immutable.persistentListOf
 
 @UnstableApi
 val userEffectsArray: ImmutableList<UserEffect> = persistentListOf(
-    UserEffect("Grayscale", Icons.Filled.Filter, RgbFilter.createGrayscaleFilter()),
-    UserEffect("Invert Colors", Icons.Filled.InvertColors, RgbFilter.createInvertedFilter())
+    UserEffect("Grayscale", { Icons.Filled.Filter }) { RgbFilter.createGrayscaleFilter() },
+    UserEffect("Invert Colors", { Icons.Filled.InvertColors }) { RgbFilter.createInvertedFilter() }
 )
 
 @UnstableApi
 val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
     DialogUserEffect(
         "Resolution",
-        Icons.Filled.Tv,
+        { Icons.Filled.Tv },
         persistentListOf(
             EffectDialogSetting(name = "Width", textfieldValidation = {
                 validateUIntAndNonzero(it)
@@ -57,11 +57,11 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
             "Stretch to fit" -> Presentation.LAYOUT_STRETCH_TO_FIT
             else -> Presentation.LAYOUT_SCALE_TO_FIT
         }
-        Presentation.createForWidthAndHeight(width, height, layout)
+        { Presentation.createForWidthAndHeight(width, height, layout) }
     },
     DialogUserEffect(
         "Scale",
-        Icons.Filled.FormatSize,
+        { Icons.Filled.FormatSize },
         persistentListOf(
             EffectDialogSetting(name = "X", textfieldValidation = {
                 validateFloatAndNonzero(it)
@@ -75,12 +75,12 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
         )
     ) { args ->
         val x = args["X"]!!.toFloat()
-        val y = args["Y"]!!.toFloat()
-        ScaleAndRotateTransformation.Builder().setScale(x, y).build()
+        val y = args["Y"]!!.toFloat();
+        { ScaleAndRotateTransformation.Builder().setScale(x, y).build() }
     },
     DialogUserEffect(
         "Rotate",
-        Icons.AutoMirrored.Filled.RotateRight,
+        { Icons.AutoMirrored.Filled.RotateRight },
         persistentListOf(
             EffectDialogSetting(name = "Degrees", textfieldValidation = {
                 validateFloat(it)
@@ -88,8 +88,8 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
             )
         )
     ) { args ->
-        val degrees = args["Degrees"]!!.toFloat()
-        ScaleAndRotateTransformation.Builder().setRotationDegrees(degrees).build()
+        val degrees = args["Degrees"]!!.toFloat();
+        { ScaleAndRotateTransformation.Builder().setRotationDegrees(degrees).build() }
     }
 )
 
@@ -97,10 +97,10 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
 val onVideoUserEffectsArray: ImmutableList<OnVideoUserEffect> = persistentListOf(
     OnVideoUserEffect(
         "Text",
-        Icons.Filled.TextFormat
+        { Icons.Filled.TextFormat }
     ) { TextEditor(it) },
     OnVideoUserEffect(
         "Crop",
-        Icons.Filled.Crop
+        { Icons.Filled.Crop }
     ) { CropEditor(it) }
 )

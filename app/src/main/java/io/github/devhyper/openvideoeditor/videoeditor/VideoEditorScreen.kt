@@ -96,7 +96,6 @@ import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.media3.common.Effect
 import androidx.media3.common.Player
 import androidx.media3.common.Player.COMMAND_GET_CURRENT_MEDIA_ITEM
 import androidx.media3.common.Player.Commands
@@ -105,7 +104,6 @@ import androidx.media3.transformer.Composition
 import androidx.media3.transformer.ExportException
 import androidx.media3.transformer.ExportResult
 import androidx.media3.transformer.Transformer.Listener
-import com.esotericsoftware.kryo.Kryo
 import io.github.devhyper.openvideoeditor.R
 import io.github.devhyper.openvideoeditor.misc.AcceptDeclineRow
 import io.github.devhyper.openvideoeditor.misc.DropdownSetting
@@ -118,6 +116,7 @@ import io.github.devhyper.openvideoeditor.misc.TextfieldSetting
 import io.github.devhyper.openvideoeditor.misc.formatMinSec
 import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
 import io.github.devhyper.openvideoeditor.misc.repeatingClickable
+import io.github.devhyper.openvideoeditor.misc.toLongPair
 import io.github.devhyper.openvideoeditor.misc.validateUFloatAndNonzero
 import io.github.devhyper.openvideoeditor.misc.validateUInt
 import io.github.devhyper.openvideoeditor.settings.SettingsActivity
@@ -132,8 +131,7 @@ import kotlinx.coroutines.launch
 fun VideoEditorScreen(
     uri: String,
     createDocument: ActivityResultLauncher<String?>,
-    createProject: ActivityResultLauncher<String?>,
-    kryo: Kryo
+    createProject: ActivityResultLauncher<String?>
 ) {
 
     val viewModel = viewModel { VideoEditorViewModel() }
@@ -161,7 +159,7 @@ fun VideoEditorScreen(
 
     val transformManager = remember {
         viewModel.transformManager.apply {
-            init(player, uri, context, kryo)
+            init(player, uri, context)
             player.seekTo(currentTime)
         }
     }
@@ -312,7 +310,6 @@ fun VideoEditorScreen(
                     transformManager = transformManager,
                     createDocument = createDocument,
                     createProject = createProject,
-                    kryo = kryo,
                     playbackState = { playbackState },
                     onReplayClick = { player.seekBack() },
                     onForwardClick = { player.seekForward() },
@@ -357,7 +354,6 @@ private fun PlayerControls(
     transformManager: TransformManager,
     createDocument: ActivityResultLauncher<String?>,
     createProject: ActivityResultLauncher<String?>,
-    kryo: Kryo,
     onReplayClick: () -> Unit,
     onForwardClick: () -> Unit,
     onPauseToggle: () -> Unit,
@@ -397,8 +393,7 @@ private fun PlayerControls(
                     title = title,
                     transformManager = transformManager,
                     createDocument = createDocument,
-                    createProject = createProject,
-                    kryo = kryo
+                    createProject = createProject
                 )
 
                 CenterControls(
@@ -450,8 +445,7 @@ private fun TopControls(
     title: () -> String,
     transformManager: TransformManager,
     createDocument: ActivityResultLauncher<String?>,
-    createProject: ActivityResultLauncher<String?>,
-    kryo: Kryo
+    createProject: ActivityResultLauncher<String?>
 ) {
     val activity = LocalContext.current as Activity
     val viewModel = viewModel { VideoEditorViewModel() }
@@ -480,7 +474,7 @@ private fun TopControls(
         )
 
         if (projectOutputPath.isNotEmpty()) {
-            transformManager.projectData.write(projectOutputPath, activity, kryo)
+            transformManager.projectData.write(projectOutputPath, activity)
             viewModel.setProjectOutputPath("")
         }
 
@@ -790,9 +784,9 @@ private fun BottomControls(
     } else if (showFrameDialog) {
         var newFrame by remember { mutableLongStateOf(-1L) }
         ListDialog(
-            title = "Frames",
-            dismissText = "Dismiss",
-            acceptText = "Accept",
+            title = stringResource(R.string.frames),
+            dismissText = stringResource(R.string.dismiss),
+            acceptText = stringResource(R.string.accept),
             onDismissRequest = { showFrameDialog = false },
             onAcceptRequest = {
                 if (newFrame >= 0L) {
@@ -802,7 +796,7 @@ private fun BottomControls(
             listItems = {
                 item {
                     Text("$videoTimeFrames/$durationFrames")
-                    TextfieldSetting(name = "New frame", onValueChanged = {
+                    TextfieldSetting(name = stringResource(R.string.new_frame), onValueChanged = {
                         val errorTxt = validateUInt(it)
                         if (errorTxt.isEmpty()) {
                             val newLongFrame = it.toLong()
@@ -839,7 +833,7 @@ private fun LayerDrawer(transformManager: TransformManager) {
             { effect ->
                 LayerDrawerItem(
                     name = effect.name,
-                    icon = effect.icon,
+                    icon = effect.icon(),
                     range = 0L..transformManager.player.duration,
                     onClick = {
                         transformManager.removeVideoEffect(effect)
@@ -862,7 +856,7 @@ private fun LayerDrawer(transformManager: TransformManager) {
                 LayerDrawerItem(
                     name = stringResource(R.string.trim),
                     icon = Icons.Filled.ContentCut,
-                    range = trim.first..trim.last,
+                    range = trim.first..trim.second,
                     onClick = {
                         transformManager.removeMediaTrim(trim)
                     }
@@ -932,7 +926,7 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
                     viewModel.setFilterDurationEditorEnabled(true)
                     viewModel.setFilterDurationCallback { range ->
                         transformManager.addMediaTrim(
-                            range
+                            range.toLongPair()
                         )
                     }
                     onDismissRequest()
@@ -942,7 +936,7 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
                 userEffect.run {
                     FilterDrawerItem(
                         name,
-                        icon,
+                        icon(),
                         onClick = { transformManager.addVideoEffect(this) }
                     )
                 }
@@ -954,7 +948,7 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
             }
             items(onVideoUserEffectsArray) { onVideoUserEffect ->
                 onVideoUserEffect.run {
-                    FilterDrawerItem(name, icon) {
+                    FilterDrawerItem(name, icon()) {
                         callback = {
                             transformManager.addVideoEffect(UserEffect(name, icon, it))
                         }
@@ -971,16 +965,16 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
 @Composable
 private fun DialogFilterDrawerItem(
     name: String,
-    icon: ImageVector,
+    icon: ImageConstructor,
     args: PersistentList<EffectDialogSetting>,
     transformManager: TransformManager,
-    callback: (Map<String, String>) -> Effect
+    callback: (Map<String, String>) -> EffectConstructor
 ) {
     val viewModel = viewModel { VideoEditorViewModel() }
     var showFilterDialog by remember { mutableStateOf(false) }
     FilterDrawerItem(
         name,
-        icon,
+        icon(),
         onClick = { showFilterDialog = true; viewModel.setFilterDialogArgs(args) })
     if (showFilterDialog) {
         FilterDialog(name = name, { argMap ->

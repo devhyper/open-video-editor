@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
-import androidx.media3.common.Effect
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.effect.Crop
 import androidx.media3.effect.OverlaySettings
@@ -46,7 +45,29 @@ import kotlin.math.roundToInt
 
 @OptIn(UnstableApi::class)
 @Composable
-fun TextEditor(effectFlow: MutableStateFlow<Effect?>) {
+fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
+    val update =
+        { offsetX: Float, offsetY: Float, textValue: String, videoWidth: Float, videoHeight: Float, textBackgroundColor: Color, textForegroundColor: Color, textSize: Int ->
+            effectFlow.update {
+                {
+                    val overlaySettings = OverlaySettings.Builder()
+                    val x = screenToNdc(offsetX, videoWidth)
+                    val y = screenToNdc(offsetY, videoHeight)
+                    overlaySettings.setOverlayFrameAnchor(1f, -1f)
+                    overlaySettings.setBackgroundFrameAnchor(x, -y)
+                    val spanString = SpannableString(textValue)
+                    spanString.run {
+                        setFullLengthSpan(ForegroundColorSpan(textForegroundColor.toArgb()))
+                        setFullLengthSpan(BackgroundColorSpan(textBackgroundColor.toArgb()))
+                        setFullLengthSpan(AbsoluteSizeSpan(spToPx(textSize.sp.value)))
+                    };
+                    TextOverlay.createStaticTextOverlay(
+                        spanString,
+                        overlaySettings.build()
+                    ).toOverlayEffect()
+                }
+            }
+        }
     var showListDialog by remember { mutableStateOf(true) }
     var textSize by remember { mutableIntStateOf(12) }
     var textBackgroundColor by remember { mutableStateOf(Color.Transparent) }
@@ -94,26 +115,19 @@ fun TextEditor(effectFlow: MutableStateFlow<Effect?>) {
             var offsetX by remember { mutableFloatStateOf(videoWidth / 2f) }
             var offsetY by remember { mutableFloatStateOf(videoHeight / 2f) }
             var textValue by remember { mutableStateOf("Text") }
-            val update = {
-                effectFlow.update {
-                    val overlaySettings = OverlaySettings.Builder()
-                    val x = screenToNdc(offsetX, videoWidth)
-                    val y = screenToNdc(offsetY, videoHeight)
-                    overlaySettings.setOverlayFrameAnchor(1f, -1f)
-                    overlaySettings.setBackgroundFrameAnchor(x, -y)
-                    val spanString = SpannableString(textValue)
-                    spanString.run {
-                        setFullLengthSpan(ForegroundColorSpan(textForegroundColor.toArgb()))
-                        setFullLengthSpan(BackgroundColorSpan(textBackgroundColor.toArgb()))
-                        setFullLengthSpan(AbsoluteSizeSpan(spToPx(textSize.sp.value)))
-                    }
-                    TextOverlay.createStaticTextOverlay(
-                        spanString,
-                        overlaySettings.build()
-                    ).toOverlayEffect()
-                }
+            val updateFlow = {
+                update(
+                    offsetX,
+                    offsetY,
+                    textValue,
+                    videoWidth,
+                    videoHeight,
+                    textBackgroundColor,
+                    textForegroundColor,
+                    textSize
+                )
             }
-            update()
+            updateFlow()
             BasicTextField(modifier = Modifier
                 .absoluteOffset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
                 .pointerInput(Unit) {
@@ -125,7 +139,7 @@ fun TextEditor(effectFlow: MutableStateFlow<Effect?>) {
                         if (offsetY + dragAmount.y > 0 && offsetY + dragAmount.y < videoHeight) {
                             offsetY += dragAmount.y
                         }
-                        update()
+                        updateFlow()
                     }
                 },
                 textStyle = TextStyle.Default.copy(
@@ -136,7 +150,7 @@ fun TextEditor(effectFlow: MutableStateFlow<Effect?>) {
                 value = textValue,
                 onValueChange = {
                     textValue = it
-                    update()
+                    updateFlow()
                 })
         }
     }
@@ -144,7 +158,7 @@ fun TextEditor(effectFlow: MutableStateFlow<Effect?>) {
 
 @OptIn(UnstableApi::class)
 @Composable
-fun CropEditor(effectFlow: MutableStateFlow<Effect?>) {
+fun CropEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val videoWidth = constraints.maxWidth.toFloat()
         val videoHeight = constraints.maxHeight.toFloat()
@@ -155,9 +169,11 @@ fun CropEditor(effectFlow: MutableStateFlow<Effect?>) {
             val top = screenToNdc(videoHeight - y, videoHeight)
             if (right > left && top > bottom) {
                 effectFlow.update {
-                    Crop(
-                        left, right, bottom, top
-                    )
+                    {
+                        Crop(
+                            left, right, bottom, top
+                        )
+                    }
                 }
             }
         }

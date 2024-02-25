@@ -142,6 +142,10 @@ fun spToPx(sp: Float): Int {
     ).toInt()
 }
 
+fun LongRange.toLongPair(): Pair<Long, Long> {
+    return Pair(this.first, this.last)
+}
+
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
