@@ -6,15 +6,15 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +25,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -69,38 +68,46 @@ fun MainScreen(
                         }
                     )
                 }, content = { innerPadding ->
-                    Column(
+                    Box(
                         modifier = Modifier
                             .padding(innerPadding)
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    )
-                    {
-                        Text(
-                            stringResource(R.string.select_a_video_to_edit),
-                            style = MaterialTheme.typography.headlineLarge,
-                            textAlign = TextAlign.Center
+                            .fillMaxSize()
+                    ) {
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            verticalArrangement = Arrangement.spacedBy(32.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         )
-                        Spacer(Modifier.height(64.dp))
-                        Button(onClick = {
-                            pickMedia.launch(
-                                PickVisualMediaRequest(
-                                    ActivityResultContracts.PickVisualMedia.VideoOnly
-                                )
+                        {
+                            Text(
+                                stringResource(R.string.select_a_file_to_edit),
+                                style = MaterialTheme.typography.headlineLarge,
+                                textAlign = TextAlign.Center
                             )
-                        }, modifier = Modifier.scale(2.0F)) {
-                            Text(stringResource(R.string.select))
-                        }
-                        Spacer(Modifier.height(64.dp))
-                        Button(onClick = {
-                            pickProject.launch(
-                                arrayOf(
-                                    PROJECT_MIME_TYPE
+                            Button(onClick = {
+                                pickMedia.launch(
+                                    PickVisualMediaRequest(
+                                        ActivityResultContracts.PickVisualMedia.VideoOnly
+                                    )
                                 )
-                            )
-                        }, modifier = Modifier.scale(2.0F)) {
-                            Text(stringResource(R.string.project))
+                            }, modifier = Modifier) {
+                                Text(
+                                    style = MaterialTheme.typography.titleLarge,
+                                    text = stringResource(R.string.video)
+                                )
+                            }
+                            FilledTonalButton(onClick = {
+                                pickProject.launch(
+                                    arrayOf(
+                                        PROJECT_MIME_TYPE
+                                    )
+                                )
+                            }, modifier = Modifier) {
+                                Text(
+                                    style = MaterialTheme.typography.titleLarge,
+                                    text = stringResource(R.string.project)
+                                )
+                            }
                         }
                     }
                 }

@@ -24,6 +24,7 @@
     <string name="dismiss">Dismiss</string>
     <string name="error">Error</string>
     <string name="select_a_video_to_edit">Select a video to edit</string>
+    <string name="select_a_file_to_edit">Select a file to edit</string>
     <string name="select">Select</string>
     <string name="project">Project</string>
     <string name="export_progress_animation">export_progress_animation</string>
@@ -47,4 +48,5 @@
     <string name="use_ui_cascading_effect">Use UI cascading effect</string>
     <string name="frames">Frames</string>
     <string name="new_frame">New frame</string>
+    <string name="video">Video</string>
 </resources>
