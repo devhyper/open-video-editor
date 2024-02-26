@@ -344,7 +344,7 @@ fun ResizableRectangle(
     val rectangleColor = colorScheme.inversePrimary
     val rectangleStroke = 2F
     val circleColor = colorScheme.primary
-    val circleSize = 16F
+    val circleSize = 32F
     val croppedAlpha = 0.5F
 
     val update = {
