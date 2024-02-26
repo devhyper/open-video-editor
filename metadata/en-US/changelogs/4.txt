@@ -1,0 +1,8 @@
+Partial Chinese translation
+Update dependencies
+Change video speed and framerate
+Text on video
+Project saving
+Crop
+Invert colors
+Seek to specific frame
