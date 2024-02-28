@@ -83,7 +83,7 @@ fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
             }
         ) {
             item {
-                TextfieldSetting(name = stringResource(R.string.size), onValueChanged = {
+                TextfieldSetting(name = stringResource(R.string.size), stringResId = R.string.size, onValueChanged = {
                     val error = validateUIntAndNonzero(it)
                     textSize = if (error.isEmpty()) {
                         it.toInt()

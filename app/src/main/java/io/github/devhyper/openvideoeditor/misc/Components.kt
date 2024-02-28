@@ -99,19 +99,20 @@ fun SwitchSetting(
 }
 
 @Composable
-fun TextfieldSetting(name: String, onValueChanged: (String) -> String) {
+fun TextfieldSetting(name: String, stringResId:Int, onValueChanged: (String) -> String) {
     var text by remember { mutableStateOf("") }
     var errorMsg by remember { mutableStateOf("") }
     OutlinedTextField(value = text, onValueChange = {
         errorMsg = onValueChanged(it)
         text = it
-    }, label = { Text(name) }, isError = errorMsg.isNotEmpty(), supportingText = { Text(errorMsg) })
+    }, label = { Text(stringResource(stringResId)) }, isError = errorMsg.isNotEmpty(), supportingText = { Text(errorMsg) })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropdownSetting(
     name: String,
+    stringResId: Int,
     options: ImmutableList<String>,
     onSelectionChanged: (String) -> Unit
 ) {
@@ -128,7 +129,7 @@ fun DropdownSetting(
             readOnly = true,
             value = selectedOptionText,
             onValueChange = {},
-            label = { Text(name) },
+            label = { Text(stringResource(stringResId)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
         )

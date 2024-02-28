@@ -43,6 +43,7 @@ typealias Editor = @Composable (MutableStateFlow<EffectConstructor?>) -> Unit
 
 class EffectDialogSetting(
     val name: String,
+    val stringResId: Int,
     val textfieldValidation: ((String) -> String)? = null,
     val dropdownOptions: MutableList<String>? = null
 ) {
@@ -153,6 +154,7 @@ fun getVideoMimeTypesStrings(): ImmutableList<String> {
 
 class DialogUserEffect(
     val name: String,
+    val stringResId: Int,
     val icon: ImageConstructor,
     val args: PersistentList<EffectDialogSetting>,
     val callback: (Map<String, String>) -> EffectConstructor
@@ -160,6 +162,7 @@ class DialogUserEffect(
 
 class OnVideoUserEffect(
     val name: String,
+    val stringResId: Int,
     val icon: ImageConstructor,
     val editor: Editor,
 ) {
@@ -179,6 +182,7 @@ class OnVideoUserEffect(
 
 class UserEffect(
     val name: String,
+    val stringResId:Int,
     val icon: ImageConstructor,
     val effect: EffectConstructor
 ) : java.io.Serializable

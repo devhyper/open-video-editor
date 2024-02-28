@@ -590,7 +590,7 @@ private fun BottomControls(
     onSeekChanged: (timeMs: Float) -> Unit,
     transformManager: TransformManager
 ) {
-
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val filterSheetState = rememberModalBottomSheetState()
     val layerSheetState = rememberModalBottomSheetState()
@@ -804,7 +804,7 @@ private fun BottomControls(
             listItems = {
                 item {
                     Text("$videoTimeFrames/$durationFrames")
-                    TextfieldSetting(name = stringResource(R.string.new_frame), onValueChanged = {
+                    TextfieldSetting(name = "New frame", stringResId = R.string.new_frame, onValueChanged = {
                         val errorTxt = validateUInt(it)
                         if (errorTxt.isEmpty()) {
                             val newLongFrame = it.toLong()
@@ -812,7 +812,7 @@ private fun BottomControls(
                                 newFrame = newLongFrame
                             } else {
                                 newFrame = -1L
-                                return@TextfieldSetting "Input must be less than or equal to $durationFrames"
+                                return@TextfieldSetting context.getString(R.string.input_frame_must_less_or_equal) + "$durationFrames"
                             }
                         }
                         errorTxt
@@ -930,7 +930,7 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                FilterDrawerItem(stringResource(R.string.trim), Icons.Filled.ContentCut, onClick = {
+                FilterDrawerItem("Trim", R.string.trim,Icons.Filled.ContentCut, onClick = {
                     viewModel.setFilterDurationEditorEnabled(true)
                     viewModel.setFilterDurationCallback { range ->
                         transformManager.addMediaTrim(
@@ -944,6 +944,7 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
                 userEffect.run {
                     FilterDrawerItem(
                         name,
+                        stringResId,
                         icon(),
                         onClick = { transformManager.addVideoEffect(this) }
                     )
@@ -951,14 +952,14 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
             }
             items(dialogUserEffectsArray) { dialogUserEffect ->
                 dialogUserEffect.run {
-                    DialogFilterDrawerItem(name, icon, args, transformManager, callback)
+                    DialogFilterDrawerItem(name, stringResId,icon, args, transformManager, callback)
                 }
             }
             items(onVideoUserEffectsArray) { onVideoUserEffect ->
                 onVideoUserEffect.run {
-                    FilterDrawerItem(name, icon()) {
+                    FilterDrawerItem(name, stringResId,icon()) {
                         callback = {
-                            transformManager.addVideoEffect(UserEffect(name, icon, it))
+                            transformManager.addVideoEffect(UserEffect(name, stringResId,icon, it))
                         }
                         viewModel.setCurrentEditingEffect(this)
                         onDismissRequest()
@@ -973,6 +974,7 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
 @Composable
 private fun DialogFilterDrawerItem(
     name: String,
+    stringResId:Int,
     icon: ImageConstructor,
     args: PersistentList<EffectDialogSetting>,
     transformManager: TransformManager,
@@ -982,12 +984,13 @@ private fun DialogFilterDrawerItem(
     var showFilterDialog by remember { mutableStateOf(false) }
     FilterDrawerItem(
         name,
+        stringResId,
         icon(),
         onClick = { showFilterDialog = true; viewModel.setFilterDialogArgs(args) })
     if (showFilterDialog) {
-        FilterDialog(name = name, { argMap ->
+        FilterDialog(name = name, stringResId = stringResId,{ argMap ->
             val effect = callback(argMap)
-            UserEffect(name, icon, effect)
+            UserEffect(name, stringResId, icon, effect)
         }, transformManager) {
             showFilterDialog = false
         }
@@ -995,7 +998,7 @@ private fun DialogFilterDrawerItem(
 }
 
 @Composable
-private fun FilterDrawerItem(name: String, icon: ImageVector, onClick: () -> Unit) {
+private fun FilterDrawerItem(name: String, stringResId: Int,icon: ImageVector, onClick: () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         IconButton(onClick = onClick) {
             Icon(
@@ -1006,7 +1009,7 @@ private fun FilterDrawerItem(name: String, icon: ImageVector, onClick: () -> Uni
         Text(
             textAlign = TextAlign.Center,
             softWrap = false,
-            text = name
+            text = stringResource(stringResId)
         )
     }
 }
@@ -1015,6 +1018,7 @@ private fun FilterDrawerItem(name: String, icon: ImageVector, onClick: () -> Uni
 @Composable
 private fun FilterDialog(
     name: String,
+    stringResId: Int,
     callback: (Map<String, String>) -> UserEffect,
     transformManager: TransformManager,
     onDismissRequest: () -> Unit
@@ -1022,7 +1026,7 @@ private fun FilterDialog(
     val viewModel = viewModel { VideoEditorViewModel() }
     val args by viewModel.filterDialogArgs.collectAsState()
     ListDialog(
-        title = name,
+        title = stringResource(stringResId),
         dismissText = stringResource(R.string.cancel),
         acceptText = stringResource(R.string.add),
         onDismissRequest = onDismissRequest,
@@ -1049,7 +1053,7 @@ private fun FilterDialog(
             val dropdown = arg.dropdownOptions
             if (textfield != null) {
                 item {
-                    TextfieldSetting(name = arg.name, onValueChanged = {
+                    TextfieldSetting(name = arg.name, stringResId = arg.stringResId,onValueChanged = {
                         val error = textfield(it)
                         if (error.isEmpty()) {
                             arg.selection = it
@@ -1063,7 +1067,7 @@ private fun FilterDialog(
             } else if (dropdown != null) {
                 item {
                     DropdownSetting(
-                        name = arg.name,
+                        name = arg.name,stringResId = arg.stringResId,
                         options = dropdown.toImmutableList()
                     ) {
                         arg.selection = it
@@ -1084,6 +1088,7 @@ private fun ExportDialog(
     activity: Activity,
     onDismissRequest: () -> Unit
 ) {
+    val context = LocalContext.current
     val exportSettings: ExportSettings by remember { mutableStateOf(ExportSettings()) }
     val viewModel = viewModel { VideoEditorViewModel() }
     val outputPath by viewModel.outputPath.collectAsState()
@@ -1133,6 +1138,7 @@ private fun ExportDialog(
             item {
                 DropdownSetting(
                     name = stringResource(R.string.media_to_export),
+                    stringResId = R.string.media_to_export,
                     options = getMediaToExportStrings()
                 ) {
                     exportSettings.setMediaToExportString(it)
@@ -1141,6 +1147,7 @@ private fun ExportDialog(
             item {
                 DropdownSetting(
                     name = stringResource(R.string.hdr_mode),
+                    stringResId = R.string.hdr_mode,
                     options = getHdrModesStrings()
                 ) {
                     exportSettings.setHdrModeString(it)
@@ -1149,6 +1156,7 @@ private fun ExportDialog(
             item {
                 DropdownSetting(
                     name = stringResource(R.string.audio_type),
+                    stringResId = R.string.audio_type,
                     options = getAudioMimeTypesStrings()
                 ) {
                     exportSettings.setAudioMimeTypeString(it)
@@ -1157,6 +1165,7 @@ private fun ExportDialog(
             item {
                 DropdownSetting(
                     name = stringResource(R.string.video_type),
+                    stringResId = R.string.video_type,
                     options = getVideoMimeTypesStrings()
                 ) {
                     exportSettings.setVideoMimeTypeString(it)
@@ -1165,6 +1174,7 @@ private fun ExportDialog(
             item {
                 TextfieldSetting(
                     name = stringResource(R.string.speed),
+                    stringResId = R.string.speed
                 ) {
                     val errorMsg = validateUFloatAndNonzero(it)
                     if (errorMsg.isEmpty()) {
@@ -1178,6 +1188,7 @@ private fun ExportDialog(
             item {
                 TextfieldSetting(
                     name = stringResource(R.string.framerate),
+                    stringResId = R.string.framerate
                 ) {
                     var errorMsg = validateUFloatAndNonzero(it)
                     if (errorMsg.isEmpty()) {
@@ -1185,8 +1196,7 @@ private fun ExportDialog(
                         val originalFramerate =
                             transformManager.player.videoFormat?.frameRate
                         if (originalFramerate != null && framerate >= originalFramerate) {
-                            errorMsg =
-                                "Framerate must be lower than the framerate of the original video ($originalFramerate)."
+                            errorMsg = context.getString(R.string.framerate_must_lower) + "($originalFramerate)."
                         } else {
                             exportSettings.framerate = framerate
                         }
