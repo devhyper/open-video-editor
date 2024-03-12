@@ -12,6 +12,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.effect.Presentation
 import androidx.media3.effect.RgbFilter
 import androidx.media3.effect.ScaleAndRotateTransformation
+import io.github.devhyper.openvideoeditor.R
 import io.github.devhyper.openvideoeditor.misc.validateFloat
 import io.github.devhyper.openvideoeditor.misc.validateFloatAndNonzero
 import io.github.devhyper.openvideoeditor.misc.validateUIntAndNonzero
@@ -20,27 +21,28 @@ import kotlinx.collections.immutable.persistentListOf
 
 @UnstableApi
 val userEffectsArray: ImmutableList<UserEffect> = persistentListOf(
-    UserEffect("Grayscale", { Icons.Filled.Filter }) { RgbFilter.createGrayscaleFilter() },
-    UserEffect("Invert Colors", { Icons.Filled.InvertColors }) { RgbFilter.createInvertedFilter() }
+    UserEffect("Grayscale", R.string.grayscale, { Icons.Filled.Filter }) { RgbFilter.createGrayscaleFilter() },
+    UserEffect("Invert Colors", R.string.invert_colors, { Icons.Filled.InvertColors }) { RgbFilter.createInvertedFilter() }
 )
 
 @UnstableApi
 val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
     DialogUserEffect(
         "Resolution",
+        R.string.resolution,
         { Icons.Filled.Tv },
         persistentListOf(
-            EffectDialogSetting(name = "Width", textfieldValidation = {
+            EffectDialogSetting(name = "Width", R.string.width, textfieldValidation = {
                 validateUIntAndNonzero(it)
             }
             ),
-            EffectDialogSetting(name = "Height", textfieldValidation =
+            EffectDialogSetting(name = "Height", R.string.height, textfieldValidation =
             {
                 validateUIntAndNonzero(it)
             }
             ),
             EffectDialogSetting(
-                name = "Layout", dropdownOptions =
+                name = "Layout", R.string.layout, dropdownOptions =
                 mutableListOf(
                     "Scale to fit",
                     "Scale to fit with crop",
@@ -61,13 +63,14 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
     },
     DialogUserEffect(
         "Scale",
+        R.string.scale,
         { Icons.Filled.FormatSize },
         persistentListOf(
-            EffectDialogSetting(name = "X", textfieldValidation = {
+            EffectDialogSetting(name = "X", R.string.x, textfieldValidation = {
                 validateFloatAndNonzero(it)
             }
             ),
-            EffectDialogSetting(name = "Y", textfieldValidation =
+            EffectDialogSetting(name = "Y", R.string.y, textfieldValidation =
             {
                 validateFloatAndNonzero(it)
             }
@@ -80,9 +83,10 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
     },
     DialogUserEffect(
         "Rotate",
+        R.string.rotate,
         { Icons.AutoMirrored.Filled.RotateRight },
         persistentListOf(
-            EffectDialogSetting(name = "Degrees", textfieldValidation = {
+            EffectDialogSetting(name = "Degrees", stringResId = R.string.degrees, textfieldValidation = {
                 validateFloat(it)
             }
             )
@@ -97,10 +101,12 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
 val onVideoUserEffectsArray: ImmutableList<OnVideoUserEffect> = persistentListOf(
     OnVideoUserEffect(
         "Text",
+        R.string.text,
         { Icons.Filled.TextFormat }
     ) { TextEditor(it) },
     OnVideoUserEffect(
         "Crop",
+        R.string.crop,
         { Icons.Filled.Crop }
     ) { CropEditor(it) }
 )

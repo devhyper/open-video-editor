@@ -83,6 +83,7 @@ fun SettingsScreen() {
                                 DropdownSetting(
                                     name = stringResource(R.string.theme),
                                     options = options.toImmutableList(),
+                                    stringResId = R.string.theme,
                                     onSelectionChanged = {
                                         if (it != theme) {
                                             scope.launch {
