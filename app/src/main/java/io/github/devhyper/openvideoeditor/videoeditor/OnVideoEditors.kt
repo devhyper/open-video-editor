@@ -60,7 +60,7 @@ fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
                         setFullLengthSpan(ForegroundColorSpan(textForegroundColor.toArgb()))
                         setFullLengthSpan(BackgroundColorSpan(textBackgroundColor.toArgb()))
                         setFullLengthSpan(AbsoluteSizeSpan(spToPx(textSize.sp.value)))
-                    };
+                    }
                     TextOverlay.createStaticTextOverlay(
                         spanString,
                         overlaySettings.build()
@@ -83,15 +83,18 @@ fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
             }
         ) {
             item {
-                TextfieldSetting(name = stringResource(R.string.size), stringResId = R.string.size, onValueChanged = {
-                    val error = validateUIntAndNonzero(it)
-                    textSize = if (error.isEmpty()) {
-                        it.toInt()
-                    } else {
-                        12
-                    }
-                    error
-                })
+                TextfieldSetting(
+                    name = stringResource(R.string.size),
+                    stringResId = R.string.size,
+                    onValueChanged = {
+                        val error = validateUIntAndNonzero(it)
+                        textSize = if (error.isEmpty()) {
+                            it.toInt()
+                        } else {
+                            12
+                        }
+                        error
+                    })
             }
             item {
                 ColorPickerSetting(

@@ -3,6 +3,7 @@ package io.github.devhyper.openvideoeditor.videoeditor
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.core.net.toUri
@@ -182,11 +183,12 @@ class OnVideoUserEffect(
 
 class UserEffect(
     val name: String,
-    val stringResId:Int,
+    val stringResId: Int,
     val icon: ImageConstructor,
     val effect: EffectConstructor
 ) : java.io.Serializable
 
+@OptIn(UnstableApi::class)
 data class ProjectData(
     val uri: String,
 
@@ -215,7 +217,7 @@ data class ProjectData(
     }
 }
 
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+@OptIn(androidx.media3.common.util.UnstableApi::class)
 class TransformManager {
     lateinit var player: ExoPlayer
 

@@ -21,8 +21,14 @@ import kotlinx.collections.immutable.persistentListOf
 
 @UnstableApi
 val userEffectsArray: ImmutableList<UserEffect> = persistentListOf(
-    UserEffect("Grayscale", R.string.grayscale, { Icons.Filled.Filter }) { RgbFilter.createGrayscaleFilter() },
-    UserEffect("Invert Colors", R.string.invert_colors, { Icons.Filled.InvertColors }) { RgbFilter.createInvertedFilter() }
+    UserEffect(
+        "Grayscale",
+        R.string.grayscale,
+        { Icons.Filled.Filter }) { RgbFilter.createGrayscaleFilter() },
+    UserEffect(
+        "Invert Colors",
+        R.string.invert_colors,
+        { Icons.Filled.InvertColors }) { RgbFilter.createInvertedFilter() }
 )
 
 @UnstableApi
@@ -86,9 +92,12 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
         R.string.rotate,
         { Icons.AutoMirrored.Filled.RotateRight },
         persistentListOf(
-            EffectDialogSetting(name = "Degrees", stringResId = R.string.degrees, textfieldValidation = {
-                validateFloat(it)
-            }
+            EffectDialogSetting(
+                name = "Degrees",
+                stringResId = R.string.degrees,
+                textfieldValidation = {
+                    validateFloat(it)
+                }
             )
         )
     ) { args ->

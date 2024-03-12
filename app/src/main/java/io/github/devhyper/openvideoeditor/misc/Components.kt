@@ -99,13 +99,18 @@ fun SwitchSetting(
 }
 
 @Composable
-fun TextfieldSetting(name: String, stringResId:Int, onValueChanged: (String) -> String) {
+fun TextfieldSetting(name: String, stringResId: Int, onValueChanged: (String) -> String) {
     var text by remember { mutableStateOf("") }
     var errorMsg by remember { mutableStateOf("") }
-    OutlinedTextField(value = text, onValueChange = {
-        errorMsg = onValueChanged(it)
-        text = it
-    }, label = { Text(stringResource(stringResId)) }, isError = errorMsg.isNotEmpty(), supportingText = { Text(errorMsg) })
+    OutlinedTextField(
+        value = text,
+        onValueChange = {
+            errorMsg = onValueChanged(it)
+            text = it
+        },
+        label = { Text(stringResource(stringResId)) },
+        isError = errorMsg.isNotEmpty(),
+        supportingText = { Text(errorMsg) })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

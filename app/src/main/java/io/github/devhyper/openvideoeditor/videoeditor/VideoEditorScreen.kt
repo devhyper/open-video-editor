@@ -99,6 +99,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.Player
 import androidx.media3.common.Player.COMMAND_GET_CURRENT_MEDIA_ITEM
 import androidx.media3.common.Player.Commands
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.transformer.Composition
 import androidx.media3.transformer.ExportException
@@ -804,19 +805,22 @@ private fun BottomControls(
             listItems = {
                 item {
                     Text("$videoTimeFrames/$durationFrames")
-                    TextfieldSetting(name = "New frame", stringResId = R.string.new_frame, onValueChanged = {
-                        val errorTxt = validateUInt(it)
-                        if (errorTxt.isEmpty()) {
-                            val newLongFrame = it.toLong()
-                            if (newLongFrame <= durationFrames) {
-                                newFrame = newLongFrame
-                            } else {
-                                newFrame = -1L
-                                return@TextfieldSetting context.getString(R.string.input_frame_must_less_or_equal) + "$durationFrames"
+                    TextfieldSetting(
+                        name = "New frame",
+                        stringResId = R.string.new_frame,
+                        onValueChanged = {
+                            val errorTxt = validateUInt(it)
+                            if (errorTxt.isEmpty()) {
+                                val newLongFrame = it.toLong()
+                                if (newLongFrame <= durationFrames) {
+                                    newFrame = newLongFrame
+                                } else {
+                                    newFrame = -1L
+                                    return@TextfieldSetting context.getString(R.string.input_frame_must_less_or_equal) + "$durationFrames"
+                                }
                             }
-                        }
-                        errorTxt
-                    })
+                            errorTxt
+                        })
                 }
             }
         )
@@ -930,7 +934,7 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                FilterDrawerItem("Trim", R.string.trim,Icons.Filled.ContentCut, onClick = {
+                FilterDrawerItem("Trim", R.string.trim, Icons.Filled.ContentCut, onClick = {
                     viewModel.setFilterDurationEditorEnabled(true)
                     viewModel.setFilterDurationCallback { range ->
                         transformManager.addMediaTrim(
@@ -952,14 +956,21 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
             }
             items(dialogUserEffectsArray) { dialogUserEffect ->
                 dialogUserEffect.run {
-                    DialogFilterDrawerItem(name, stringResId,icon, args, transformManager, callback)
+                    DialogFilterDrawerItem(
+                        name,
+                        stringResId,
+                        icon,
+                        args,
+                        transformManager,
+                        callback
+                    )
                 }
             }
             items(onVideoUserEffectsArray) { onVideoUserEffect ->
                 onVideoUserEffect.run {
-                    FilterDrawerItem(name, stringResId,icon()) {
+                    FilterDrawerItem(name, stringResId, icon()) {
                         callback = {
-                            transformManager.addVideoEffect(UserEffect(name, stringResId,icon, it))
+                            transformManager.addVideoEffect(UserEffect(name, stringResId, icon, it))
                         }
                         viewModel.setCurrentEditingEffect(this)
                         onDismissRequest()
@@ -974,7 +985,7 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
 @Composable
 private fun DialogFilterDrawerItem(
     name: String,
-    stringResId:Int,
+    stringResId: Int,
     icon: ImageConstructor,
     args: PersistentList<EffectDialogSetting>,
     transformManager: TransformManager,
@@ -988,7 +999,7 @@ private fun DialogFilterDrawerItem(
         icon(),
         onClick = { showFilterDialog = true; viewModel.setFilterDialogArgs(args) })
     if (showFilterDialog) {
-        FilterDialog(name = name, stringResId = stringResId,{ argMap ->
+        FilterDialog(name = name, stringResId = stringResId, { argMap ->
             val effect = callback(argMap)
             UserEffect(name, stringResId, icon, effect)
         }, transformManager) {
@@ -998,7 +1009,12 @@ private fun DialogFilterDrawerItem(
 }
 
 @Composable
-private fun FilterDrawerItem(name: String, stringResId: Int,icon: ImageVector, onClick: () -> Unit) {
+private fun FilterDrawerItem(
+    name: String,
+    stringResId: Int,
+    icon: ImageVector,
+    onClick: () -> Unit
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         IconButton(onClick = onClick) {
             Icon(
@@ -1053,21 +1069,24 @@ private fun FilterDialog(
             val dropdown = arg.dropdownOptions
             if (textfield != null) {
                 item {
-                    TextfieldSetting(name = arg.name, stringResId = arg.stringResId,onValueChanged = {
-                        val error = textfield(it)
-                        if (error.isEmpty()) {
-                            arg.selection = it
-                        } else {
-                            arg.selection = ""
-                        }
-                        viewModel.setFilterDialogArgs(args)
-                        error
-                    })
+                    TextfieldSetting(
+                        name = arg.name,
+                        stringResId = arg.stringResId,
+                        onValueChanged = {
+                            val error = textfield(it)
+                            if (error.isEmpty()) {
+                                arg.selection = it
+                            } else {
+                                arg.selection = ""
+                            }
+                            viewModel.setFilterDialogArgs(args)
+                            error
+                        })
                 }
             } else if (dropdown != null) {
                 item {
                     DropdownSetting(
-                        name = arg.name,stringResId = arg.stringResId,
+                        name = arg.name, stringResId = arg.stringResId,
                         options = dropdown.toImmutableList()
                     ) {
                         arg.selection = it
@@ -1196,7 +1215,8 @@ private fun ExportDialog(
                         val originalFramerate =
                             transformManager.player.videoFormat?.frameRate
                         if (originalFramerate != null && framerate >= originalFramerate) {
-                            errorMsg = context.getString(R.string.framerate_must_lower) + "($originalFramerate)."
+                            errorMsg =
+                                context.getString(R.string.framerate_must_lower) + "($originalFramerate)."
                         } else {
                             exportSettings.framerate = framerate
                         }
@@ -1284,6 +1304,7 @@ fun ExportProgressDialog(
     }
 }
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun ExportFailedAlertDialog(exception: ExportException?, onDismissRequest: () -> Unit) {
     AlertDialog(
