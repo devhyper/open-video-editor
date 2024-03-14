@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="settings">Настройки</string>
+    <string name="text">Текст</string>
+    <string name="speed">Скорость</string>
+    <string name="project">Проект</string>
+    <string name="export">Экспорт</string>
+    <string name="cancel">Отмена</string>
+    <string name="error">Ошибка</string>
+    <string name="theme">Тема</string>
+    <string name="video">Видео</string>
+    <string name="add">Добавить</string>
+    <string name="resolution">Разрешение</string>
+</resources>
