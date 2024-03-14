@@ -212,7 +212,6 @@ fun VideoEditorScreen(
                                 }
 
                                 if (availableCommands.contains(COMMAND_GET_CURRENT_MEDIA_ITEM)) {
-                                    transformManager.onPlayerDurationReady()
                                     if (filterDurationEditorSliderPosition.endInclusive == 0f) {
                                         viewModel.setFilterDurationEditorSliderPosition(0f..player.duration.toFloat())
                                     }
