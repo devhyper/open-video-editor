@@ -14,6 +14,9 @@
 - Scale
 - Rotate
 
+## Translations
+https://hosted.weblate.org/engage/open-video-editor
+
 ## Roadmap
 https://github.com/devhyper/open-video-editor/milestones
 
