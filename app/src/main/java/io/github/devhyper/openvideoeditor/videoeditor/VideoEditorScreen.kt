@@ -112,6 +112,7 @@ import io.github.devhyper.openvideoeditor.misc.PLAYER_SEEK_BACK_INCREMENT
 import io.github.devhyper.openvideoeditor.misc.PLAYER_SEEK_FORWARD_INCREMENT
 import io.github.devhyper.openvideoeditor.misc.PROJECT_FILE_EXT
 import io.github.devhyper.openvideoeditor.misc.REFRESH_RATE
+import io.github.devhyper.openvideoeditor.misc.SwitchSetting
 import io.github.devhyper.openvideoeditor.misc.TextfieldSetting
 import io.github.devhyper.openvideoeditor.misc.formatMinSec
 import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
@@ -179,8 +180,6 @@ fun VideoEditorScreen(
 
     var playerViewSet by remember { mutableStateOf(false) }
 
-    val filterDurationEditorSliderPosition by viewModel.filterDurationEditorSliderPosition.collectAsState()
-
     val currentEditingEffect by viewModel.currentEditingEffect.collectAsState()
 
     val useUiCascadingEffect by dataStore.getUiCascadingEffectAsync()
@@ -210,9 +209,7 @@ fun VideoEditorScreen(
                                 }
 
                                 if (availableCommands.contains(COMMAND_GET_CURRENT_MEDIA_ITEM)) {
-                                    if (filterDurationEditorSliderPosition.endInclusive == 0f) {
-                                        viewModel.setFilterDurationEditorSliderPosition(0f..player.duration.toFloat())
-                                    }
+                                    viewModel.setFilterDurationEditorSliderPosition(0f..player.duration.toFloat())
                                 }
                             }
 
@@ -861,16 +858,19 @@ private fun LayerDrawer(transformManager: TransformManager) {
                     }
                 )
             }
-            items(transformManager.projectData.mediaTrims)
-            { trim ->
-                LayerDrawerItem(
-                    name = stringResource(R.string.trim),
-                    icon = Icons.Filled.ContentCut,
-                    range = trim.first..trim.second,
-                    onClick = {
-                        transformManager.removeMediaTrim(trim)
-                    }
-                )
+            val trim = transformManager.getMergedTrim()
+            if (trim != null) {
+                item()
+                {
+                    LayerDrawerItem(
+                        name = stringResource(R.string.trim),
+                        icon = Icons.Filled.ContentCut,
+                        range = trim.first..trim.second,
+                        onClick = {
+                            transformManager.clearMediaTrims()
+                        }
+                    )
+                }
             }
         }
     }
@@ -1106,7 +1106,8 @@ private fun ExportDialog(
     val exportSettings: ExportSettings by remember { mutableStateOf(ExportSettings()) }
     val viewModel = viewModel { VideoEditorViewModel() }
     val outputPath by viewModel.outputPath.collectAsState()
-    var exportException: ExportException? by remember { mutableStateOf(null) }
+    var exportString: String? by remember { mutableStateOf(null) }
+    var infoDialogText by remember { mutableStateOf("") }
     if (outputPath.isNotEmpty()) {
         val exportDismissRequest = {
             onDismissRequest()
@@ -1114,27 +1115,30 @@ private fun ExportDialog(
             activity.recreate()
         }
         exportSettings.outputPath = outputPath
-        if (exportException != null) {
-            ExportFailedAlertDialog(exportException) {
-                exportException = null; exportDismissRequest()
+        if (exportString != null) {
+            ExportFailedAlertDialog(exportString!!) {
+                exportString = null; exportDismissRequest()
             }
         } else {
             val transformerListener: Listener =
                 object : Listener {
-                    override fun onCompleted(composition: Composition, exportResult: ExportResult) {
-                        transformManager.onExportFinished()
-                    }
-
                     override fun onError(
                         composition: Composition, result: ExportResult,
                         exception: ExportException
                     ) {
-                        transformManager.onExportFinished()
-                        exportException = exception
+                        exportString = exception.toString()
                         // Log.e("open-video-editor", "Export exception: ", exception)
                     }
                 }
-            transformManager.export(LocalContext.current, exportSettings, transformerListener)
+            val onFFmpegError: () -> Unit = {
+                exportString = context.getString(R.string.ffmpeg_error)
+            }
+            transformManager.export(
+                LocalContext.current,
+                exportSettings,
+                transformerListener,
+                onFFmpegError
+            )
             ExportProgressDialog(transformManager) { exportDismissRequest() }
         }
     } else {
@@ -1221,6 +1225,34 @@ private fun ExportDialog(
                     errorMsg
                 }
             }
+            item {
+                SwitchSetting(
+                    name = stringResource(R.string.lossless_cut),
+                    enabled = transformManager.projectData.mediaTrims.isNotEmpty(),
+                    startChecked = false
+                ) {
+                    exportSettings.losslessCut = it
+                    if (it) {
+                        infoDialogText =
+                            context.getString(R.string.enabling_lossless_cut_will_only_export_trims)
+                    }
+                }
+            }
+        }
+        if (infoDialogText.isNotEmpty()) {
+            AlertDialog(
+                title = { Text(stringResource(R.string.setting_info)) },
+                text = { Text(infoDialogText) },
+                onDismissRequest = { infoDialogText = "" },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            infoDialogText = ""
+                        }
+                    ) {
+                        Text(stringResource(R.string.dismiss))
+                    }
+                })
         }
     }
 }
@@ -1300,13 +1332,13 @@ fun ExportProgressDialog(
 }
 
 @Composable
-fun ExportFailedAlertDialog(exception: ExportException?, onDismissRequest: () -> Unit) {
+fun ExportFailedAlertDialog(exceptionString: String, onDismissRequest: () -> Unit) {
     AlertDialog(
         title = {
             Text(text = stringResource(R.string.error))
         },
         text = {
-            Text(text = exception.toString())
+            Text(text = exceptionString)
         },
         onDismissRequest = {
             onDismissRequest()

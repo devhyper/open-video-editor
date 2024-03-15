@@ -2,6 +2,7 @@ package io.github.devhyper.openvideoeditor.misc
 
 import android.content.Context
 import android.content.res.Resources
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.text.Spannable
@@ -44,6 +45,14 @@ fun getFileNameFromUri(context: Context, uri: Uri): String {
         return "null"
     }
     return fileName
+}
+
+fun getVideoFileDuration(context: Context, uri: Uri): Long? {
+    val retriever = MediaMetadataRetriever()
+    retriever.setDataSource(context, uri);
+    val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+    retriever.release()
+    return time?.toLong()
 }
 
 fun ComponentActivity.setupSystemUi() {
@@ -141,6 +150,10 @@ fun spToPx(sp: Float): Int {
 
 fun LongRange.toLongPair(): Pair<Long, Long> {
     return Pair(this.first, this.last)
+}
+
+fun Pair<Long, Long>.toLongRange(): LongRange {
+    return LongRange(this.first, this.second)
 }
 
 @Composable

@@ -61,4 +61,8 @@
     <string name="degrees">Degrees</string>
     <string name="crop">Crop</string>
     <string name="framerate_must_lower">Framerate must be lower than the framerate of the original video </string>
+    <string name="lossless_cut">Lossless cut</string>
+    <string name="setting_info">Setting info</string>
+    <string name="enabling_lossless_cut_will_only_export_trims">Enabling lossless cut will only export trims.</string>
+    <string name="ffmpeg_error">FFmpeg Error</string>
 </resources>

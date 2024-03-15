@@ -68,6 +68,7 @@ import kotlin.math.roundToInt
 fun CheckboxSetting(
     name: String,
     startChecked: Boolean,
+    enabled: Boolean,
     onCheckChanged: (Boolean) -> Unit
 ) {
     var checked by remember { mutableStateOf(startChecked) }
@@ -77,13 +78,17 @@ fun CheckboxSetting(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(modifier = Modifier.padding(end = 16.dp), text = name)
-        Checkbox(checked = checked, onCheckedChange = { checked = !checked; onCheckChanged(it) })
+        Checkbox(
+            enabled = enabled,
+            checked = checked,
+            onCheckedChange = { checked = !checked; onCheckChanged(it) })
     }
 }
 
 @Composable
 fun SwitchSetting(
     name: String,
+    enabled: Boolean = true,
     startChecked: Boolean,
     onCheckChanged: (Boolean) -> Unit
 ) {
@@ -94,7 +99,10 @@ fun SwitchSetting(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(modifier = Modifier.padding(end = 16.dp), text = name)
-        Switch(checked = checked, onCheckedChange = { checked = !checked; onCheckChanged(it) })
+        Switch(
+            enabled = enabled,
+            checked = checked,
+            onCheckedChange = { checked = !checked; onCheckChanged(it) })
     }
 }
 

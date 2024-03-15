@@ -28,8 +28,12 @@ import androidx.media3.transformer.TransformationRequest
 import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.Transformer.PROGRESS_STATE_NOT_STARTED
 import androidx.media3.transformer.Transformer.PROGRESS_STATE_UNAVAILABLE
+import com.arthenica.ffmpegkit.FFmpegKit
+import com.arthenica.ffmpegkit.FFmpegKitConfig
+import com.arthenica.ffmpegkit.SessionState
 import io.github.devhyper.openvideoeditor.misc.PROJECT_FILE_EXT
 import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
+import io.github.devhyper.openvideoeditor.misc.getVideoFileDuration
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -61,6 +65,7 @@ class ExportSettings {
     var framerate: Float = 0F
     var speed: Float = 0F
     var outputPath: String = ""
+    var losslessCut: Boolean = false
 
     /*
     fun log() {
@@ -223,6 +228,8 @@ class TransformManager {
 
     private var transformer: Transformer? = null
 
+    private var originalMediaLength: Long = -1
+
     private lateinit var originalMedia: MediaItem
 
     private lateinit var trimmedMedia: MediaItem
@@ -266,6 +273,11 @@ class TransformManager {
             }
             hasInitialized = true
         }
+        getVideoFileDuration(context, uri.toUri()).let {
+            if (it != null) {
+                originalMediaLength = it
+            }
+        }
         originalMedia = MediaItem.fromUri(projectData.uri)
         trimmedMedia = MediaItem.fromUri(projectData.uri)
         rebuildMediaTrims()
@@ -283,6 +295,35 @@ class TransformManager {
             effectArray.add(userEffect.effect())
         }
         return effectArray
+    }
+
+    fun getMergedTrim(): Trim? {
+        if (projectData.mediaTrims.isNotEmpty() && originalMediaLength != -1L) {
+            var currentPair = Trim(0L, originalMediaLength)
+
+            val cutStart = currentPair.first + projectData.mediaTrims[0].first
+            val cutEnd =
+                currentPair.second - (currentPair.second - projectData.mediaTrims[0].second)
+            currentPair = Trim(cutStart, cutEnd)
+
+            if (projectData.mediaTrims.size > 1) {
+                for (i in 1 until projectData.mediaTrims.size) {
+                    val loopCutStart =
+                        currentPair.first - (projectData.mediaTrims[i - 1].first - projectData.mediaTrims[i].first)
+                    val loopCutEnd =
+                        currentPair.second - (projectData.mediaTrims[i - 1].second - projectData.mediaTrims[i].second)
+                    currentPair = Trim(loopCutStart, loopCutEnd)
+                }
+            }
+
+            return currentPair
+        }
+        return null
+    }
+
+    fun clearMediaTrims() {
+        projectData.mediaTrims.clear()
+        updateMediaTrims()
     }
 
     fun addVideoEffect(effect: UserEffect) {
@@ -331,12 +372,22 @@ class TransformManager {
     }
 
     private fun rebuildMediaTrims() {
+        /*
         trimmedMedia = originalMedia
         for (trim in projectData.mediaTrims) {
             val clipConfig = ClippingConfiguration.Builder().setStartPositionMs(trim.first)
                 .setEndPositionMs(trim.second).build()
             trimmedMedia =
                 trimmedMedia.buildUpon().setClippingConfiguration(clipConfig).build()
+        }
+         */
+        val trim = getMergedTrim()
+        trimmedMedia = if (trim != null) {
+            val clipConfig = ClippingConfiguration.Builder().setStartPositionMs(trim.first)
+                .setEndPositionMs(trim.second).build()
+            originalMedia.buildUpon().setClippingConfiguration(clipConfig).build()
+        } else {
+            originalMedia
         }
     }
 
@@ -351,66 +402,112 @@ class TransformManager {
         }
     }
 
+    private fun ffmpegLosslessCut(
+        context: Context,
+        trim: Trim,
+        outputPath: String,
+        audioFallback: Boolean,
+        onFFmpegError: () -> Unit
+    ) {
+        val ffmpegInputPath =
+            FFmpegKitConfig.getSafParameterForRead(context, projectData.uri.toUri())
+        val ffmpegOutputPath = FFmpegKitConfig.getSafParameterForWrite(context, outputPath.toUri())
+        val audioCodec = if (audioFallback) "aac" else "copy"
+        FFmpegKit.executeAsync(
+            "-i $ffmpegInputPath -ss ${trim.first}ms -to ${trim.second}ms -c:v copy -c:a $audioCodec $ffmpegOutputPath"
+        ) {
+            val fd = context.contentResolver.openAssetFileDescriptor(outputPath.toUri(), "r")
+            if (fd != null) {
+                val fileSize = fd.length
+                fd.close()
+                if (fileSize != 0L) {
+                    return@executeAsync
+                }
+            }
+            if (audioFallback) {
+                onFFmpegError()
+            } else {
+                ffmpegLosslessCut(context, trim, outputPath, true, onFFmpegError)
+            }
+        }
+    }
+
     @SuppressLint("Recycle")
     fun export(
         context: Context,
         exportSettings: ExportSettings,
         transformerListener: Transformer.Listener,
+        onFFmpegError: () -> Unit
     ) {
         // exportSettings.log()
         player.release()
         val outputPath = exportSettings.outputPath
-        val fd =
-            context.contentResolver.openFileDescriptor(
-                outputPath.toUri(),
-                "rw"
-            )?.fileDescriptor
-        val effectArray = getEffectArray()
-        effectArray.apply {
-            if (exportSettings.speed > 0) {
-                add(SpeedChangeEffect(exportSettings.speed))
+        if (exportSettings.losslessCut) {
+            val trim = getMergedTrim()
+            if (trim != null) {
+                ffmpegLosslessCut(context, trim, outputPath, false, onFFmpegError)
             }
-            if (exportSettings.framerate > 0) {
-                add(FrameDropEffect.createDefaultFrameDropEffect(exportSettings.framerate))
-            }
-        }
-        val editedMediaItem = EditedMediaItem.Builder(trimmedMedia)
-            .setEffects(Effects(projectData.audioProcessors, effectArray))
-            .setRemoveAudio(!exportSettings.exportAudio)
-            .setRemoveVideo(!exportSettings.exportVideo)
-            .build()
-        transformer = Transformer.Builder(context)
-            .setTransformationRequest(
-                TransformationRequest.Builder()
-                    .setHdrMode(exportSettings.hdrMode)
-                    .setAudioMimeType(exportSettings.audioMimeType)
-                    .setVideoMimeType(exportSettings.videoMimeType)
-                    .build()
-            )
-            .setMuxerFactory(CustomMuxer.Factory(fd))
-            .addListener(transformerListener)
-            .build()
-        if (fd != null) {
-            transformer!!.start(editedMediaItem, "")
         } else {
-            transformer!!.start(editedMediaItem, outputPath)
+            val fd =
+                context.contentResolver.openFileDescriptor(
+                    outputPath.toUri(),
+                    "rw"
+                )?.fileDescriptor
+            val effectArray = getEffectArray()
+            effectArray.apply {
+                if (exportSettings.speed > 0) {
+                    add(SpeedChangeEffect(exportSettings.speed))
+                }
+                if (exportSettings.framerate > 0) {
+                    add(FrameDropEffect.createDefaultFrameDropEffect(exportSettings.framerate))
+                }
+            }
+            val editedMediaItem = EditedMediaItem.Builder(trimmedMedia)
+                .setEffects(Effects(projectData.audioProcessors, effectArray))
+                .setRemoveAudio(!exportSettings.exportAudio)
+                .setRemoveVideo(!exportSettings.exportVideo)
+                .build()
+            transformer = Transformer.Builder(context)
+                .setTransformationRequest(
+                    TransformationRequest.Builder()
+                        .setHdrMode(exportSettings.hdrMode)
+                        .setAudioMimeType(exportSettings.audioMimeType)
+                        .setVideoMimeType(exportSettings.videoMimeType)
+                        .build()
+                )
+                .setMuxerFactory(CustomMuxer.Factory(fd))
+                .addListener(transformerListener)
+                .build()
+            if (fd != null) {
+                transformer!!.start(editedMediaItem, "")
+            } else {
+                transformer!!.start(editedMediaItem, outputPath)
+            }
         }
     }
 
     fun cancel() {
+        FFmpegKit.cancel()
         transformer?.cancel()
     }
 
     fun getProgress(): Float {
-        val progressHolder = ProgressHolder()
-        return when (transformer?.getProgress(progressHolder)) {
-            PROGRESS_STATE_UNAVAILABLE -> -1F
-            PROGRESS_STATE_NOT_STARTED -> 1F
-            else -> progressHolder.progress.toFloat() / 100F
+        val ffmpegSessions = FFmpegKit.listSessions()
+        return if (ffmpegSessions.isNotEmpty()) {
+            val sessionState = ffmpegSessions.last().state
+            return when (sessionState) {
+                SessionState.COMPLETED -> 1F
+                SessionState.RUNNING -> 0.5F
+                SessionState.CREATED -> 0F
+                else -> -1F
+            }
+        } else {
+            val progressHolder = ProgressHolder()
+            when (transformer?.getProgress(progressHolder)) {
+                PROGRESS_STATE_UNAVAILABLE -> -1F
+                PROGRESS_STATE_NOT_STARTED -> 1F
+                else -> progressHolder.progress.toFloat() / 100F
+            }
         }
-    }
-
-    fun onExportFinished() {
-
     }
 }
