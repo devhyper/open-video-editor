@@ -229,8 +229,6 @@ class TransformManager {
 
     lateinit var projectData: ProjectData
 
-    private var originalMediaLength: Long = -1
-
     fun init(
         exoPlayer: ExoPlayer, uri: String, context: Context, viewModel: VideoEditorViewModel
     ) {
@@ -287,12 +285,6 @@ class TransformManager {
         return effectArray
     }
 
-    fun onPlayerDurationReady() {
-        if (originalMediaLength == -1L) {
-            originalMediaLength = player.duration
-        }
-    }
-
     fun addVideoEffect(effect: UserEffect) {
         projectData.videoEffects.add(effect)
         updateVideoEffects()
@@ -304,11 +296,7 @@ class TransformManager {
     }
 
     fun addMediaTrim(trim: Trim) {
-        if (projectData.mediaTrims.isEmpty()) {
-            if (trim == Pair(0L, originalMediaLength)) {
-                return
-            }
-        } else if (trim == projectData.mediaTrims.last()) {
+        if (projectData.mediaTrims.isNotEmpty() && trim == projectData.mediaTrims.last()) {
             return
         }
         projectData.mediaTrims.add(trim)
