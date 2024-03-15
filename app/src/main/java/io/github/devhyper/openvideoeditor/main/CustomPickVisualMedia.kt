@@ -17,7 +17,7 @@ class CustomPickVisualMedia(private val useLegacyFilePicker: () -> Boolean) :
     }
 
     override fun createIntent(context: Context, input: PickVisualMediaRequest): Intent {
-        return if (useLegacyFilePicker()) {
+        val intent = if (useLegacyFilePicker()) {
             Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 type = getVisualMimeType(input.mediaType)
 
@@ -29,7 +29,9 @@ class CustomPickVisualMedia(private val useLegacyFilePicker: () -> Boolean) :
                 }
             }
         } else {
-            return super.createIntent(context, input)
+            super.createIntent(context, input)
         }
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+        return intent
     }
 }

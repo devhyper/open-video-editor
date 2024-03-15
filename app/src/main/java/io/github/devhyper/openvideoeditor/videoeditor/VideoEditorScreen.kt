@@ -99,7 +99,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.Player
 import androidx.media3.common.Player.COMMAND_GET_CURRENT_MEDIA_ITEM
 import androidx.media3.common.Player.Commands
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.transformer.Composition
 import androidx.media3.transformer.ExportException
@@ -128,7 +127,6 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 @Composable
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 fun VideoEditorScreen(
     uri: String,
     createDocument: ActivityResultLauncher<String?>,
@@ -160,7 +158,7 @@ fun VideoEditorScreen(
 
     val transformManager = remember {
         viewModel.transformManager.apply {
-            init(player, uri, context)
+            init(player, uri, context, viewModel)
             player.seekTo(currentTime)
         }
     }
@@ -459,6 +457,7 @@ private fun TopControls(
     val activity = LocalContext.current as Activity
     val viewModel = viewModel { VideoEditorViewModel() }
     val projectOutputPath by viewModel.projectOutputPath.collectAsState()
+    val projectSavingSupported by viewModel.projectSavingSupported.collectAsState()
     val videoTitle = remember(title()) { title() }
     var showThreeDotMenu by remember { mutableStateOf(false) }
     var showExportDialog by remember { mutableStateOf(false) }
@@ -507,6 +506,7 @@ private fun TopControls(
                         text = { Text(stringResource(R.string.export)) },
                         onClick = { showThreeDotMenu = false; showExportDialog = true })
                     DropdownMenuItem(
+                        enabled = projectSavingSupported,
                         text = { Text(stringResource(R.string.save_project)) },
                         onClick = {
                             showThreeDotMenu = false
@@ -827,7 +827,6 @@ private fun BottomControls(
     }
 }
 
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
 private fun LayerDrawer(transformManager: TransformManager) {
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -916,7 +915,6 @@ private fun LayerDrawerItem(
     }
 }
 
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
 private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: () -> Unit) {
     val viewModel = viewModel { VideoEditorViewModel() }
@@ -1030,7 +1028,6 @@ private fun FilterDrawerItem(
     }
 }
 
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
 private fun FilterDialog(
     name: String,
@@ -1098,7 +1095,6 @@ private fun FilterDialog(
     }
 }
 
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
 private fun ExportDialog(
     transformManager: TransformManager,
@@ -1304,7 +1300,6 @@ fun ExportProgressDialog(
     }
 }
 
-@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun ExportFailedAlertDialog(exception: ExportException?, onDismissRequest: () -> Unit) {
     AlertDialog(

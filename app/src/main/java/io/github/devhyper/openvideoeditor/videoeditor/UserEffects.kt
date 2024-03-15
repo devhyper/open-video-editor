@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.FormatSize
 import androidx.compose.material.icons.filled.InvertColors
 import androidx.compose.material.icons.filled.TextFormat
 import androidx.compose.material.icons.filled.Tv
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.effect.Presentation
 import androidx.media3.effect.RgbFilter
 import androidx.media3.effect.ScaleAndRotateTransformation
@@ -19,7 +18,6 @@ import io.github.devhyper.openvideoeditor.misc.validateUIntAndNonzero
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-@UnstableApi
 val userEffectsArray: ImmutableList<UserEffect> = persistentListOf(
     UserEffect(
         "Grayscale",
@@ -31,7 +29,6 @@ val userEffectsArray: ImmutableList<UserEffect> = persistentListOf(
         { Icons.Filled.InvertColors }) { RgbFilter.createInvertedFilter() }
 )
 
-@UnstableApi
 val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
     DialogUserEffect(
         "Resolution",
@@ -106,7 +103,6 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
     }
 )
 
-@UnstableApi
 val onVideoUserEffectsArray: ImmutableList<OnVideoUserEffect> = persistentListOf(
     OnVideoUserEffect(
         "Text",

@@ -4,7 +4,6 @@ import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
-import androidx.annotation.OptIn
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.absoluteOffset
@@ -25,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.effect.Crop
 import androidx.media3.effect.OverlaySettings
 import androidx.media3.effect.TextOverlay
@@ -43,7 +41,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlin.math.roundToInt
 
-@OptIn(UnstableApi::class)
 @Composable
 fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
     val update =
@@ -159,7 +156,6 @@ fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
     }
 }
 
-@OptIn(UnstableApi::class)
 @Composable
 fun CropEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {

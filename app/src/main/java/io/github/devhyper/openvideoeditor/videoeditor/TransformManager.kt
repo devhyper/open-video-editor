@@ -3,7 +3,8 @@ package io.github.devhyper.openvideoeditor.videoeditor
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import androidx.annotation.OptIn
+import android.content.pm.PackageManager.PERMISSION_DENIED
+import android.os.Binder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.core.net.toUri
@@ -13,7 +14,6 @@ import androidx.media3.common.MediaItem.ClippingConfiguration
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.media3.common.audio.AudioProcessor
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.effect.FrameDropEffect
 import androidx.media3.effect.SpeedChangeEffect
 import androidx.media3.exoplayer.ExoPlayer
@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
+
 typealias Trim = Pair<Long, Long>
 typealias ImageConstructor = () -> ImageVector
 typealias EffectConstructor = () -> Effect
@@ -51,7 +52,6 @@ class EffectDialogSetting(
     var selection = ""
 }
 
-@UnstableApi
 class ExportSettings {
     var exportAudio = true
     var exportVideo = true
@@ -188,7 +188,6 @@ class UserEffect(
     val effect: EffectConstructor
 ) : java.io.Serializable
 
-@OptIn(UnstableApi::class)
 data class ProjectData(
     val uri: String,
 
@@ -217,7 +216,6 @@ data class ProjectData(
     }
 }
 
-@OptIn(androidx.media3.common.util.UnstableApi::class)
 class TransformManager {
     lateinit var player: ExoPlayer
 
@@ -234,7 +232,7 @@ class TransformManager {
     private var originalMediaLength: Long = -1
 
     fun init(
-        exoPlayer: ExoPlayer, uri: String, context: Context
+        exoPlayer: ExoPlayer, uri: String, context: Context, viewModel: VideoEditorViewModel
     ) {
         if (hasInitialized) {
             if (exoPlayer != player) {
@@ -254,10 +252,20 @@ class TransformManager {
             } else {
                 ProjectData(uri)
             }
-            context.contentResolver.takePersistableUriPermission(
-                uri.toUri(),
+            val perm = context.checkUriPermission(
+                uri.toUri(), null, null,
+                Binder.getCallingPid(), Binder.getCallingUid(),
                 Intent.FLAG_GRANT_READ_URI_PERMISSION
             )
+            if (perm != PERMISSION_DENIED) {
+                viewModel.setProjectSavingSupported(true)
+                context.contentResolver.takePersistableUriPermission(
+                    uri.toUri(),
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            } else {
+                viewModel.setProjectSavingSupported(false)
+            }
             hasInitialized = true
         }
         originalMedia = MediaItem.fromUri(projectData.uri)

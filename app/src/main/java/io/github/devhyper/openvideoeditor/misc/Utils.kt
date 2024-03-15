@@ -9,7 +9,6 @@ import android.text.SpannableString
 import android.util.TypedValue
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.OptIn
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -25,7 +24,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.effect.OverlayEffect
 import androidx.media3.effect.TextureOverlay
 import com.google.common.collect.ImmutableList
@@ -119,7 +117,6 @@ fun Modifier.repeatingClickable(
     }
 }
 
-@OptIn(UnstableApi::class)
 fun TextureOverlay.toOverlayEffect(): OverlayEffect {
     val overlaysBuilder = ImmutableList.Builder<TextureOverlay>()
     overlaysBuilder.add(this)

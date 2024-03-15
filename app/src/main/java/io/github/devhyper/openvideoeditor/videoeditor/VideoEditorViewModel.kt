@@ -20,6 +20,9 @@ class VideoEditorViewModel : ViewModel() {
     private val _controlsVisible = MutableStateFlow(true)
     val controlsVisible: StateFlow<Boolean> = _controlsVisible.asStateFlow()
 
+    private val _projectSavingSupported = MutableStateFlow(true)
+    val projectSavingSupported: StateFlow<Boolean> = _projectSavingSupported.asStateFlow()
+
     private val _filterDurationEditorEnabled = MutableStateFlow(false)
     val filterDurationEditorEnabled = _filterDurationEditorEnabled.asStateFlow()
 
@@ -55,6 +58,10 @@ class VideoEditorViewModel : ViewModel() {
 
     fun setControlsVisible(value: Boolean) {
         _controlsVisible.update { value }
+    }
+
+    fun setProjectSavingSupported(value: Boolean) {
+        _projectSavingSupported.update { value }
     }
 
     fun setFilterDurationEditorEnabled(value: Boolean) {
