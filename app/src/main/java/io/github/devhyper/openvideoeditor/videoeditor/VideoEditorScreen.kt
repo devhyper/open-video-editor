@@ -1266,7 +1266,7 @@ fun ExportProgressDialog(
     val animatedProgress = animateFloatAsState(
         targetValue = exportProgress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
-        label = stringResource(R.string.export_progress_animation)
+        label = "export_progress_animation"
     ).value
     val exportComplete = exportProgress == 1F
     val progressHandler = Handler(getMainLooper())

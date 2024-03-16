@@ -25,7 +25,6 @@
     <string name="error">Error</string>
     <string name="select_a_file_to_edit">Select a file to edit</string>
     <string name="project">Project</string>
-    <string name="export_progress_animation">export_progress_animation</string>
     <string name="video_layers">Video Layers</string>
     <string name="forward_10_seconds">Forward 10 seconds</string>
     <string name="play_pause">Play/Pause</string>

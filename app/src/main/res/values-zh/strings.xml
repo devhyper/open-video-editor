@@ -24,7 +24,6 @@
     <string name="error">错误</string>
     <string name="select_a_file_to_edit">选择一个文件以开始编辑</string>
     <string name="project">项目</string>
-    <string name="export_progress_animation">导出进度动画</string>
     <string name="video_layers">视频图层</string>
     <string name="forward_10_seconds">向前10秒</string>
     <string name="play_pause">播放/暂停</string>
