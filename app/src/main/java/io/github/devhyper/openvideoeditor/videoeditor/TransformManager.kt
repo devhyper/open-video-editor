@@ -33,7 +33,6 @@ import com.arthenica.ffmpegkit.FFmpegKitConfig
 import com.arthenica.ffmpegkit.SessionState
 import io.github.devhyper.openvideoeditor.misc.PROJECT_FILE_EXT
 import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
-import io.github.devhyper.openvideoeditor.misc.getVideoFileDuration
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -48,7 +47,7 @@ typealias EffectConstructor = () -> Effect
 typealias Editor = @Composable (MutableStateFlow<EffectConstructor?>) -> Unit
 
 class EffectDialogSetting(
-    val name: String,
+    val key: String,
     val stringResId: Int,
     val textfieldValidation: ((String) -> String)? = null,
     val dropdownOptions: MutableList<String>? = null
@@ -159,7 +158,6 @@ fun getVideoMimeTypesStrings(): ImmutableList<String> {
 }
 
 class DialogUserEffect(
-    val name: String,
     val stringResId: Int,
     val icon: ImageConstructor,
     val args: PersistentList<EffectDialogSetting>,
@@ -167,7 +165,6 @@ class DialogUserEffect(
 )
 
 class OnVideoUserEffect(
-    val name: String,
     val stringResId: Int,
     val icon: ImageConstructor,
     val editor: Editor,
@@ -187,7 +184,6 @@ class OnVideoUserEffect(
 }
 
 class UserEffect(
-    val name: String,
     val stringResId: Int,
     val icon: ImageConstructor,
     val effect: EffectConstructor
@@ -227,8 +223,6 @@ class TransformManager {
     private var hasInitialized = false
 
     private var transformer: Transformer? = null
-
-    private var originalMediaLength: Long = -1
 
     private lateinit var originalMedia: MediaItem
 
@@ -273,11 +267,6 @@ class TransformManager {
             }
             hasInitialized = true
         }
-        getVideoFileDuration(context, uri.toUri()).let {
-            if (it != null) {
-                originalMediaLength = it
-            }
-        }
         originalMedia = MediaItem.fromUri(projectData.uri)
         trimmedMedia = MediaItem.fromUri(projectData.uri)
         rebuildMediaTrims()
@@ -298,21 +287,16 @@ class TransformManager {
     }
 
     fun getMergedTrim(): Trim? {
-        if (projectData.mediaTrims.isNotEmpty() && originalMediaLength != -1L) {
-            var currentPair = Trim(0L, originalMediaLength)
-
-            val cutStart = currentPair.first + projectData.mediaTrims[0].first
-            val cutEnd =
-                currentPair.second - (currentPair.second - projectData.mediaTrims[0].second)
-            currentPair = Trim(cutStart, cutEnd)
+        if (projectData.mediaTrims.isNotEmpty()) {
+            var currentPair = projectData.mediaTrims[0]
 
             if (projectData.mediaTrims.size > 1) {
                 for (i in 1 until projectData.mediaTrims.size) {
-                    val loopCutStart =
+                    val cutStart =
                         currentPair.first - (projectData.mediaTrims[i - 1].first - projectData.mediaTrims[i].first)
-                    val loopCutEnd =
+                    val cutEnd =
                         currentPair.second - (projectData.mediaTrims[i - 1].second - projectData.mediaTrims[i].second)
-                    currentPair = Trim(loopCutStart, loopCutEnd)
+                    currentPair = Trim(cutStart, cutEnd)
                 }
             }
 
@@ -372,15 +356,6 @@ class TransformManager {
     }
 
     private fun rebuildMediaTrims() {
-        /*
-        trimmedMedia = originalMedia
-        for (trim in projectData.mediaTrims) {
-            val clipConfig = ClippingConfiguration.Builder().setStartPositionMs(trim.first)
-                .setEndPositionMs(trim.second).build()
-            trimmedMedia =
-                trimmedMedia.buildUpon().setClippingConfiguration(clipConfig).build()
-        }
-         */
         val trim = getMergedTrim()
         trimmedMedia = if (trim != null) {
             val clipConfig = ClippingConfiguration.Builder().setStartPositionMs(trim.first)

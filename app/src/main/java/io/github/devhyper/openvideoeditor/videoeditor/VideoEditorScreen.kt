@@ -39,7 +39,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Audiotrack
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Filter
@@ -802,8 +801,7 @@ private fun BottomControls(
                 item {
                     Text("$videoTimeFrames/$durationFrames")
                     TextfieldSetting(
-                        name = "New frame",
-                        stringResId = R.string.new_frame,
+                        name = stringResource(R.string.new_frame),
                         onValueChanged = {
                             val errorTxt = validateUInt(it)
                             if (errorTxt.isEmpty()) {
@@ -839,7 +837,7 @@ private fun LayerDrawer(transformManager: TransformManager) {
             items(transformManager.projectData.videoEffects)
             { effect ->
                 LayerDrawerItem(
-                    name = effect.name,
+                    stringResId = effect.stringResId,
                     icon = effect.icon(),
                     range = 0L..transformManager.player.duration,
                     onClick = {
@@ -847,10 +845,11 @@ private fun LayerDrawer(transformManager: TransformManager) {
                     }
                 )
             }
+            /*
             items(transformManager.projectData.audioProcessors)
             { processor ->
                 LayerDrawerItem(
-                    name = processor.toString(),
+                    stringResId = processor.toString(),
                     icon = Icons.Filled.Audiotrack,
                     range = 0L..transformManager.player.duration,
                     onClick = {
@@ -858,12 +857,13 @@ private fun LayerDrawer(transformManager: TransformManager) {
                     }
                 )
             }
+            */
             val trim = transformManager.getMergedTrim()
             if (trim != null) {
                 item()
                 {
                     LayerDrawerItem(
-                        name = stringResource(R.string.trim),
+                        stringResId = R.string.trim,
                         icon = Icons.Filled.ContentCut,
                         range = trim.first..trim.second,
                         onClick = {
@@ -878,7 +878,7 @@ private fun LayerDrawer(transformManager: TransformManager) {
 
 @Composable
 private fun LayerDrawerItem(
-    name: String,
+    stringResId: Int,
     icon: ImageVector,
     range: LongRange,
     onClick: () -> Unit
@@ -898,7 +898,7 @@ private fun LayerDrawerItem(
                     .padding(start = 16.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = name)
+                Text(text = stringResource(stringResId))
                 Text(
                     text = "${range.first.formatMinSec()}:${range.last.formatMinSec()}",
                     style = MaterialTheme.typography.labelSmall
@@ -931,7 +931,7 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                FilterDrawerItem("Trim", R.string.trim, Icons.Filled.ContentCut, onClick = {
+                FilterDrawerItem(R.string.trim, Icons.Filled.ContentCut, onClick = {
                     viewModel.setFilterDurationEditorEnabled(true)
                     viewModel.setFilterDurationCallback { range ->
                         transformManager.addMediaTrim(
@@ -944,7 +944,6 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
             items(userEffectsArray) { userEffect ->
                 userEffect.run {
                     FilterDrawerItem(
-                        name,
                         stringResId,
                         icon(),
                         onClick = { transformManager.addVideoEffect(this) }
@@ -954,7 +953,6 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
             items(dialogUserEffectsArray) { dialogUserEffect ->
                 dialogUserEffect.run {
                     DialogFilterDrawerItem(
-                        name,
                         stringResId,
                         icon,
                         args,
@@ -965,9 +963,9 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
             }
             items(onVideoUserEffectsArray) { onVideoUserEffect ->
                 onVideoUserEffect.run {
-                    FilterDrawerItem(name, stringResId, icon()) {
+                    FilterDrawerItem(stringResId, icon()) {
                         callback = {
-                            transformManager.addVideoEffect(UserEffect(name, stringResId, icon, it))
+                            transformManager.addVideoEffect(UserEffect(stringResId, icon, it))
                         }
                         viewModel.setCurrentEditingEffect(this)
                         onDismissRequest()
@@ -981,7 +979,6 @@ private fun FilterDrawer(transformManager: TransformManager, onDismissRequest: (
 
 @Composable
 private fun DialogFilterDrawerItem(
-    name: String,
     stringResId: Int,
     icon: ImageConstructor,
     args: PersistentList<EffectDialogSetting>,
@@ -991,14 +988,13 @@ private fun DialogFilterDrawerItem(
     val viewModel = viewModel { VideoEditorViewModel() }
     var showFilterDialog by remember { mutableStateOf(false) }
     FilterDrawerItem(
-        name,
         stringResId,
         icon(),
         onClick = { showFilterDialog = true; viewModel.setFilterDialogArgs(args) })
     if (showFilterDialog) {
-        FilterDialog(name = name, stringResId = stringResId, { argMap ->
+        FilterDialog(stringResId = stringResId, { argMap ->
             val effect = callback(argMap)
-            UserEffect(name, stringResId, icon, effect)
+            UserEffect(stringResId, icon, effect)
         }, transformManager) {
             showFilterDialog = false
         }
@@ -1007,7 +1003,6 @@ private fun DialogFilterDrawerItem(
 
 @Composable
 private fun FilterDrawerItem(
-    name: String,
     stringResId: Int,
     icon: ImageVector,
     onClick: () -> Unit
@@ -1016,7 +1011,7 @@ private fun FilterDrawerItem(
         IconButton(onClick = onClick) {
             Icon(
                 imageVector = icon,
-                contentDescription = name
+                contentDescription = stringResource(stringResId)
             )
         }
         Text(
@@ -1029,7 +1024,6 @@ private fun FilterDrawerItem(
 
 @Composable
 private fun FilterDialog(
-    name: String,
     stringResId: Int,
     callback: (Map<String, String>) -> UserEffect,
     transformManager: TransformManager,
@@ -1051,7 +1045,7 @@ private fun FilterDialog(
                     error = true
                     break
                 }
-                callbackArgsMap[arg.name] = string
+                callbackArgsMap[arg.key] = string
             }
             if (!error) {
                 val userEffect = callback(callbackArgsMap.toMap())
@@ -1066,8 +1060,7 @@ private fun FilterDialog(
             if (textfield != null) {
                 item {
                     TextfieldSetting(
-                        name = arg.name,
-                        stringResId = arg.stringResId,
+                        name = stringResource(arg.stringResId),
                         onValueChanged = {
                             val error = textfield(it)
                             if (error.isEmpty()) {
@@ -1082,7 +1075,7 @@ private fun FilterDialog(
             } else if (dropdown != null) {
                 item {
                     DropdownSetting(
-                        name = arg.name, stringResId = arg.stringResId,
+                        name = stringResource(arg.stringResId),
                         options = dropdown.toImmutableList()
                     ) {
                         arg.selection = it
@@ -1156,7 +1149,6 @@ private fun ExportDialog(
             item {
                 DropdownSetting(
                     name = stringResource(R.string.media_to_export),
-                    stringResId = R.string.media_to_export,
                     options = getMediaToExportStrings()
                 ) {
                     exportSettings.setMediaToExportString(it)
@@ -1165,7 +1157,6 @@ private fun ExportDialog(
             item {
                 DropdownSetting(
                     name = stringResource(R.string.hdr_mode),
-                    stringResId = R.string.hdr_mode,
                     options = getHdrModesStrings()
                 ) {
                     exportSettings.setHdrModeString(it)
@@ -1174,7 +1165,6 @@ private fun ExportDialog(
             item {
                 DropdownSetting(
                     name = stringResource(R.string.audio_type),
-                    stringResId = R.string.audio_type,
                     options = getAudioMimeTypesStrings()
                 ) {
                     exportSettings.setAudioMimeTypeString(it)
@@ -1183,7 +1173,6 @@ private fun ExportDialog(
             item {
                 DropdownSetting(
                     name = stringResource(R.string.video_type),
-                    stringResId = R.string.video_type,
                     options = getVideoMimeTypesStrings()
                 ) {
                     exportSettings.setVideoMimeTypeString(it)
@@ -1191,8 +1180,7 @@ private fun ExportDialog(
             }
             item {
                 TextfieldSetting(
-                    name = stringResource(R.string.speed),
-                    stringResId = R.string.speed
+                    name = stringResource(R.string.speed)
                 ) {
                     val errorMsg = validateUFloatAndNonzero(it)
                     if (errorMsg.isEmpty()) {
@@ -1205,8 +1193,7 @@ private fun ExportDialog(
             }
             item {
                 TextfieldSetting(
-                    name = stringResource(R.string.framerate),
-                    stringResId = R.string.framerate
+                    name = stringResource(R.string.framerate)
                 ) {
                     var errorMsg = validateUFloatAndNonzero(it)
                     if (errorMsg.isEmpty()) {

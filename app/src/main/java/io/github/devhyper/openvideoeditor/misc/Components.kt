@@ -107,7 +107,7 @@ fun SwitchSetting(
 }
 
 @Composable
-fun TextfieldSetting(name: String, stringResId: Int, onValueChanged: (String) -> String) {
+fun TextfieldSetting(name: String, onValueChanged: (String) -> String) {
     var text by remember { mutableStateOf("") }
     var errorMsg by remember { mutableStateOf("") }
     OutlinedTextField(
@@ -116,7 +116,7 @@ fun TextfieldSetting(name: String, stringResId: Int, onValueChanged: (String) ->
             errorMsg = onValueChanged(it)
             text = it
         },
-        label = { Text(stringResource(stringResId)) },
+        label = { Text(name) },
         isError = errorMsg.isNotEmpty(),
         supportingText = { Text(errorMsg) })
 }
@@ -125,7 +125,6 @@ fun TextfieldSetting(name: String, stringResId: Int, onValueChanged: (String) ->
 @Composable
 fun DropdownSetting(
     name: String,
-    stringResId: Int,
     options: ImmutableList<String>,
     onSelectionChanged: (String) -> Unit
 ) {
@@ -142,7 +141,7 @@ fun DropdownSetting(
             readOnly = true,
             value = selectedOptionText,
             onValueChange = {},
-            label = { Text(stringResource(stringResId)) },
+            label = { Text(name) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
         )
