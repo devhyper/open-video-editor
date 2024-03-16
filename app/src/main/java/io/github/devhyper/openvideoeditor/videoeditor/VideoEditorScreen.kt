@@ -21,14 +21,18 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsIgnoringVisibility
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -126,6 +130,7 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun VideoEditorScreen(
     uri: String,
@@ -268,10 +273,12 @@ fun VideoEditorScreen(
                     }
                 }
 
-                val androidViewModifier = if (useUiCascadingEffect) {
-                    Modifier.clickable { viewModel.setControlsVisible(!controlsVisible) }
+                var androidViewModifier =
+                    Modifier.windowInsetsPadding(WindowInsets.systemBarsIgnoringVisibility)
+                androidViewModifier = if (useUiCascadingEffect) {
+                    androidViewModifier.clickable { viewModel.setControlsVisible(!controlsVisible) }
                 } else {
-                    Modifier.clickable(
+                    androidViewModifier.clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) { viewModel.setControlsVisible(!controlsVisible) }
