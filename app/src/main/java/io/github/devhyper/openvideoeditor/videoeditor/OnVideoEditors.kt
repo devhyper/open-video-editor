@@ -1,9 +1,11 @@
 package io.github.devhyper.openvideoeditor.videoeditor
 
+import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.TypefaceSpan
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.absoluteOffset
@@ -22,6 +24,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.toFontFamily
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import androidx.media3.effect.Crop
@@ -29,6 +33,8 @@ import androidx.media3.effect.OverlaySettings
 import androidx.media3.effect.TextOverlay
 import io.github.devhyper.openvideoeditor.R
 import io.github.devhyper.openvideoeditor.misc.ColorPickerSetting
+import io.github.devhyper.openvideoeditor.misc.CompatTypefaceSpan
+import io.github.devhyper.openvideoeditor.misc.FontPickerSetting
 import io.github.devhyper.openvideoeditor.misc.ListDialog
 import io.github.devhyper.openvideoeditor.misc.ResizableRectangle
 import io.github.devhyper.openvideoeditor.misc.TextfieldSetting
@@ -44,7 +50,7 @@ import kotlin.math.roundToInt
 @Composable
 fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
     val update =
-        { offsetX: Float, offsetY: Float, textValue: String, videoWidth: Float, videoHeight: Float, textBackgroundColor: Color, textForegroundColor: Color, textSize: Int ->
+        { offsetX: Float, offsetY: Float, textValue: String, videoWidth: Float, videoHeight: Float, textBackgroundColor: Color, textForegroundColor: Color, textSize: Int, textFontPath: String? ->
             effectFlow.update {
                 {
                     val overlaySettings = OverlaySettings.Builder()
@@ -57,6 +63,14 @@ fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
                         setFullLengthSpan(ForegroundColorSpan(textForegroundColor.toArgb()))
                         setFullLengthSpan(BackgroundColorSpan(textBackgroundColor.toArgb()))
                         setFullLengthSpan(AbsoluteSizeSpan(spToPx(textSize.sp.value)))
+                        if (textFontPath != null) {
+                            val typeface = Typeface.createFromFile(textFontPath)
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                                setFullLengthSpan(TypefaceSpan(typeface))
+                            } else {
+                                setFullLengthSpan(CompatTypefaceSpan(typeface))
+                            }
+                        }
                     }
                     TextOverlay.createStaticTextOverlay(
                         spanString,
@@ -69,6 +83,8 @@ fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
     var textSize by remember { mutableIntStateOf(12) }
     var textBackgroundColor by remember { mutableStateOf(Color.Transparent) }
     var textForegroundColor by remember { mutableStateOf(Color.Black) }
+    var textFont: Font? by remember { mutableStateOf(null) }
+    var textFontPath: String? by remember { mutableStateOf(null) }
     if (showListDialog) {
         ListDialog(
             title = stringResource(R.string.text),
@@ -99,12 +115,20 @@ fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
                     onSelectionChanged = {
                         textBackgroundColor = it
                     })
+            }
+            item {
                 ColorPickerSetting(
                     name = stringResource(R.string.foreground_color),
                     defaultColor = Color.Black,
                     onSelectionChanged = {
                         textForegroundColor = it
                     })
+            }
+            item {
+                FontPickerSetting(stringResource(R.string.font)) { font, path ->
+                    textFont = font
+                    textFontPath = path
+                }
             }
         }
     } else {
@@ -123,7 +147,8 @@ fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
                     videoHeight,
                     textBackgroundColor,
                     textForegroundColor,
-                    textSize
+                    textSize,
+                    textFontPath
                 )
             }
             updateFlow()
@@ -142,6 +167,7 @@ fun TextEditor(effectFlow: MutableStateFlow<EffectConstructor?>) {
                     }
                 },
                 textStyle = TextStyle.Default.copy(
+                    fontFamily = textFont?.toFontFamily(),
                     fontSize = textSize.sp,
                     color = textForegroundColor,
                     background = textBackgroundColor

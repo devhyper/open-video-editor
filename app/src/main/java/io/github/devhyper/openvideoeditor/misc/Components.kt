@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -53,14 +54,18 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.godaddy.android.colorpicker.ClassicColorPicker
 import com.godaddy.android.colorpicker.HsvColor
 import io.github.devhyper.openvideoeditor.R
 import kotlinx.collections.immutable.ImmutableList
+import java.io.File
 import kotlin.math.roundToInt
 
 
@@ -254,6 +259,79 @@ fun ColorPickerSetting(
         }
     }
 }
+
+@Composable
+fun FontPickerSetting(
+    name: String,
+    onFontChosen: (font: Font?, fontPath: String?) -> Unit,
+) {
+    val fonts = File("/system/fonts")
+        .listFiles()!!.associateWith { Font(it) }
+
+    var showMenu by remember { mutableStateOf(false) }
+    var fontPath: String? by remember { mutableStateOf(null) }
+
+    val fontTextModifier = Modifier.clickable { showMenu = true }
+
+    Box {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(modifier = Modifier.padding(end = 16.dp), text = name)
+            Box {
+                if (fontPath == null) {
+                    Text(stringResource(R.string.default_text), modifier = fontTextModifier)
+                } else {
+                    val fontFile = File(fontPath!!)
+                    Text(
+                        fontFile.nameWithoutExtension,
+                        fontFamily = FontFamily(Font(fontFile)),
+                        modifier = fontTextModifier
+                    )
+                }
+                // https://issuetracker.google.com/issues/242398344
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false },
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.default_text), fontSize = 25.sp) },
+                        onClick = {
+                            showMenu = false
+                            fontPath = null
+                            onFontChosen(null, null)
+                        }
+                    )
+                    Box(modifier = Modifier.size(width = 200.dp, height = 300.dp)) {
+                        LazyColumn {
+                            for ((file, font) in fonts) {
+                                item {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                file.nameWithoutExtension,
+                                                fontFamily = FontFamily(font),
+                                                fontSize = 25.sp,
+                                            )
+                                        },
+                                        onClick = {
+                                            showMenu = false
+                                            fontPath = file.path
+                                            onFontChosen(font, fontPath)
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun ListDialog(

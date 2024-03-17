@@ -2,11 +2,15 @@ package io.github.devhyper.openvideoeditor.misc
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Paint
+import android.graphics.Typeface
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextPaint
+import android.text.style.TypefaceSpan
 import android.util.TypedValue
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
@@ -49,8 +53,8 @@ fun getFileNameFromUri(context: Context, uri: Uri): String {
 
 fun getVideoFileDuration(context: Context, uri: Uri): Long? {
     val retriever = MediaMetadataRetriever()
-    retriever.setDataSource(context, uri);
-    val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+    retriever.setDataSource(context, uri)
+    val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
     retriever.release()
     return time?.toLong()
 }
@@ -161,3 +165,30 @@ fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
 @Composable
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
+
+class CompatTypefaceSpan(private val typeface: Typeface) :
+    TypefaceSpan(null) {
+    override fun updateDrawState(ds: TextPaint) {
+        applyCustomTypeFace(ds, typeface)
+    }
+
+    override fun updateMeasureState(paint: TextPaint) {
+        applyCustomTypeFace(paint, typeface)
+    }
+
+    companion object {
+        private fun applyCustomTypeFace(paint: Paint, tf: Typeface) {
+            val oldStyle: Int
+            val old = paint.typeface
+            oldStyle = old?.style ?: 0
+            val fake = oldStyle and tf.style.inv()
+            if (fake and Typeface.BOLD != 0) {
+                paint.isFakeBoldText = true
+            }
+            if (fake and Typeface.ITALIC != 0) {
+                paint.textSkewX = -0.25f
+            }
+            paint.typeface = tf
+        }
+    }
+}

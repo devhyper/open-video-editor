@@ -140,11 +140,11 @@ fun VideoEditorScreen(
 
     val viewModel = viewModel { VideoEditorViewModel() }
 
-    val dataStore = SettingsDataStore(LocalContext.current)
+    val context = LocalContext.current
+
+    val dataStore = SettingsDataStore(context)
 
     val controlsVisible by viewModel.controlsVisible.collectAsState()
-
-    val context = LocalContext.current
 
     val player = remember {
         ExoPlayer.Builder(context)
@@ -273,40 +273,41 @@ fun VideoEditorScreen(
                     }
                 }
 
-                var androidViewModifier =
-                    Modifier.windowInsetsPadding(WindowInsets.systemBarsIgnoringVisibility)
-                androidViewModifier = if (useUiCascadingEffect) {
-                    androidViewModifier.clickable { viewModel.setControlsVisible(!controlsVisible) }
+                val androidViewModifier = if (useUiCascadingEffect) {
+                    Modifier.clickable { viewModel.setControlsVisible(!controlsVisible) }
                 } else {
-                    androidViewModifier.clickable(
+                    Modifier.clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) { viewModel.setControlsVisible(!controlsVisible) }
                 }
 
-                AndroidView(
-                    modifier = androidViewModifier,
-                    factory = {
-                        textureView = TextureView(context).apply {
-                            layoutParams =
-                                FrameLayout.LayoutParams(
-                                    ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.MATCH_PARENT
-                                )
+                Box(modifier = Modifier.windowInsetsPadding(WindowInsets.systemBarsIgnoringVisibility)) {
+                    AndroidView(
+                        modifier = androidViewModifier,
+                        factory = {
+                            textureView = TextureView(context).apply {
+                                layoutParams =
+                                    FrameLayout.LayoutParams(
+                                        ViewGroup.LayoutParams.MATCH_PARENT,
+                                        ViewGroup.LayoutParams.MATCH_PARENT
+                                    )
+                            }
+                            textureView!!
                         }
-                        textureView!!
-                    }
-                )
+                    )
 
-                val videoFormat = player.videoFormat
-                if (videoFormat != null) {
-                    Box(
-                        modifier = Modifier
-                            .width(videoFormat.width.dp)
-                            .height(videoFormat.height.dp)
-                            .align(Alignment.Center)
-                    ) {
-                        currentEditingEffect?.Editor()
+                    val videoFormat = player.videoFormat
+                    if (videoFormat != null) {
+                        Box(
+                            modifier = Modifier
+                                .width(videoFormat.width.dp)
+                                .height(videoFormat.height.dp)
+                                .align(Alignment.Center)
+                                .windowInsetsPadding(WindowInsets.systemBarsIgnoringVisibility)
+                        ) {
+                            currentEditingEffect?.Editor()
+                        }
                     }
                 }
 
@@ -1134,7 +1135,7 @@ private fun ExportDialog(
                 exportString = context.getString(R.string.ffmpeg_error)
             }
             transformManager.export(
-                LocalContext.current,
+                context,
                 exportSettings,
                 transformerListener,
                 onFFmpegError

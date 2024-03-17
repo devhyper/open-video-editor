@@ -64,4 +64,6 @@
     <string name="setting_info">Setting info</string>
     <string name="enabling_lossless_cut_will_only_export_trims">Enabling lossless cut will only export trims.</string>
     <string name="ffmpeg_error">FFmpeg Error</string>
+    <string name="default_text">Default</string>
+    <string name="font">Font</string>
 </resources>
