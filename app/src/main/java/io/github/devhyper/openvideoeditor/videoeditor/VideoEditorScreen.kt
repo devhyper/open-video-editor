@@ -223,11 +223,14 @@ fun VideoEditorScreen(
                             ) {
                                 super.onEvents(player, events)
 
-                                fpm = (player.videoFormat?.frameRate ?: 0F) / 1000F
-                                if (player.duration > 0L && fpm > 0F) {
+                                if (player.duration > 0L) {
                                     totalDuration = player.duration
-                                    totalDurationFrames = (totalDuration * fpm).toLong()
+                                    fpm = (player.videoFormat?.frameRate ?: 0F) / 1000F
+                                    if (fpm > 0F) {
+                                        totalDurationFrames = (totalDuration * fpm).toLong()
+                                    }
                                 }
+
                                 isPlaying = player.isPlaying
                                 playbackState = player.playbackState
 
