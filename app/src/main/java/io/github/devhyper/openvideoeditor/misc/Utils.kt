@@ -39,16 +39,18 @@ import java.util.concurrent.TimeUnit
 
 
 fun getFileNameFromUri(context: Context, uri: Uri): String {
-    val fileName: String?
+    var fileName: String? = null
     val cursor = context.contentResolver.query(uri, null, null, null, null)
     val nameIndex = cursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-    cursor?.moveToFirst()
-    fileName = nameIndex?.let { cursor.getString(it) }
-    cursor?.close()
-    if (fileName.isNullOrEmpty()) {
-        return "null"
+    val cursorHasValue = cursor?.moveToFirst()
+    if (cursorHasValue == true) {
+        fileName = nameIndex?.let { cursor.getString(it) }
     }
-    return fileName
+    cursor?.close()
+    if (!fileName.isNullOrEmpty()) {
+        return fileName
+    }
+    return "null"
 }
 
 fun getVideoFileDuration(context: Context, uri: Uri): Long? {
