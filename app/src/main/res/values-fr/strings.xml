@@ -21,7 +21,6 @@
     <string name="error">Erreur</string>
     <string name="select_a_file_to_edit">Sélectionner un fichier à modifier</string>
     <string name="project">Projet</string>
-    <string name="export_progress_animation">export_progress_animation</string>
     <string name="video_layers">Couches vidéo</string>
     <string name="forward_10_seconds">Avance 10 secondes</string>
     <string name="play_pause">Lecture/Pause</string>

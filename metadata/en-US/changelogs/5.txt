@@ -1,0 +1,12 @@
+New translations:
+    - Chinese (Simplified)
+    - Chinese (Traditional)
+    - French
+New features:
+    - Lossless cut
+    - Text effect font customization
+Bug fixes:
+    - Fix crash trying to take persistable permissions
+    - Prevent video resizing on immersive mode
+Misc:
+    - Update dependencies
