@@ -1,2 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="export">Exportar</string>
+    <string name="decrement_frame">Diminuir frame</string>
+    <string name="accept_filter">Aceitar filtro</string>
+    <string name="decline_filter">Recusar filtro</string>
+    <string name="hdr_mode">Modo HDR</string>
+    <string name="audio_type">Tipo de áudio</string>
+    <string name="exporting">Exportando</string>
+    <string name="dismiss">Descartar</string>
+    <string name="error">Erro</string>
+    <string name="select_a_file_to_edit">Selecionar um arquivo para editar</string>
+    <string name="project">Projeto</string>
+    <string name="video_layers">Camadas de vídeo</string>
+    <string name="forward_10_seconds">Avançar 10 segundos</string>
+    <string name="replay_5_seconds">Repetir 5 segundos</string>
+    <string name="framerate">Taxa de quadros</string>
+    <string name="back">Voltar</string>
+    <string name="settings">Configurações</string>
+    <string name="remove_filter">Remover filtro</string>
+    <string name="video_filters">Filtros de vídeo</string>
+    <string name="trim">Cortar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="add">Adicionar</string>
+    <string name="media_to_export">Mídia para exportar</string>
+    <string name="video_type">Tipo de vídeo</string>
+    <string name="exported">Exportado</string>
+    <string name="play_pause">Reproduzir/Pausar</string>
+    <string name="more_vertical_options">Mais opções verticais</string>
+    <string name="speed">Velocidade</string>
+    <string name="theme">Tema</string>
+</resources>
