@@ -1,2 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="forward_10_seconds">Avantiar 10 secundas</string>
+    <string name="play_pause">Reproducer/Pausar</string>
+    <string name="speed">Velocitate</string>
+    <string name="use_legacy_file_picker">Usar le selector ancian de files</string>
+    <string name="set">Definir</string>
+    <string name="save_project">Salveguardar le projecto</string>
+    <string name="default_text">Predefinite</string>
+    <string name="cancel">Cancellar</string>
+    <string name="add">Adder</string>
+    <string name="media_to_export">Medio a exportar</string>
+    <string name="hdr_mode">Modo HDR</string>
+    <string name="audio_type">Typo de audio</string>
+    <string name="exported">Exportate</string>
+    <string name="video_type">Typo de video</string>
+    <string name="exporting">In exportation</string>
+    <string name="dismiss">Dimitter</string>
+    <string name="error">Error</string>
+    <string name="select_a_file_to_edit">Selige un file a modificar</string>
+    <string name="project">Projecto</string>
+    <string name="more_vertical_options">Plus de optiones vertical</string>
+    <string name="theme">Thema</string>
+    <string name="background_color">Color de fundo</string>
+    <string name="foreground_color">Color de prime plano</string>
+    <string name="text">Texto</string>
+    <string name="size">Dimension</string>
+    <string name="color_picker">Selector de color</string>
+    <string name="accept">Acceptar</string>
+    <string name="video">Video</string>
+    <string name="grayscale">Scala de gris</string>
+    <string name="invert_colors">Inverter le colores</string>
+    <string name="resolution">Resolution</string>
+    <string name="layout">Disposition</string>
+    <string name="scale">Scala</string>
+    <string name="crop">Taliar</string>
+    <string name="ffmpeg_error">Error de FFmpeg</string>
+    <string name="export">Exportar</string>
+    <string name="settings">Parametros</string>
+    <string name="accept_filter">Acceptar le filtro</string>
+    <string name="remove_filter">Remover le filtro</string>
+    <string name="video_filters">Filtros de video</string>
+    <string name="trim">Accurtar</string>
+</resources>
