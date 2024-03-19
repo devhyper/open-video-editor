@@ -1,0 +1,7 @@
+Toque e segure o quadro seguinte/anterior para repetir
+Correção de mudança de rotação da tela que fazia com que as edições fossem perdidas
+Correção de impossibilidade de selecionar um vídeo
+Remove a extensão do arquivo ao selecionar o local de exportação
+Adiciona o aplicativo como um atalho no menu Compartilhar
+Corrige elementos da IU que não são responsivos/adaptáveis
+Corrige botões de diálogo ocultos em determinados tamanhos de tela

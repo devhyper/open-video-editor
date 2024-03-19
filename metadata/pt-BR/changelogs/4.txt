@@ -1,0 +1,8 @@
+Tradução parcial em chinês
+Atualizão de dependências
+Alterar a velocidade e a taxa de quadros do vídeo
+Adicionar texto ao vídeo
+Salvar projeto
+Cortar
+Cores invertidas
+Procurar um quadro específico
