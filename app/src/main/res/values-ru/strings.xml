@@ -11,4 +11,9 @@
     <string name="video">Видео</string>
     <string name="add">Добавить</string>
     <string name="resolution">Разрешение</string>
+    <string name="size">Размер</string>
+    <string name="back">Назад</string>
+    <string name="select_a_file_to_edit">Выберите файл для редактирования</string>
+    <string name="background_color">Цвет фона</string>
+    <string name="font">Шрифт</string>
 </resources>

@@ -8,8 +8,8 @@
     <string name="open_layer_drawer">開啟圖層面板</string>
     <string name="open_filter_drawer">開啟篩選器面板</string>
     <string name="hdr_mode">HDR 模式</string>
-    <string name="audio_type">音訊類型</string>
-    <string name="video_type">視訊類型</string>
+    <string name="audio_type">音訊編碼類型</string>
+    <string name="video_type">視訊編碼類型</string>
     <string name="remove_filter">移除篩選器</string>
     <string name="media_to_export">匯出媒體</string>
     <string name="trim">剪輯</string>
@@ -58,7 +58,9 @@
     <string name="background_color">背景色彩</string>
     <string name="foreground_color">前景色彩</string>
     <string name="color_picker">色彩選擇器</string>
-    <string name="video">視訊</string>
+    <string name="video">影片</string>
     <string name="video_filters">視訊篩選器</string>
     <string name="input_frame_must_less_or_equal">輸入必須小於或等於</string>
+    <string name="default_text">預設</string>
+    <string name="font">字型</string>
 </resources>

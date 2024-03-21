@@ -1,0 +1,12 @@
+Novas traduções:
+     - Chinês (Simplificado)
+     - Chinês (Tradicional)
+     - Francês
+Novas características:
+     - Corte sem perdas
+     - Personalização da fonte do efeito de texto
+Correções de bugs:
+     - Correção de falha ao tentar obter permissões persistentes
+     - Impedir o redimensionamento de vídeo no modo imersivo
+Diversos:
+     - Atualização de dependências
