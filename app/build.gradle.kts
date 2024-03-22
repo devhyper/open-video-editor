@@ -58,6 +58,7 @@ android {
     androidResources {
         generateLocaleConfig = true
     }
+    buildToolsVersion = "35.0.0 rc2"
 }
 
 dependencies {
