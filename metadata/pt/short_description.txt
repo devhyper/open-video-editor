@@ -1,1 +1,1 @@
-Editor de vídeo Android de código aberto, feito com Media3 e Jetpack Compose.
+Editor de vídeo para Android, código aberto, feito com Media3 e Jetpack Compose.
