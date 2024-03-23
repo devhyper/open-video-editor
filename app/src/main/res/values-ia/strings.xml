@@ -41,4 +41,6 @@
     <string name="remove_filter">Remover le filtro</string>
     <string name="video_filters">Filtros de video</string>
     <string name="trim">Accurtar</string>
+    <string name="back">Retornar</string>
+    <string name="open_filter_drawer">Aperir le tiratorio de filtros</string>
 </resources>
