@@ -42,9 +42,9 @@
     <string name="crop">裁切</string>
     <string name="framerate_must_lower">影格速率必須小於原始視訊的影格速率</string>
     <string name="setting_info">設定資訊</string>
-    <string name="lossless_cut">無損裁減</string>
+    <string name="lossless_cut">無損裁剪</string>
     <string name="ffmpeg_error">FFmpeg 錯誤</string>
-    <string name="enabling_lossless_cut_will_only_export_trims">啟用無損裁減只能匯出剪輯。</string>
+    <string name="enabling_lossless_cut_will_only_export_trims">啟用無損裁剪只能匯出剪輯。</string>
     <string name="back">返回</string>
     <string name="export">匯出</string>
     <string name="settings">設定</string>
