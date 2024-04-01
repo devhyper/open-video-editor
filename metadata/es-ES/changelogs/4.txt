@@ -1,0 +1,8 @@
+Traducción parcial al chino
+Actualizar dependencias
+Cambiar la velocidad del video y la velocidad de fotogramas
+Texto en vídeo
+Guardar proyecto
+Cultivo
+Colores invertidos
+Buscar un marco específico

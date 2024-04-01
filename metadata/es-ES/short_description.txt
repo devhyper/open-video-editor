@@ -1,0 +1,1 @@
+Editor de vídeo Android de código abierto, desarrollo Media3 y Jetpack Compose.

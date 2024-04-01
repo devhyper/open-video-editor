@@ -1,0 +1,1 @@
+<p><i>Open Video Editor</i> te permite editar tus videos. Es compatible con HDR y permite aplicar filtros. Con esta aplicación también puedes recortar, escalar y rotar tus videos o incluso escalarlos en escala de grises. También es posible usar esta aplicación para extraer audio de un video, convertir un video HDR a SDR o convertirlo a un formato diferente.</p>

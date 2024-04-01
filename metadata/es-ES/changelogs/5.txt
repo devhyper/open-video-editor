@@ -1,0 +1,12 @@
+Nuevas traducciones:
+    - Chino (simplificado)
+    - Chino (tradicional)
+    - francés
+Nuevas funciones:
+    - Corte sin pérdidas
+    - Personalización de la fuente del efecto de texto
+Corrección de errores:
+    - Corrección de fallo al intentar tomar permisos persistentes
+    - Evitar el redimensionamiento de vídeo en modo inmersivo
+Varios
+    - Actualización de dependencias

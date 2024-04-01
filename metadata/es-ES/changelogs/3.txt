@@ -1,0 +1,7 @@
+Mantenga presionado el cuadro siguiente/anterior para repetir
+Se corrigió el cambio de rotación de la pantalla que causaba que se perdieran las ediciones.
+Se corrigió la imposibilidad de seleccionar un video.
+Eliminar la extensión del archivo al seleccionar la ubicación de exportación
+Agregue la aplicación como acceso directo al menú Compartir
+Reparar elementos de la interfaz de usuario que no responden o no se adaptan
+Reparar botones de diálogo ocultos en ciertos tamaños de pantalla
