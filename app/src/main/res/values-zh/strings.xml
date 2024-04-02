@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="back">返回</string>
     <string name="export">导出</string>
@@ -57,4 +58,10 @@
     <string name="layout">布局</string>
     <string name="degrees">角度</string>
     <string name="framerate_must_lower">帧率必须比原视频的帧率低</string>
+    <string name="enabling_lossless_cut_will_only_export_trims">开启无损剪切将只导出剪辑。</string>
+    <string name="ffmpeg_error">FFmpeg 错误</string>
+    <string name="default_text">默认</string>
+    <string name="font">字体</string>
+    <string name="lossless_cut">无损剪切</string>
+    <string name="setting_info">设置信息</string>
 </resources>
