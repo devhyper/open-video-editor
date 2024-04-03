@@ -62,4 +62,6 @@
     <string name="text">Texte</string>
     <string name="set">Appliquer</string>
     <string name="size">Taille</string>
+    <string name="default_text">Lorem Ipsum</string>
+    <string name="font">Police d\'écriture</string>
 </resources>
