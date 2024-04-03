@@ -1,0 +1,7 @@
+Appui prolongé sur Frame suivante/précédente pour répéter l'action
+Rectif. changement de rotation d'écran qui fait perdre les modifications
+Rectif. impossible de sélectionner une vidéo
+Retiré extension de fichier au moment di choisir le dossier d'export
+Ajout de l'appli en raccourci dans le menu Partage
+Rectif. éléments UI qui n'étaient pas "responsive"
+Rectif. visibilité de boutons de menu sur certaines tailles d'écran

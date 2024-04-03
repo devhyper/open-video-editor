@@ -1,0 +1,12 @@
+Nouvelles traductions:
+    - Chinois (Simplifié)
+    - Chinois (Traditionnel)
+    - Français
+Nouvelles fonctionnalités:
+    - Découpage "lossless"
+    - Personnalisation des effets de polices de texte
+Correction de bugs:
+    - Rectif. crash lors de l'octroiement de permissions persistantes
+    - Rectif. recadrage intempestif de la video en mode immersif
+autres:
+    - Màj des dépendances

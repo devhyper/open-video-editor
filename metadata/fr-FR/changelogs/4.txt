@@ -1,0 +1,8 @@
+Traduction chinoise partielle
+Màj des dépendances
+Changer la vitesse et le framerate d'une vidéo
+Intégrer du texte à la vidéo
+Sauvegarder un projet
+Découper
+Inverser les couleurs
+Recherche d'une frame spécifique
