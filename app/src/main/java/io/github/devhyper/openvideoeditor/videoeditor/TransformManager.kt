@@ -3,8 +3,6 @@ package io.github.devhyper.openvideoeditor.videoeditor
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager.PERMISSION_DENIED
-import android.os.Binder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.core.net.toUri
@@ -251,20 +249,16 @@ class TransformManager {
             } else {
                 ProjectData(uri)
             }
-            val perm = context.checkUriPermission(
-                uri.toUri(), null, null,
-                Binder.getCallingPid(), Binder.getCallingUid(),
-                Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
-            if (perm != PERMISSION_DENIED) {
-                viewModel.setProjectSavingSupported(true)
+            var projectSavingSupported = true
+            try {
                 context.contentResolver.takePersistableUriPermission(
                     uri.toUri(),
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
-            } else {
-                viewModel.setProjectSavingSupported(false)
+            } catch (_: SecurityException) {
+                projectSavingSupported = false
             }
+            viewModel.setProjectSavingSupported(projectSavingSupported)
             hasInitialized = true
         }
         originalMedia = MediaItem.fromUri(projectData.uri)
