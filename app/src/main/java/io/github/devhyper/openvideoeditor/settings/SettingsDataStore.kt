@@ -19,6 +19,7 @@ class SettingsDataStore(private val context: Context) {
         val THEME = stringPreferencesKey("theme")
         val LEGACY_FILE_PICKER = booleanPreferencesKey("legacy_file_picker")
         val UI_CASCADING_EFFECT = booleanPreferencesKey("ui_cascading_effect")
+        val AMOLED_DARK_THEME = booleanPreferencesKey("amoled_dark_theme")
     }
 
     fun getThemeBlocking(): String {
@@ -38,6 +39,26 @@ class SettingsDataStore(private val context: Context) {
     suspend fun setTheme(value: String) {
         context.dataStore.edit { preferences ->
             preferences[THEME] = value
+        }
+    }
+
+    fun getAmoledBlocking(): Boolean {
+        return runBlocking {
+            val preferences = context.dataStore.data.first()
+            preferences[AMOLED_DARK_THEME] ?: false
+        }
+    }
+
+    fun getAmoledAsync(): Flow<Boolean> {
+        return context.dataStore.data
+            .map { preferences ->
+                preferences[AMOLED_DARK_THEME] ?: false
+            }
+    }
+
+    suspend fun setAmoled(value: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[AMOLED_DARK_THEME] = value
         }
     }
 

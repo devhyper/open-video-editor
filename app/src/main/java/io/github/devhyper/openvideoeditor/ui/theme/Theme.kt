@@ -49,11 +49,13 @@ fun OpenVideoEditorTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val dataStore = SettingsDataStore(LocalContext.current)
+    val theme by dataStore.getThemeAsync().collectAsState(dataStore.getThemeBlocking())
+    val amoled by dataStore.getAmoledAsync().collectAsState(dataStore.getAmoledBlocking())
+
     val darkTheme = if (forceDarkTheme) {
         true
     } else {
-        val dataStore = SettingsDataStore(LocalContext.current)
-        val theme by dataStore.getThemeAsync().collectAsState(dataStore.getThemeBlocking())
         when (theme) {
             "Light" -> false
             "Dark" -> true
@@ -61,7 +63,7 @@ fun OpenVideoEditorTheme(
         }
     }
 
-    val colorScheme = when {
+    var colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
@@ -70,6 +72,10 @@ fun OpenVideoEditorTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+    if (darkTheme && amoled) {
+        colorScheme = colorScheme.copy(background = Color.Black, surface = Color.Black)
+    }
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

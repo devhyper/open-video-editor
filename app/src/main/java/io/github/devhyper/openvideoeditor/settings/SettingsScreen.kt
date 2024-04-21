@@ -118,6 +118,19 @@ fun SettingsScreen() {
                                     }
                                 })
                         }
+                        item {
+                            val useAmoled = dataStore.getAmoledBlocking()
+                            SwitchSetting(
+                                name = stringResource(R.string.amoled_dark_theme),
+                                startChecked = useAmoled,
+                                onCheckChanged = {
+                                    if (it != useAmoled) {
+                                        scope.launch {
+                                            dataStore.setAmoled(it)
+                                        }
+                                    }
+                                })
+                        }
                     }
                 }
             )
