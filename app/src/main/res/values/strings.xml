@@ -66,4 +66,5 @@
     <string name="ffmpeg_error">FFmpeg Error</string>
     <string name="default_text">Default</string>
     <string name="font">Font</string>
+    <string name="amoled_dark_theme">AMOLED dark theme</string>
 </resources>
