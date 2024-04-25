@@ -66,7 +66,7 @@ class VideoEditorActivity : ComponentActivity() {
             }
 
         var uri: String? = null
-        if (intent.action == Intent.ACTION_EDIT) {
+        if (intent.action == Intent.ACTION_EDIT || intent.action == Intent.ACTION_VIEW) {
             intent.dataString?.let {
                 uri = it
             }
