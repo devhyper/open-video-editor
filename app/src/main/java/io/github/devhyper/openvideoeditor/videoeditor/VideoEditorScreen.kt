@@ -135,9 +135,9 @@ import kotlinx.coroutines.launch
 fun VideoEditorScreen(
     uri: String,
     createDocument: ActivityResultLauncher<String?>,
-    createProject: ActivityResultLauncher<String?>
+    createProject: ActivityResultLauncher<String?>,
+    requestVideoPermission: ActivityResultLauncher<String?>
 ) {
-
     val viewModel = viewModel { VideoEditorViewModel() }
 
     val context = LocalContext.current
@@ -163,7 +163,7 @@ fun VideoEditorScreen(
 
     val transformManager = remember {
         viewModel.transformManager.apply {
-            init(player, uri, context, viewModel)
+            init(player, uri, context, viewModel, requestVideoPermission)
             player.seekTo(currentTime)
         }
     }

@@ -1,8 +1,13 @@
 package io.github.devhyper.openvideoeditor.videoeditor
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.core.net.toUri
@@ -229,7 +234,11 @@ class TransformManager {
     lateinit var projectData: ProjectData
 
     fun init(
-        exoPlayer: ExoPlayer, uri: String, context: Context, viewModel: VideoEditorViewModel
+        exoPlayer: ExoPlayer,
+        uri: String,
+        context: Context,
+        viewModel: VideoEditorViewModel,
+        requestVideoPermission: ActivityResultLauncher<String?>
     ) {
         if (hasInitialized) {
             if (exoPlayer != player) {
@@ -249,14 +258,14 @@ class TransformManager {
             } else {
                 ProjectData(uri)
             }
-            var projectSavingSupported = true
-            try {
-                context.contentResolver.takePersistableUriPermission(
+            var projectSavingSupported = false
+            if (requestPersistablePermissions(
+                    context,
                     uri.toUri(),
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    requestVideoPermission
                 )
-            } catch (_: SecurityException) {
-                projectSavingSupported = false
+            ) {
+                projectSavingSupported = true
             }
             viewModel.setProjectSavingSupported(projectSavingSupported)
             hasInitialized = true
@@ -270,6 +279,31 @@ class TransformManager {
             setVideoEffects(getEffectArray())
             prepare()
         }
+    }
+
+    private fun requestPersistablePermissions(
+        context: Context,
+        uri: Uri,
+        requestVideoPermission: ActivityResultLauncher<String?>
+    ): Boolean {
+        try {
+            context.contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        } catch (_: SecurityException) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (context.checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
+                    requestVideoPermission.launch(Manifest.permission.READ_MEDIA_VIDEO)
+                }
+            } else {
+                if (context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestVideoPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                }
+            }
+            return false
+        }
+        return true
     }
 
     private fun getEffectArray(): MutableList<Effect> {
