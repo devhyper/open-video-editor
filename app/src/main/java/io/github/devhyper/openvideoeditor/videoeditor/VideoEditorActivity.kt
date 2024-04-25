@@ -19,9 +19,9 @@ import io.github.devhyper.openvideoeditor.misc.setupSystemUi
 
 
 class VideoEditorActivity : ComponentActivity() {
-    private lateinit var createDocument: ActivityResultLauncher<String?>
-    private lateinit var createProject: ActivityResultLauncher<String?>
-    private lateinit var requestVideoPermission: ActivityResultLauncher<String?>
+    private lateinit var createDocument: ActivityResultLauncher<String>
+    private lateinit var createProject: ActivityResultLauncher<String>
+    private lateinit var requestVideoPermission: ActivityResultLauncher<String>
     private lateinit var viewModel: VideoEditorViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +54,7 @@ class VideoEditorActivity : ComponentActivity() {
         }
         requestVideoPermission =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-                if (it == true) {
+                if (it) {
                     recreate()
                 } else {
                     val text = getString(R.string.permission_denied_grant_video_permissions)

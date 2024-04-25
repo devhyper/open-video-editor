@@ -134,9 +134,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun VideoEditorScreen(
     uri: String,
-    createDocument: ActivityResultLauncher<String?>,
-    createProject: ActivityResultLauncher<String?>,
-    requestVideoPermission: ActivityResultLauncher<String?>
+    createDocument: ActivityResultLauncher<String>,
+    createProject: ActivityResultLauncher<String>,
+    requestVideoPermission: ActivityResultLauncher<String>
 ) {
     val viewModel = viewModel { VideoEditorViewModel() }
 
@@ -365,8 +365,8 @@ private fun PlayerControls(
     isPlaying: () -> Boolean,
     title: () -> String,
     transformManager: TransformManager,
-    createDocument: ActivityResultLauncher<String?>,
-    createProject: ActivityResultLauncher<String?>,
+    createDocument: ActivityResultLauncher<String>,
+    createProject: ActivityResultLauncher<String>,
     onReplayClick: () -> Unit,
     onForwardClick: () -> Unit,
     onPauseToggle: () -> Unit,
@@ -457,8 +457,8 @@ private fun TopControls(
     modifier: Modifier = Modifier,
     title: () -> String,
     transformManager: TransformManager,
-    createDocument: ActivityResultLauncher<String?>,
-    createProject: ActivityResultLauncher<String?>
+    createDocument: ActivityResultLauncher<String>,
+    createProject: ActivityResultLauncher<String>
 ) {
     val activity = LocalContext.current as Activity
     val viewModel = viewModel { VideoEditorViewModel() }
@@ -1101,7 +1101,7 @@ private fun FilterDialog(
 @Composable
 private fun ExportDialog(
     transformManager: TransformManager,
-    createDocument: ActivityResultLauncher<String?>,
+    createDocument: ActivityResultLauncher<String>,
     title: String,
     activity: Activity,
     onDismissRequest: () -> Unit

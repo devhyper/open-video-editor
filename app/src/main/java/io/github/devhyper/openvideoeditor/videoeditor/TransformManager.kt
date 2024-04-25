@@ -238,7 +238,7 @@ class TransformManager {
         uri: String,
         context: Context,
         viewModel: VideoEditorViewModel,
-        requestVideoPermission: ActivityResultLauncher<String?>
+        requestVideoPermission: ActivityResultLauncher<String>
     ) {
         if (hasInitialized) {
             if (exoPlayer != player) {
@@ -284,7 +284,7 @@ class TransformManager {
     private fun requestPersistablePermissions(
         context: Context,
         uri: Uri,
-        requestVideoPermission: ActivityResultLauncher<String?>
+        requestVideoPermission: ActivityResultLauncher<String>
     ): Boolean {
         try {
             context.contentResolver.takePersistableUriPermission(
