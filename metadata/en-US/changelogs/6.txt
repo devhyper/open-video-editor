@@ -1,0 +1,13 @@
+New translations:
+    - Turkish @mikropsoft
+    - Portuguese @Diegofmar
+    - Spanish @gallegonovato
+New features:
+    - Allow view intent #73
+    - Add AMOLED dark theme #66
+Bug fixes:
+    - Fix crash on edit #70
+    - Fix crash on security exception
+Misc:
+    - Reduce app size
+    - Update dependencies
