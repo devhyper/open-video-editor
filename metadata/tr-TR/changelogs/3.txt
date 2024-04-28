@@ -1,0 +1,7 @@
+Tekrarlamak için sonraki/önceki kareye dokun ve basılı tut
+Ekran dönüşünü değiştirmenin düzenlemeleri kaybetmesi düzeltildi
+Video seçememe sorunu giderildi
+Dışa aktarma konumunu seçerken dosya uzantısını kaldır
+Uygulama Paylaş menüsüne kısayol olarak eklendi
+Kullanıcı arayüzü ögelerinin duyarlı/uyarlanabilir olmaması düzeltildi
+Belirli ekran boyutlarında gizli iletişim düğmeleri düzeltildi

@@ -1,0 +1,12 @@
+Yeni çeviriler:
+    - Çince (Basitleştirilmiş)
+    - Çince (Geleneksel)
+    - Fransızca
+Yeni özellikler:
+    - Kayıpsız kesim
+    - Metin efekti yazı tipi özelleştirme
+Hata düzeltmeleri:
+    - Kalıcı izinler almaya çalışırken oluşan çökme düzeltildi
+    - Sürükleyici modda videoyu yeniden boyutlandırmayı önle
+Çeşitli:
+    - Bağımlılıklar güncellendi

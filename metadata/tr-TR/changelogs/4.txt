@@ -1,0 +1,8 @@
+Kısmi Çince çeviri
+Bağımlılıklar güncellendi
+Video hızını ve kare hızını değiştir
+Video üzerine metin
+Projeyi kaydet
+Kırp
+Renkleri ters çevir
+Belirli bir kareye git

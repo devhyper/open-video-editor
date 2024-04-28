@@ -1,0 +1,1 @@
+<p><i>Open Video Editor</i> videolarınızı düzenlemenizi sağlar. HDR destekler ve filtreler uygulamaya izin verir. Bu uygulama ile ayrıca videolarınızı kırpabilir, ölçeklendirebilir ve döndürebilir, hatta gri tonlama yapabilirsiniz. Bu uygulamayı bir videodan ses çıkarmak, bir HDR videoyu SDR'ye veya farklı bir biçime dönüştürmek için de kullanabilirsiniz.</p>
