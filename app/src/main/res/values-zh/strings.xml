@@ -64,4 +64,6 @@
     <string name="font">字体</string>
     <string name="lossless_cut">无损剪切</string>
     <string name="setting_info">设置信息</string>
+    <string name="amoled_dark_theme">AMOLED 深色主题</string>
+    <string name="permission_denied_grant_video_permissions">权限被拒绝，请授予视频权限</string>
 </resources>
