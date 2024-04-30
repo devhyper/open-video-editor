@@ -30,13 +30,12 @@ class VideoEditorViewModel : ViewModel() {
     val filterDurationCallback: StateFlow<(LongRange) -> Unit> =
         _filterDurationCallback.asStateFlow()
 
-    private val _prevFilterDurationEditorSliderPosition = MutableStateFlow(0f..0f)
-    val prevFilterDurationEditorSliderPosition: StateFlow<ClosedFloatingPointRange<Float>> =
-        _prevFilterDurationEditorSliderPosition.asStateFlow()
-
     private val _filterDurationEditorSliderPosition = MutableStateFlow(0f..0f)
     val filterDurationEditorSliderPosition: StateFlow<ClosedFloatingPointRange<Float>> =
         _filterDurationEditorSliderPosition.asStateFlow()
+
+    private val _startFilterSelected = MutableStateFlow(true)
+    val startFilterSelected: StateFlow<Boolean> = _startFilterSelected.asStateFlow()
 
     private val _filterDialogArgs = MutableStateFlow<PersistentList<EffectDialogSetting>>(
         persistentListOf()
@@ -72,12 +71,12 @@ class VideoEditorViewModel : ViewModel() {
         _filterDurationCallback.update { value }
     }
 
-    fun setPrevFilterDurationEditorSliderPosition(value: ClosedFloatingPointRange<Float>) {
-        _prevFilterDurationEditorSliderPosition.update { value }
-    }
-
     fun setFilterDurationEditorSliderPosition(value: ClosedFloatingPointRange<Float>) {
         _filterDurationEditorSliderPosition.update { value }
+    }
+
+    fun setStartFilterSelected(value: Boolean) {
+        _startFilterSelected.update { value }
     }
 
     fun setFilterDialogArgs(value: PersistentList<EffectDialogSetting>) {

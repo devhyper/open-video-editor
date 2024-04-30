@@ -189,6 +189,12 @@ fun VideoEditorScreen(
     val useUiCascadingEffect by dataStore.getUiCascadingEffectAsync()
         .collectAsState(dataStore.getUiCascadingEffectBlocking())
 
+    val filterDurationEditorEnabled by viewModel.filterDurationEditorEnabled.collectAsState()
+
+    val filterDurationEditorSliderPosition by viewModel.filterDurationEditorSliderPosition.collectAsState()
+
+    val startFilterSelected by viewModel.startFilterSelected.collectAsState()
+
     var textureView: TextureView? = null
 
     OpenVideoEditorTheme(forceDarkTheme = true, forceBlackStatusBar = true) {
@@ -350,7 +356,20 @@ fun VideoEditorScreen(
                     currentTime = { currentTime },
                     currentTimeFrames = { currentTimeFrames }
                 ) { timeMs: Float ->
-                    player.seekTo(timeMs.toLong())
+                    if (filterDurationEditorEnabled) {
+                        var range: ClosedFloatingPointRange<Float>? = null
+                        if (startFilterSelected && timeMs < filterDurationEditorSliderPosition.endInclusive) {
+                            range = timeMs..filterDurationEditorSliderPosition.endInclusive
+                        } else if (!startFilterSelected && timeMs > filterDurationEditorSliderPosition.start) {
+                            range = filterDurationEditorSliderPosition.start..timeMs
+                        }
+                        if (range != null) {
+                            viewModel.setFilterDurationEditorSliderPosition(range)
+                            player.seekTo(timeMs.toLong())
+                        }
+                    } else {
+                        player.seekTo(timeMs.toLong())
+                    }
                 }
             }
         }
@@ -617,7 +636,6 @@ private fun BottomControls(
 
     val filterDurationEditorEnabled by viewModel.filterDurationEditorEnabled.collectAsState()
     val filterDurationCallback by viewModel.filterDurationCallback.collectAsState()
-    val prevFilterDurationEditorSliderPosition by viewModel.prevFilterDurationEditorSliderPosition.collectAsState()
     val filterDurationEditorSliderPosition by viewModel.filterDurationEditorSliderPosition.collectAsState()
 
     Column(
@@ -637,15 +655,14 @@ private fun BottomControls(
                         if (range.endInclusive == 0f) {
                             range = range.start..1f
                         }
-                        viewModel.setPrevFilterDurationEditorSliderPosition(
-                            filterDurationEditorSliderPosition
-                        )
-                        viewModel.setFilterDurationEditorSliderPosition(range)
-                        if (prevFilterDurationEditorSliderPosition.start != filterDurationEditorSliderPosition.start) {
-                            onSeekChanged(range.start)
+                        if (filterDurationEditorSliderPosition.start != range.start) {
+                            transformManager.player.seekTo(range.start.toLong())
+                            viewModel.setStartFilterSelected(true)
                         } else {
-                            onSeekChanged(range.endInclusive)
+                            transformManager.player.seekTo(range.endInclusive.toLong())
+                            viewModel.setStartFilterSelected(false)
                         }
+                        viewModel.setFilterDurationEditorSliderPosition(range)
                     },
                     colors = SliderDefaults.colors(
                         inactiveTrackColor = MaterialTheme.colorScheme.inversePrimary
@@ -805,7 +822,9 @@ private fun BottomControls(
             onDismissRequest = { showFrameDialog = false },
             onAcceptRequest = {
                 if (newFrame >= 0L) {
-                    showFrameDialog = false; onSeekChanged((newFrame / videoFpm) + 1F)
+                    showFrameDialog = false
+                    val timeMs = (newFrame / videoFpm) + 1F
+                    onSeekChanged(timeMs)
                 }
             },
             listItems = {
@@ -821,7 +840,7 @@ private fun BottomControls(
                                     newFrame = newLongFrame
                                 } else {
                                     newFrame = -1L
-                                    return@TextfieldSetting context.getString(R.string.input_frame_must_less_or_equal) + "$durationFrames"
+                                    return@TextfieldSetting context.getString(R.string.input_frame_must_less_or_equal) + " $durationFrames"
                                 }
                             }
                             errorTxt

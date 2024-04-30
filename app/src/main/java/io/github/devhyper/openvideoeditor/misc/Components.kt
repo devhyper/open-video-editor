@@ -68,7 +68,6 @@ import kotlinx.collections.immutable.ImmutableList
 import java.io.File
 import kotlin.math.roundToInt
 
-
 @Composable
 fun CheckboxSetting(
     name: String,
