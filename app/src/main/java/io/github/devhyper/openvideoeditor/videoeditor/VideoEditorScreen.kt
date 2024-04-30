@@ -90,6 +90,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -832,6 +833,7 @@ private fun BottomControls(
                     Text("$videoTimeFrames/$durationFrames")
                     TextfieldSetting(
                         name = stringResource(R.string.new_frame),
+                        keyboardType = KeyboardType.Number,
                         onValueChanged = {
                             val errorTxt = validateUInt(it)
                             if (errorTxt.isEmpty()) {
@@ -1210,7 +1212,8 @@ private fun ExportDialog(
             }
             item {
                 TextfieldSetting(
-                    name = stringResource(R.string.speed)
+                    name = stringResource(R.string.speed),
+                    keyboardType = KeyboardType.Decimal
                 ) {
                     val errorMsg = validateUFloatAndNonzero(it)
                     if (errorMsg.isEmpty()) {
@@ -1223,7 +1226,8 @@ private fun ExportDialog(
             }
             item {
                 TextfieldSetting(
-                    name = stringResource(R.string.framerate)
+                    name = stringResource(R.string.framerate),
+                    keyboardType = KeyboardType.Decimal
                 ) {
                     var errorMsg = validateUFloatAndNonzero(it)
                     if (errorMsg.isEmpty()) {
