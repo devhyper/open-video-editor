@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Video Düzenleyiciyi Aç</string>
     <string name="back">Geri</string>
@@ -66,4 +67,6 @@
     <string name="ffmpeg_error">FFmpeg Hatası</string>
     <string name="default_text">Varsayılan</string>
     <string name="font">Yazı tipi</string>
+    <string name="amoled_dark_theme">AMOLED koyu tema</string>
+    <string name="permission_denied_grant_video_permissions">İzin reddedildi, video izinlerini verin</string>
 </resources>
