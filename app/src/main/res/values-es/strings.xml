@@ -64,4 +64,6 @@
     <string name="framerate_must_lower">La velocidad de fotogramas debe ser inferior a la velocidad de fotogramas del vídeo original</string>
     <string name="enabling_lossless_cut_will_only_export_trims">Al habilitar el corte sin pérdidas solo se exportarán las secciones acortadas.</string>
     <string name="crop">Cortar</string>
+    <string name="amoled_dark_theme">Tema oscuro AMOLED</string>
+    <string name="permission_denied_grant_video_permissions">Permiso denegado, conceder permisos de vídeo</string>
 </resources>

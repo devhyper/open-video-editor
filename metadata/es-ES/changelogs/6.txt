@@ -1,0 +1,13 @@
+Nuevas traducciones:
+    - Turco @mikropsoft
+    - Portugués @Diegofmar
+    - Español @gallegonovato
+Nuevas características:
+    - Permitir intento de vista #73
+    - Añadir tema oscuro AMOLED #66
+Corrección de errores:
+    - Corregir el bloqueo en la edición #70
+    - Corregir el bloqueo en la excepción de seguridad
+Miscelánea:
+    - Reducir el tamaño de la aplicación
+    - Actualizar dependencias
