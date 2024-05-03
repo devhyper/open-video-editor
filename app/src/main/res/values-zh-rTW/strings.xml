@@ -63,4 +63,5 @@
     <string name="input_frame_must_less_or_equal">輸入必須小於或等於</string>
     <string name="default_text">預設</string>
     <string name="font">字型</string>
+    <string name="amoled_dark_theme">AMOLED 深色模式</string>
 </resources>
