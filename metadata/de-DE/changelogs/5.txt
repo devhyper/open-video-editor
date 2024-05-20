@@ -1,0 +1,12 @@
+Neue Übersetzungen:
+    - Chinesisch (Vereinfacht)
+    - Chinesisch (traditionell)
+    - Französisch
+Neue Funktionen:
+    - Verlustfreier Schnitt
+    - Anpassung der Schriftart für Texteffekte
+Fehlerbehebungen:
+    - Behebung eines Absturzes beim Versuch, persistente Berechtigungen zu übernehmen
+    - Verhindern der Größenänderung von Videos im immersiven Modus
+Verschiedenes:
+    - Aktualisieren von Abhängigkeiten

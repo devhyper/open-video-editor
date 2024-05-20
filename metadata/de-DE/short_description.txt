@@ -1,0 +1,1 @@
+Quelloffenes Videobearbeitungsprogramm für Android, erstellt mit Media3 und Jetpack Compose.

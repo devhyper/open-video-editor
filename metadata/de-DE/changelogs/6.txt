@@ -1,0 +1,13 @@
+Neue Übersetzungen:
+    - Türkisch @mikropsoft
+    - Portugiesisch @Diegofmar
+    - Spanisch @gallegonovato
+Neue Funktionen:
+    - Ansichtsabsicht zulassen #73
+    - Dunkles AMOLED-Thema hinzufügen #66
+Fehlerbehebungen:
+    - Behebt Absturz beim Bearbeiten #70
+    - Absturz bei Sicherheitsausnahme behoben
+Verschiedenes:
+    - App-Größe reduzieren
+    - Abhängigkeiten aktualisieren

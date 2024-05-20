@@ -1,0 +1,7 @@
+Berühre und halte das nächste/vorherige Bild zum Wiederholen
+Beim Umschalten der Bildschirmdrehung gehen Bearbeitungen verloren behoben
+Kein Video mehr auswählen können behoben
+Entfernen der Dateierweiterung bei der Auswahl des Exportortes
+Hinzufügen der App als Verknüpfung im Menü Teilen
+Behebung von UI-Elementen, die nicht reaktionsfähig/anpassungsfähig sind
+Behebung von versteckten Dialogschaltflächen auf bestimmten Bildschirmgrößen
