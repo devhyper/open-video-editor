@@ -1,0 +1,13 @@
+Yeni çeviriler:
+    - Türkçe @mikropsoft
+    - Portekizce @Diegofmar
+    - İspanyolca @gallegonovato
+Yeni özellikler:
+    - Görüntüleme amacına izin verildi #73
+    - AMOLED koyu tema eklendi #66
+Hata düzeltmeleri:
+    - Düzenleme sırasında çökme düzeltildi #70
+    - Güvenlik istisnasında çökme düzeltildi
+Çeşitli:
+    - Uygulama boyutu azaltıldı
+    - Bağımlılıklar güncellendi
