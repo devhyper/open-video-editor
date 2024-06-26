@@ -4,7 +4,7 @@
     <string name="text">Текст</string>
     <string name="speed">Скорость</string>
     <string name="project">Проект</string>
-    <string name="export">Экспорт</string>
+    <string name="export">Экспортировать</string>
     <string name="cancel">Отмена</string>
     <string name="error">Ошибка</string>
     <string name="theme">Тема</string>
@@ -23,7 +23,7 @@
     <string name="accept">Применить</string>
     <string name="new_frame">Новый кадр</string>
     <string name="frames">Кадры</string>
-    <string name="use_ui_cascading_effect">Использовать эффект пошагового интерфейса</string>
+    <string name="use_ui_cascading_effect">Каскадный эффект UI</string>
     <string name="input_frame_must_less_or_equal">Количество введённых кадров должно быть меньше или равно</string>
     <string name="exported">Экспортировано</string>
     <string name="accept_filter">Применить фильтр</string>
@@ -48,7 +48,7 @@
     <string name="open_layer_drawer">Панель слоёв</string>
     <string name="video_filters">Фильтры</string>
     <string name="more_vertical_options">Больше вертикальных опций</string>
-    <string name="exporting">Экспортирование</string>
+    <string name="exporting">Идёт экспортирование</string>
     <string name="rotate">Ориентация</string>
     <string name="grayscale">Монохром</string>
     <string name="invert_colors">Негатив</string>
@@ -60,10 +60,10 @@
     <string name="layout">Компоновка</string>
     <string name="scale">Масштаб</string>
     <string name="default_text">По умолчанию</string>
-    <string name="lossless_cut">Без потерь обрезать</string>
-    <string name="enabling_lossless_cut_will_only_export_trims">Включение без потерь обрезать позволит экспортировать только обрезки.</string>
+    <string name="lossless_cut">Lossless cut</string>
+    <string name="enabling_lossless_cut_will_only_export_trims">Включение функции «Lossless cut» позволит экспортировать только обрезки.</string>
     <string name="ffmpeg_error">Ошибка FFmpeg</string>
     <string name="setting_info">Информация о настройке</string>
-    <string name="amoled_dark_theme">AMOLED тема</string>
+    <string name="amoled_dark_theme">Чёрная тема</string>
     <string name="permission_denied_grant_video_permissions">Отказано в доступе, предоставьте разрешение на использование видео</string>
 </resources>
