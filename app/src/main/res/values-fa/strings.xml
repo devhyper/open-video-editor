@@ -1,2 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="decrement_frame">کاستن فریم</string>
+    <string name="increment_frame">افزونش فریم</string>
+    <string name="accept_filter">پذیرش فیلتر</string>
+    <string name="decline_filter">کاهش فیلتر</string>
+    <string name="remove_filter">پاک‌کردن فیلتر</string>
+    <string name="trim">تراش</string>
+    <string name="cancel">وازدن</string>
+    <string name="media_to_export">رسانه برای برون‌برد</string>
+    <string name="video_type">سردگ ویدیو</string>
+    <string name="exported">برون‌برده شد</string>
+    <string name="dismiss">نادیده گرفتن</string>
+    <string name="project">پیرنگ</string>
+    <string name="video_layers">لایه‌های ویدیو</string>
+    <string name="play_pause">پخش/ایست</string>
+    <string name="text">نویسه</string>
+    <string name="set">نشاندن</string>
+    <string name="save_project">ذخیره‌ی پیرنگ</string>
+    <string name="frames">فریم‌ها</string>
+    <string name="new_frame">فریم نو</string>
+    <string name="video">ویدیو</string>
+    <string name="grayscale">فلس خاکستری</string>
+    <string name="invert_colors">واگرداندن رنگ‌ها</string>
+    <string name="resolution">کیفیت</string>
+    <string name="width">پهنا</string>
+    <string name="height">بلندا</string>
+    <string name="rotate">چرخاندن</string>
+    <string name="degrees">درجه‌ها</string>
+    <string name="crop">برش</string>
+    <string name="ffmpeg_error">ایرنگ FFmpeg</string>
+    <string name="font">کلک</string>
+    <string name="back">بازگشت</string>
+    <string name="amoled_dark_theme">پوسته‌ی مشکی ناب</string>
+    <string name="export">برون‌برد</string>
+    <string name="settings">پیکربندی‌ها</string>
+    <string name="layer_icon">نمادک لایه</string>
+    <string name="video_filters">فیلتر‌های ویدیو</string>
+    <string name="add">افزودن</string>
+    <string name="audio_type">سردگ صدا</string>
+    <string name="hdr_mode">سان HDR</string>
+    <string name="exporting">در حال برون‌بردن</string>
+    <string name="select_a_file_to_edit">گزیدن پرونده‌ای برای ویرایش</string>
+    <string name="error">ایرنگ</string>
+    <string name="forward_10_seconds">۱۰ ثانیه پس‌راندن</string>
+    <string name="replay_5_seconds">۵ ثانیه پیش‌راندن</string>
+    <string name="framerate">نرخ‌فریم</string>
+    <string name="speed">تندی</string>
+    <string name="theme">پوسته</string>
+    <string name="use_legacy_file_picker">بکارگیری پرونده گزین کهنه</string>
+    <string name="background_color">رنگ پس‌زمینه</string>
+    <string name="size">اندازه</string>
+    <string name="accept">پذیرش</string>
+    <string name="color_picker">رنگ گزین</string>
+    <string name="default_text">پیش‌گزیده</string>
+</resources>
