@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="export">Експорт</string>
+    <string name="settings">Налаштування</string>
+    <string name="accept_filter">Застосувати фільтр</string>
+    <string name="back">Назад</string>
+    <string name="decline_filter">Відхилити фільтр</string>
+</resources>
