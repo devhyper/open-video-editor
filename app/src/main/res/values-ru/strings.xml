@@ -23,7 +23,7 @@
     <string name="accept">Применить</string>
     <string name="new_frame">Новый кадр</string>
     <string name="frames">Кадры</string>
-    <string name="use_ui_cascading_effect">Каскадный эффект UI</string>
+    <string name="use_ui_cascading_effect">Каскадный интерфейс</string>
     <string name="input_frame_must_less_or_equal">Количество введённых кадров должно быть меньше или равно</string>
     <string name="exported">Экспортировано</string>
     <string name="accept_filter">Применить фильтр</string>
@@ -39,8 +39,8 @@
     <string name="play_pause">Воспроизведение/Пауза</string>
     <string name="replay_5_seconds">Перемотать на 5 секунд назад</string>
     <string name="framerate">Частота кадров</string>
-    <string name="use_legacy_file_picker">Использовать старый метод выбора файлов</string>
-    <string name="trim">Покадровая обрезка</string>
+    <string name="use_legacy_file_picker">Старый метод выбора файла</string>
+    <string name="trim">Нарезка</string>
     <string name="layer_icon">Значок</string>
     <string name="decrement_frame">Предыдущий кадр</string>
     <string name="increment_frame">Следующий кадр</string>
@@ -48,7 +48,7 @@
     <string name="open_layer_drawer">Панель слоёв</string>
     <string name="video_filters">Фильтры</string>
     <string name="more_vertical_options">Больше вертикальных опций</string>
-    <string name="exporting">Идёт экспортирование</string>
+    <string name="exporting">Идёт экспорт</string>
     <string name="rotate">Ориентация</string>
     <string name="grayscale">Монохром</string>
     <string name="invert_colors">Негатив</string>
