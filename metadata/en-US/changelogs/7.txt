@@ -1,0 +1,9 @@
+New features:
+    - Scan video file after exporting it #85 @4831c0
+    - Allow precise frame seeking for filters #77
+    - Specify keyboard type for certain fields
+Bug fixes:
+    - Fix rotation canceling export #80
+Misc:
+    - Sync translations
+    - Update dependencies
