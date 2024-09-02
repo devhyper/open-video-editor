@@ -1,7 +1,9 @@
 package io.github.devhyper.openvideoeditor.videoeditor
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.media.MediaScannerConnection
 import android.os.Handler
 import android.os.Looper.getMainLooper
 import android.view.TextureView
@@ -1164,7 +1166,7 @@ private fun ExportDialog(
                 transformerListener,
                 onFFmpegError
             )
-            ExportProgressDialog(transformManager) { exportDismissRequest() }
+            ExportProgressDialog(transformManager, outputPath) { exportDismissRequest() }
         }
     } else {
         ListDialog(
@@ -1281,8 +1283,10 @@ private fun ExportDialog(
 @Composable
 fun ExportProgressDialog(
     transformManager: TransformManager,
+    outputPath: String,
     onDismissRequest: () -> Unit
 ) {
+    val context = LocalContext.current
     var exportProgress by remember { mutableFloatStateOf(0F) }
     val animatedProgress = animateFloatAsState(
         targetValue = exportProgress,
@@ -1297,6 +1301,13 @@ fun ExportProgressDialog(
                 exportProgress = transformManager.getProgress()
                 if (exportProgress != 1F && exportProgress != -1F) {
                     progressHandler.postDelayed(this, REFRESH_RATE)
+                }
+
+                if (exportComplete) {
+                    MediaScannerConnection.scanFile(
+                        context, arrayOf(outputPath),
+                        null
+                    ) { _, _ -> }
                 }
             }
         }, REFRESH_RATE
