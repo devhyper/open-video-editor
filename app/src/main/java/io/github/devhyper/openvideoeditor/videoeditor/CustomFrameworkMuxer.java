@@ -46,7 +46,9 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-/** {@link Muxer} implementation that uses a {@link MediaMuxer}. */
+/**
+ * {@link Muxer} implementation that uses a {@link MediaMuxer}.
+ */
 /* package */ final class CustomFrameworkMuxer implements Muxer {
     public static final String MUXER_STOPPING_FAILED_ERROR_MESSAGE = "Failed to stop the MediaMuxer";
 
@@ -56,7 +58,9 @@ import java.util.Map;
     private static final ImmutableList<String> SUPPORTED_AUDIO_SAMPLE_MIME_TYPES =
             ImmutableList.of(MimeTypes.AUDIO_AAC, MimeTypes.AUDIO_AMR_NB, MimeTypes.AUDIO_AMR_WB);
 
-    /** {@link Muxer.Factory} for {@link CustomFrameworkMuxer}. */
+    /**
+     * {@link Muxer.Factory} for {@link CustomFrameworkMuxer}.
+     */
     public static final class Factory implements Muxer.Factory {
         private final long videoDurationMs;
         FileDescriptor fd;
@@ -104,7 +108,8 @@ import java.util.Map;
     private final Map<TrackToken, Long> trackTokenToLastPresentationTimeUs;
     private final Map<TrackToken, Long> trackTokenToPresentationTimeOffsetUs;
 
-    @Nullable private TrackToken videoTrackToken;
+    @Nullable
+    private TrackToken videoTrackToken;
 
     private boolean isStarted;
     private boolean isReleased;

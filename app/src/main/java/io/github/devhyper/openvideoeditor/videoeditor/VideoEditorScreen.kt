@@ -1,7 +1,6 @@
 package io.github.devhyper.openvideoeditor.videoeditor
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.media.MediaScannerConnection
 import android.os.Handler
@@ -488,7 +487,7 @@ private fun TopControls(
     val projectSavingSupported by viewModel.projectSavingSupported.collectAsState()
     val videoTitle = remember(title()) { title() }
     var showThreeDotMenu by remember { mutableStateOf(false) }
-    var showExportDialog by remember { mutableStateOf(false) }
+    var showExportDialog by rememberSaveable { mutableStateOf(false) }
 
     Row(
         modifier = modifier.padding(top = 16.dp),
@@ -1129,18 +1128,24 @@ private fun ExportDialog(
     activity: Activity,
     onDismissRequest: () -> Unit
 ) {
-    val context = LocalContext.current
-    val exportSettings: ExportSettings by remember { mutableStateOf(ExportSettings()) }
     val viewModel = viewModel { VideoEditorViewModel() }
     val outputPath by viewModel.outputPath.collectAsState()
+    var isExporting by rememberSaveable { mutableStateOf(false) }
+    val exportDismissRequest = {
+        isExporting = false
+        onDismissRequest()
+        viewModel.setOutputPath("")
+        activity.recreate()
+    }
+    if (isExporting) {
+        ExportProgressDialog(transformManager, outputPath) { exportDismissRequest() }
+        return
+    }
+    val context = LocalContext.current
+    val exportSettings: ExportSettings by remember { mutableStateOf(ExportSettings()) }
     var exportString: String? by remember { mutableStateOf(null) }
     var infoDialogText by remember { mutableStateOf("") }
     if (outputPath.isNotEmpty()) {
-        val exportDismissRequest = {
-            onDismissRequest()
-            viewModel.setOutputPath("")
-            activity.recreate()
-        }
         exportSettings.outputPath = outputPath
         if (exportString != null) {
             ExportFailedAlertDialog(exportString!!) {
@@ -1166,7 +1171,7 @@ private fun ExportDialog(
                 transformerListener,
                 onFFmpegError
             )
-            ExportProgressDialog(transformManager, outputPath) { exportDismissRequest() }
+            isExporting = true
         }
     } else {
         ListDialog(
@@ -1287,7 +1292,7 @@ fun ExportProgressDialog(
     onDismissRequest: () -> Unit
 ) {
     val context = LocalContext.current
-    var exportProgress by remember { mutableFloatStateOf(0F) }
+    var exportProgress by rememberSaveable { mutableFloatStateOf(0F) }
     val animatedProgress = animateFloatAsState(
         targetValue = exportProgress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,

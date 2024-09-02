@@ -31,11 +31,15 @@ import java.nio.ByteBuffer;
 @UnstableApi
 public final class CustomMuxer implements Muxer {
 
-    /** A {@link Muxer.Factory} for {@link CustomMuxer}. */
+    /**
+     * A {@link Muxer.Factory} for {@link CustomMuxer}.
+     */
     public static final class Factory implements Muxer.Factory {
         private final Muxer.Factory muxerFactory;
 
-        /** Creates an instance with {@code videoDurationMs} set to {@link C#TIME_UNSET}. */
+        /**
+         * Creates an instance with {@code videoDurationMs} set to {@link C#TIME_UNSET}.
+         */
         public Factory() {
             this(null, /* videoDurationMs= */ C.TIME_UNSET);
         }
@@ -48,8 +52,8 @@ public final class CustomMuxer implements Muxer {
          * Creates an instance.
          *
          * @param videoDurationMs The duration of the video track (in milliseconds) to enforce in the
-         *     output, or {@link C#TIME_UNSET} to not enforce. Only applicable when a video track is
-         *     {@linkplain #addTrack(Format) added}.
+         *                        output, or {@link C#TIME_UNSET} to not enforce. Only applicable when a video track is
+         *                        {@linkplain #addTrack(Format) added}.
          */
         public Factory(FileDescriptor fd, long videoDurationMs) {
             this.muxerFactory = new CustomFrameworkMuxer.Factory(fd, videoDurationMs);
