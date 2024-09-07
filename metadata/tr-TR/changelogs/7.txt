@@ -1,0 +1,9 @@
+Yeni özellikler:
+    - Dışa aktardıktan sonra video dosyasını tara #85 @4831c0
+    - Filtreler için hassas kare aramaya izin ver #77
+    - Belirli alanlar için klavye türünü belirt
+Hata düzeltmeleri:
+    - Döndürmenin dışa aktarmayı iptal etmesi düzeltildi #80
+Çeşitli:
+    - Çeviriler güncellendi
+    - Bağımlılıklar güncellendi
