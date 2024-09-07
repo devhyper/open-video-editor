@@ -1,0 +1,9 @@
+Nuevas características:
+    - Escanear archivo de vídeo después de exportarlo #85 @4831c0
+    - Permitir una búsqueda precisa de cuadros para filtros #77
+    - Especificar el tipo de teclado para campos específicos
+Corrección de errores:
+    - Se corrigió la rotación que cancelaba la exportación #80
+Varios:
+    - Traducciones actualizadas
+    - Dependencias actualizadas
