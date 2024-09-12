@@ -1,0 +1,8 @@
+Tradução parcial para chinês
+Atualizar dependências
+Alterar a velocidade e a taxa de fotogramas do vídeo
+Texto no vídeo
+Guardar projeto
+Cortar
+Inverter cores
+Procurar um fotograma específico
