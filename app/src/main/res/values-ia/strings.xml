@@ -43,4 +43,17 @@
     <string name="trim">Accurtar</string>
     <string name="back">Retornar</string>
     <string name="open_filter_drawer">Aperir le tiratorio de filtros</string>
+    <string name="decline_filter">Declinar le filtro</string>
+    <string name="framerate">Frequentia de photogrammas per secunda</string>
+    <string name="frames">Photogrammas</string>
+    <string name="input_frame_must_less_or_equal">Le entrata debe esser minus que o equal a</string>
+    <string name="degrees">Grados</string>
+    <string name="setting_info">Information del configuration</string>
+    <string name="lossless_cut">Taliar sin perdita</string>
+    <string name="enabling_lossless_cut_will_only_export_trims">Activar le taliar sin perdita solmente exportara le sectiones taliate.</string>
+    <string name="font">Typo de litteras</string>
+    <string name="framerate_must_lower">Le frequentia de photogrammas debe esser inferior al frequentia de photogrammas del video original</string>
+    <string name="new_frame">Nove photogramma</string>
+    <string name="amoled_dark_theme">Thema obscur AMOLED</string>
+    <string name="permission_denied_grant_video_permissions">Permission refusate, concede le permissiones de video</string>
 </resources>
