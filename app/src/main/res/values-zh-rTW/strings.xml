@@ -65,4 +65,5 @@
     <string name="font">字型</string>
     <string name="amoled_dark_theme">AMOLED 深色模式</string>
     <string name="permission_denied_grant_video_permissions">權限被拒絕，授予視訊權限</string>
+    <string name="use_ui_cascading_effect">使用介面層疊效果</string>
 </resources>
