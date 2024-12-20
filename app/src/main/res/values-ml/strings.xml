@@ -1,2 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="cancel">റദ്ദാക്കുക</string>
+    <string name="settings">ക്രമീകരണങ്ങൾ</string>
+    <string name="text">വാചകം</string>
+    <string name="export">കയറ്റുമതി</string>
+    <string name="exported">കയറ്റുമതി ചെയ്തു</string>
+    <string name="exporting">കയറ്റുമതി ചെയ്യുന്നു</string>
+    <string name="dismiss">പിരിച്ചുവിടുക</string>
+    <string name="error">പിശക്</string>
+    <string name="project">പദ്ധതി</string>
+    <string name="speed">വേഗത</string>
+    <string name="accept">സ്വീകരിക്കുക</string>
+    <string name="size">വലിപ്പം</string>
+    <string name="foreground_color">മുൻവശത്തെ നിറം</string>
+    <string name="save_project">പദ്ധതി സംരക്ഷിക്കുക</string>
+    <string name="height">ഉയരം</string>
+    <string name="width">വീതി</string>
+    <string name="default_text">സ്ഥിരസ്ഥിതി</string>
+    <string name="setting_info">ക്രമീകരണ വിവരം</string>
+    <string name="rotate">തിരിക്കുക</string>
+    <string name="trim">വെടിപ്പാക്കൽ</string>
+    <string name="background_color">പിൻവശത്തെ നിറം</string>
+    <string name="back">തിരികെ</string>
+    <string name="add">ചേർക്കുക</string>
+</resources>
