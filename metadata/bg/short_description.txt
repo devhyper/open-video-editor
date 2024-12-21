@@ -1,0 +1,1 @@
+Android видео редактор с отворен код, създаден с Media3 и Jetpack Compose.
