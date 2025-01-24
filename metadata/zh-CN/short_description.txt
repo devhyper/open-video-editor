@@ -1,1 +1,1 @@
-开源的 Android 系统视频编辑器，使用 Media3 和 Jetpack Compose 构建。
+开源的 Android 视频编辑器，使用 Media3 和 Jetpack Compose 构建。
