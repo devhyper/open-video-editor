@@ -51,7 +51,7 @@
     <string name="video_type">Videotyp</string>
     <string name="exported">Exportiert</string>
     <string name="exporting">Exportiert gerade</string>
-    <string name="dismiss">Ablehnen</string>
+    <string name="dismiss">Schließen</string>
     <string name="error">Fehler</string>
     <string name="select_a_file_to_edit">Wähle eine Datei zum Bearbeiten</string>
     <string name="project">Projekt</string>
