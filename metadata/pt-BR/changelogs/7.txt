@@ -1,0 +1,9 @@
+Novas funcionalidades:
+    - Verificar arquivo de vídeo depois de o exportar #85 @4831c0
+    - Permitir a procura precisa de frames para filtros #77
+    - Especificar o tipo de teclado para certos campos
+Correções:
+    - Correção da rotação que cancela a exportação #80
+Diversos:
+    - Sincronizar traduções
+    - Atualizar dependências

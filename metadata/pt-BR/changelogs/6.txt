@@ -1,0 +1,13 @@
+Novas traduções:
+    - Turco @mikropsoft
+    - Português @Diegofmar
+    - Espanhol @gallegonovato
+Novas funcionalidades:
+    - Permitir intenção de visualização #73
+    - Adicionar tema escuro AMOLED #66
+Correções:
+    - Corrigir falha na edição #70
+    - Corrigir falha na exceção de segurança
+Diversos:
+    - Reduzir o tamanho da aplicação
+    - Atualizar dependências
