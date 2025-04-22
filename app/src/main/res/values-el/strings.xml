@@ -19,7 +19,7 @@
     <string name="hdr_mode">Κατάσταση HDR</string>
     <string name="audio_type">Τύπος ήχου</string>
     <string name="video_type">Τύπος βίντεο</string>
-    <string name="exporting">Γίνεται Εξαγωγή</string>
+    <string name="exporting">Γίνεται εξαγωγή</string>
     <string name="video_layers">Επίπεδα βίντεο</string>
     <string name="speed">Ταχύτητα</string>
     <string name="exported">Εξήχθη</string>
