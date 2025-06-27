@@ -48,7 +48,7 @@
     <string name="default_text">По подразбиране</string>
     <string name="font">Шрифт</string>
     <string name="amoled_dark_theme">AMOLED тъмна тема</string>
-    <string name="permission_denied_grant_video_permissions">Разрешението е отказано, дайте разрешения за видео</string>
+    <string name="permission_denied_grant_video_permissions">Разрешението е отказано, предоставете разрешения за видео</string>
     <string name="back">Назад</string>
     <string name="decrement_frame">Намаляване на кадър</string>
     <string name="increment_frame">Увеличаване на кадър</string>
