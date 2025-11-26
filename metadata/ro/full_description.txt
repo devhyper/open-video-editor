@@ -1,0 +1,1 @@
+<p><i>Open Video Editor</i> îți dă voie să îți editezi videourile tale. Suportă HDR și permite aplicarea filtrelor. Cu această aplicație poți decupa, scala și roti videourile tale sau chiar poți adăuga scară de gri lor. Este posibil să folosești aceasta pentru a extrage sunetele dintr-un video, concertează din HDR la SDR sau concertează la un format diferit.</p>
