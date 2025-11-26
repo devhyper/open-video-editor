@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="back">Înapoi</string>
+    <string name="export">Expotează</string>
+    <string name="settings">Setări</string>
 </resources>
