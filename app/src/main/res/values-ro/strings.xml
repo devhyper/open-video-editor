@@ -3,4 +3,6 @@
     <string name="back">Înapoi</string>
     <string name="export">Expotează</string>
     <string name="settings">Setări</string>
+    <string name="decrement_frame">Micșorează cadrul</string>
+    <string name="accept_filter">Acceptată filtrul</string>
 </resources>
