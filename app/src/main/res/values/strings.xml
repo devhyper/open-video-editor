@@ -58,6 +58,8 @@
     <string name="y" translatable="false">Y</string>
     <string name="rotate">Rotate</string>
     <string name="degrees">Degrees</string>
+    <string name="mirror">Mirror</string>
+    <string name="direction">Direction</string>
     <string name="crop">Crop</string>
     <string name="framerate_must_lower">Framerate must be lower than the framerate of the original video </string>
     <string name="lossless_cut">Lossless cut</string>
