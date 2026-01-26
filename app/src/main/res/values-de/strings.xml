@@ -5,7 +5,7 @@
     <string name="decline_filter">Filter ablehnen</string>
     <string name="open_layer_drawer">Ebenenschublade öffnen</string>
     <string name="open_filter_drawer">Filterschublade öffnen</string>
-    <string name="layer_icon">Ebenen Symbol</string>
+    <string name="layer_icon">Ebenensymbol</string>
     <string name="video_layers">Videoebenen</string>
     <string name="forward_10_seconds">10 Sekunden vorwärts</string>
     <string name="replay_5_seconds">5 Sekunden wiederholen</string>
@@ -26,16 +26,16 @@
     <string name="width">Breite</string>
     <string name="height">Höhe</string>
     <string name="rotate">Drehen</string>
-    <string name="degrees">Grade</string>
+    <string name="degrees">Grad</string>
     <string name="crop">Zuschneiden</string>
     <string name="framerate_must_lower">Bildwiederholrate muss niedriger sein als die Bildwiederholrate des Originalvideos</string>
     <string name="lossless_cut">Verlustfreier Schnitt</string>
     <string name="setting_info">Einstellungsinformationen</string>
     <string name="enabling_lossless_cut_will_only_export_trims">Durch die Aktivierung des verlustfreien Schnitts werden nur Beschnitte exportiert.</string>
-    <string name="ffmpeg_error">FFmpeg Fehler</string>
+    <string name="ffmpeg_error">FFmpeg-Fehler</string>
     <string name="default_text">Standard</string>
     <string name="font">Schrift</string>
-    <string name="amoled_dark_theme">AMOLED Dunkles Thema</string>
+    <string name="amoled_dark_theme">AMOLED Dunkles Design</string>
     <string name="hdr_mode">HDR Modus</string>
     <string name="back">Zurück</string>
     <string name="export">Exportieren</string>
@@ -57,7 +57,7 @@
     <string name="project">Projekt</string>
     <string name="play_pause">Wiedergabe/Pause</string>
     <string name="speed">Geschwindigkeit</string>
-    <string name="theme">Thema</string>
+    <string name="theme">Design</string>
     <string name="text">Text</string>
     <string name="size">Größe</string>
     <string name="save_project">Projekt speichern</string>
@@ -65,5 +65,5 @@
     <string name="layout">Layout</string>
     <string name="video">Video</string>
     <string name="scale">Skala</string>
-    <string name="permission_denied_grant_video_permissions">Erlaubnis verweigert, Videoerlaubnis erteilen</string>
+    <string name="permission_denied_grant_video_permissions">Zugriff verweigert, Videoberechtigungen erteilen</string>
 </resources>
