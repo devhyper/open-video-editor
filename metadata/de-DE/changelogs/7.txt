@@ -1,0 +1,9 @@
+Neue Funktionen:
+    - Videodatei nach dem Export scannen #85 @4831c0
+    - Präzise Bildsuche für Filter ermöglicht #77
+    - Tastaturtyp für bestimmte Felder festlegen
+Fehlerbehebungen:
+    - Export bei Drehung abgebrochen #80
+Sonstiges:
+    - Übersetzungen synchronisiert
+    - Abhängigkeiten aktualisiert
