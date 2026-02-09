@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.Filter
+import androidx.compose.material.icons.filled.Flip
 import androidx.compose.material.icons.filled.FormatSize
 import androidx.compose.material.icons.filled.InvertColors
 import androidx.compose.material.icons.filled.TextFormat
@@ -95,6 +96,24 @@ val dialogUserEffectsArray: ImmutableList<DialogUserEffect> = persistentListOf(
     ) { args ->
         val degrees = args["Degrees"]!!.toFloat();
         { ScaleAndRotateTransformation.Builder().setRotationDegrees(degrees).build() }
+    },
+    DialogUserEffect(
+        R.string.mirror,
+        { Icons.Filled.Flip },
+        persistentListOf(
+            EffectDialogSetting(
+                key = "Direction",
+                stringResId = R.string.direction,
+                dropdownOptions = mutableListOf(
+                    "Horizontal",
+                    "Vertical"
+                )
+            )
+        )
+    ) { args ->
+        val direction = args["Direction"]!!
+        val (x, y) = if (direction == "Horizontal") -1f to 1f else 1f to -1f
+        { ScaleAndRotateTransformation.Builder().setScale(x, y).build() }
     }
 )
 

@@ -31,9 +31,10 @@ import androidx.media3.transformer.TransformationRequest
 import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.Transformer.PROGRESS_STATE_NOT_STARTED
 import androidx.media3.transformer.Transformer.PROGRESS_STATE_UNAVAILABLE
-import com.arthenica.ffmpegkit.FFmpegKit
-import com.arthenica.ffmpegkit.FFmpegKitConfig
-import com.arthenica.ffmpegkit.SessionState
+// TODO: ffmpeg-kit was retired and removed from Maven Central
+// import com.arthenica.ffmpegkit.FFmpegKit
+// import com.arthenica.ffmpegkit.FFmpegKitConfig
+// import com.arthenica.ffmpegkit.SessionState
 import io.github.devhyper.openvideoeditor.misc.PROJECT_FILE_EXT
 import io.github.devhyper.openvideoeditor.misc.getFileNameFromUri
 import kotlinx.collections.immutable.ImmutableList
@@ -405,6 +406,7 @@ class TransformManager {
         }
     }
 
+    // TODO: ffmpeg-kit was retired - lossless cut feature temporarily disabled
     private fun ffmpegLosslessCut(
         context: Context,
         trim: Trim,
@@ -412,6 +414,9 @@ class TransformManager {
         audioFallback: Boolean,
         onFFmpegError: () -> Unit
     ) {
+        // Temporarily disabled - ffmpeg-kit library no longer available
+        onFFmpegError()
+        /*
         val ffmpegInputPath =
             FFmpegKitConfig.getSafParameterForRead(context, projectData.uri.toUri())
         val ffmpegOutputPath = FFmpegKitConfig.getSafParameterForWrite(context, outputPath.toUri())
@@ -433,6 +438,7 @@ class TransformManager {
                 ffmpegLosslessCut(context, trim, outputPath, true, onFFmpegError)
             }
         }
+        */
     }
 
     @SuppressLint("Recycle")
@@ -490,27 +496,17 @@ class TransformManager {
     }
 
     fun cancel() {
-        FFmpegKit.cancel()
+        // FFmpegKit.cancel()  // TODO: ffmpeg-kit disabled
         transformer?.cancel()
     }
 
     fun getProgress(): Float {
-        val ffmpegSessions = FFmpegKit.listSessions()
-        return if (ffmpegSessions.isNotEmpty()) {
-            val sessionState = ffmpegSessions.last().state
-            return when (sessionState) {
-                SessionState.COMPLETED -> 1F
-                SessionState.RUNNING -> 0.5F
-                SessionState.CREATED -> 0F
-                else -> -1F
-            }
-        } else {
-            val progressHolder = ProgressHolder()
-            when (transformer?.getProgress(progressHolder)) {
-                PROGRESS_STATE_UNAVAILABLE -> -1F
-                PROGRESS_STATE_NOT_STARTED -> 1F
-                else -> progressHolder.progress.toFloat() / 100F
-            }
+        // TODO: ffmpeg-kit disabled - only using transformer progress now
+        val progressHolder = ProgressHolder()
+        return when (transformer?.getProgress(progressHolder)) {
+            PROGRESS_STATE_UNAVAILABLE -> -1F
+            PROGRESS_STATE_NOT_STARTED -> 1F
+            else -> progressHolder.progress.toFloat() / 100F
         }
     }
 }
