@@ -64,4 +64,5 @@
     <string name="size">Taille</string>
     <string name="default_text">Lorem Ipsum</string>
     <string name="font">Police d\'écriture</string>
+    <string name="amoled_dark_theme">Mode sombre AMOLED</string>
 </resources>
