@@ -1,0 +1,13 @@
+Nouvelles traductions:
+    - Turc @mikropsoft
+    - Portugais @Diegofmar
+    - Espagnol @gallegonovato
+Nouvelles fonctionnalités:
+    - Autoriser la vue indentée #73
+    -Ajout du thème AMOLED sombre #66
+Correction de bogues:
+    - Correction de crash à l'édition #70
+    - Correction de crash sur exception de sécurité
+Divers:
+    - Réduction de la taille de l'application
+    - Mise à jour de dépendances

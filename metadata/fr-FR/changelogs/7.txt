@@ -1,0 +1,9 @@
+Nouvelles fonctionnalités:
+    - Scan du fichier vidéo après son exportation #85 @4831c0
+    - Autorisé la recherche fine de trames pour les filtres  #77
+    - Spécifier le type de clavier pour certains champs
+Correction de bogues:
+    -  Correction de l'annulation de la rotation lors de  l'export #80
+Divers:
+    - Traductions synchronisées
+    - Mise à jour des dépendances
