@@ -14,7 +14,7 @@
     <string name="use_legacy_file_picker">Legacy-Dateiauswahl verwenden</string>
     <string name="background_color">Hintergrundfarbe</string>
     <string name="foreground_color">Vordergrundfarbe</string>
-    <string name="set">Anwenden</string>
+    <string name="set">Festlegen</string>
     <string name="color_picker">Farbauswahl</string>
     <string name="accept">Akzeptieren</string>
     <string name="use_ui_cascading_effect">UI-Kaskadeneffekt verwenden</string>
