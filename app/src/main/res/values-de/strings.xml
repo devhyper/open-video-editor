@@ -14,7 +14,7 @@
     <string name="use_legacy_file_picker">Legacy-Dateiauswahl verwenden</string>
     <string name="background_color">Hintergrundfarbe</string>
     <string name="foreground_color">Vordergrundfarbe</string>
-    <string name="set">Setzen</string>
+    <string name="set">Anwenden</string>
     <string name="color_picker">Farbauswahl</string>
     <string name="accept">Akzeptieren</string>
     <string name="use_ui_cascading_effect">UI-Kaskadeneffekt verwenden</string>
@@ -50,10 +50,10 @@
     <string name="audio_type">Audiotyp</string>
     <string name="video_type">Videotyp</string>
     <string name="exported">Exportiert</string>
-    <string name="exporting">Exportiert gerade</string>
-    <string name="dismiss">Schließen</string>
+    <string name="exporting">Exportiere...</string>
+    <string name="dismiss">Verwerfen</string>
     <string name="error">Fehler</string>
-    <string name="select_a_file_to_edit">Wähle eine Datei zum Bearbeiten</string>
+    <string name="select_a_file_to_edit">Datei zum Bearbeiten wählen</string>
     <string name="project">Projekt</string>
     <string name="play_pause">Wiedergabe/Pause</string>
     <string name="speed">Geschwindigkeit</string>
