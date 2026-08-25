@@ -50,7 +50,7 @@
     <string name="audio_type">Audiotyp</string>
     <string name="video_type">Videotyp</string>
     <string name="exported">Exportiert</string>
-    <string name="exporting">Exportiere...</string>
+    <string name="exporting">Exportieren...</string>
     <string name="dismiss">Verwerfen</string>
     <string name="error">Fehler</string>
     <string name="select_a_file_to_edit">Datei zum Bearbeiten wählen</string>
