@@ -1,0 +1,12 @@
+Các bản dịch mới:
+    - Tiếng Trung (Giản thể)
+    - Tiếng Trung (Phồn thể)
+    - Tiếng Pháp
+Các tính năng mới:
+    - Cắt video giữ nguyên chất lượng
+    - Tùy chỉnh phông chữ cho hiệu ứng văn bản
+Sửa lỗi:
+    - Sửa lỗi ứng dụng bị treo khi cố gắng lấy các quyền truy cập lâu dài
+    - Ngăn chặn việc thay đổi kích thước video ở chế độ toàn màn hình
+Khác:
+    - Cập nhật các thành phần phụ thuộc

@@ -1,0 +1,7 @@
+Nhấn và giữ khung hình kế tiếp/trước đó để lặp lại
+Sửa lỗi mất các chỉnh sửa khi xoay màn hình
+Sửa lỗi không thể chọn video
+Ẩn phần mở rộng tệp khi chọn vị trí xuất tệp
+Thêm ứng dụng dưới dạng lối tắt trong menu Chia sẻ
+Sửa lỗi các thành phần giao diện không phản hồi hoặc không tự điều chỉnh theo màn hình
+Sửa lỗi các nút trong hộp thoại bị ẩn trên một số kích thước màn hình nhất định

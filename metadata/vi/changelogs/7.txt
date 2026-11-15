@@ -1,0 +1,9 @@
+Các tính năng mới:
+    - Quét tệp video sau khi xuất #85 @4831c0
+    - Cho phép tìm kiếm khung hình chính xác cho các bộ lọc #77
+    - Chỉ định loại bàn phím cho một số trường nhập liệu
+Sửa lỗi:
+    - Sửa lỗi xoay video làm hủy quá trình xuất #80
+Khác:
+    - Đồng bộ hóa các bản dịch
+    - Cập nhật các thành phần phụ thuộc

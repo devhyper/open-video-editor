@@ -1,0 +1,13 @@
+Các bản dịch mới:
+    - Tiếng Thổ Nhĩ Kỳ @mikropsoft
+    - Tiếng Bồ Đào Nha @Diegofmar
+    - Tiếng Tây Ban Nha @gallegonovato
+Các tính năng mới:
+    - Hỗ trợ xem intent #73
+    - Thêm chủ đề tối AMOLED #66
+Sửa lỗi:
+    - Sửa lỗi treo ứng dụng khi chỉnh sửa #70
+    - Sửa lỗi treo ứng dụng do ngoại lệ bảo mật 
+Khác:
+    - Giảm dung lượng ứng dụng
+    - Cập nhật các thành phần phụ thuộc

@@ -1,0 +1,8 @@
+Bản dịch tiếng Trung một phần
+Cập nhật các phần phụ thuộc
+Thay đổi tốc độ video và khung hình
+Chữ trong video
+Lưu dự án
+Cắt
+Đảo ngược màu
+Tìm kiếm khung hình cụ thể
